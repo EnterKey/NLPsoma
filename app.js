@@ -13,7 +13,7 @@ var app = express();
 // all environments
 app.set('port', process.env.PORT || 4000);
 app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'jade');
+app.set('view engine', 'ejs');
 app.use(express.favicon());
 app.use(express.logger('dev'));
 app.use(express.json());
@@ -27,7 +27,13 @@ if ('development' == app.get('env')) {
   app.use(express.errorHandler());
 }
 
-app.get('/', routes.index);
+app.get('/main', routes.main);
+
+
+
+
+
+
 app.post('/getlist', routes.get_list);
 app.post('/setlist', routes.set_list);
 

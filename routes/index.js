@@ -3,8 +3,9 @@ var mongodb_handler = require('../modules/mongodb_handler');
  * GET home page.
  */
 
-exports.index = function(req, res){
-  res.render('index', { title: 'Express' });
+
+exports.main = function(req, res){
+  res.render('main');
 };
 
 exports.set_list = function(req, res){
