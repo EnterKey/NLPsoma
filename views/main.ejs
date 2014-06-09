@@ -1,5 +1,9 @@
+<!DOCTYPE html>
 <html>
 	<head>
+		<meta http-equiv="X-FRAME-OPTIONS" content="DENY">
+
+
 		<link href="/library/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 		<script src="/library/jquery/jquery-2.1.0.min.js"></script>
 	</head>
@@ -7,14 +11,77 @@
 		<div class="row">
 			<div class="col-lg-2 directory-list">
 				<h3><span class="label label-info">This is for directory</span></h3>
+				<ul class='list-group'>
+
+                <% 
+                  dir_list.forEach(function(file){ 
+                %>
+                  <li class='list-group-item' style='color:gray;background-color:whitesmoke'>
+                    <div class='row'>
+                      <div class='col-sm-12'>
+                        
+                          <span class='glyphicon glyphicon-folder-close'> </span>
+                           <a class='dir_a_tag' >
+                            <%= file.name %>
+                          </a>
+                      </div>
+                    </div>
+                  </li>
+                <%    
+                  });
+                %>
+              </ul> 
+
 			</div>
 
 			<div class="col-lg-2 directory-list">
 				<h3><span class="label label-info">This is for list in directory</span></h3>
+				<ul class='list-group'>
+
+                <% 
+                    
+                  all_list.forEach(function(file){ 
+                %>
+                  <li class='list-group-item' style='color:gray;background-color:whitesmoke'>
+                    <div class='row'>
+                      <div class='col-sm-12'>
+                        <% 
+                          if (file.type=="dir"){
+                        %>
+                          <span class='glyphicon glyphicon-folder-close'> </span>
+                           <a class='dir_a_tag' >
+                            <%= file.name %>
+                          </a>
+                        <%    
+                          }else{
+                        %>
+                          <span class='glyphicon glyphicon-file'> </span>
+
+                          <a class='file_a_tag' href="<%= file.url %>">
+                            <%= file.title %>
+                          </a>
+                        <%    
+                          }
+                        %>
+                      </div>
+
+
+                      
+                    </div>
+                    
+                  </li>
+                <%    
+                  });
+                %>
+              </ul> 
 			</div>
+
+
 			<div class="col-lg-8">
 				<h3><span class="label label-info">This is View</span></h3>
+				<a href="http://www.w3schools.com" target="_blank">Visit W3Schools.com!</a> 
 			</div>
+
 		</div>
 		<style type="text/css">
 			.directory-list{
