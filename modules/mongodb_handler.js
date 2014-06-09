@@ -30,11 +30,13 @@ var parsePath = function(path){
 	if(path.slice(-1) != '/')
 		path += path + '/';
 
-	parsePath = path.replace(/\//, ",");
+	// parsePath = path.replace(/\//, ",");
 	return parsePath;
 }
 
-exports.insert_user = function(){
+exports.insert_user = function(postData, callback){
+	if(typeof(callback) != function) callback = function(){};
+
 	var userData = new userDataModel();
 
 	userData.userKey = "TempUserKey";
@@ -42,119 +44,106 @@ exports.insert_user = function(){
 	userData.pageDir = [];
 	userData.pageDir.push({
 		name : "root",
-		path : null
+		path : "/"
 	});
 
-	userData.save(function(err){
-		if(err){
-			console.log(err);
-			res.json("fail");
-		}
-		else{
-			res.json("success");
-		}
+	userData.save(function(err, data){
+		callback(err, data);
 	})
 };
 
-exports.insert_pageDir = function(req, res){
+exports.insert_pageDir = function(postData, callback){
+	if(typeof(callback) != function) callback = function(){};
 
-	var userKey = req.body.userKey;
+	var userKey = postData.userKey;
 	var pageDir = {};
-	pageDir.name = req.body.dirInfo.name;
-	pageDir.path = pathgParsing(req.body.dirPath.path);
+	pageDir.name = postData.dirInfo.name;
+	pageDir.path = pathgParsing(postData.dirPath.path);
 
 	userDataModel.update({userKey: userKey}, {'$push': { 'pageDir': pageDir}}, function(err, data){
-		if(err){
-			console.log(err);
-			res.json("fail");
-		}
-		else{
-			res.json("success");
-		}
+		callback(err, data);
 	});
 };
 
-exports.insert_pageEntry = function(req, res){
-	var userKey = req.body.userKey;
+exports.insert_pageEntry = function(postData, callback){
+	if(typeof(callback) != function) callback = function(){};
+
+	var userKey = postData.userKey;
 	var pageEntry = {};
-	pageEntry.title = req.body.pageInfo.title;
-	pageEntry.url = req.body.pageInfo.url;
-	pageEntry.path = parsePath(req.body.pageInfo.url);
+	pageEntry.title = postData.pageInfo.title;
+	pageEntry.url = postData.pageInfo.url;
+	pageEntry.path = parsePath(postData.pageInfo.url);
 	userDataModel.update({userKey: userKey}, {'$push': { 'pageEntry': pageEntry}}, function(err, data){
-		if(err){
-			console.log(err);
-			res.json("fail");
-		}
-		else{
-			res.json("success");
-		}
+		callback(err, data);
 	});
 };
 
 
-exports.get_pageDir_list = function(req, res){
-	var userKey = req.body.userKey;
-	var path = parsePath(req.body.path);
+exports.get_pageDir_list = function(postData, callback){
+	if(typeof(callback) != function) callback = function(){};
 
-	userDataModel.find({userKey:userKey, "pageDir.path": path}, {"pageDir.$": 1} ,function(err, docs){
-		if(err)
-			console.log(err);
-		console.log(docs);
+	var userKey = postData.userKey;
+	var path = parsePath(postData.path);
+
+	userDataModel.find({userKey:userKey, "pageDir.path": path}, {"pageDir.$": 1} ,function(err, data){
+		callback(err, data);
 	});
 }
 
-exports.get_pageEntry_list = function(req, res){
-	var userKey = req.body.userKey;
-	var path = parsePath(req.body.path);
+exports.get_pageEntry_list = function(postData, callback){
+	if(typeof(callback) != function) callback = function(){};
 
-	userDataModel.find({userKey:userKey, "pageEntry.path": path}, {"pageEntry.$": 1} ,function(err, docs){
-		if(err)
-			console.log(err);
-		console.log(docs);
+	var userKey = postData.userKey;
+	var path = parsePath(postData.path);
+
+	userDataModel.find({userKey:userKey, "pageEntry.path": path}, {"pageEntry.$": 1} ,function(err, data){
+		callback(err, data);
 	});
 
 }
 
-var get_pageAll_list = function(req, res){
+var get_pageAll_list = function(postData, callback){
+	if(typeof(callback) != function) callback = function(){};
+
 	var userKey = "TempUserKey";
 	var path = ",root,";
 
-	userDataModel.find({userKey:userKey, "pageEntry.path": path}, {"pageEntry.$": 1, "pageDir.$": 2} ,function(err, docs){
-		if(err)
-			console.log(err);
-		console.log(docs);
+	userDataModel.find({userKey:userKey, "pageEntry.path": path}, {"pageEntry.$": 1, "pageDir.$": 2} ,function(err, data){
+		callback(err, data);
 	});
 }
 
-var remove_pageEntry = function(req, res){
-	var userKey = req.body.userKey;
-	var path = parsePath(req.body.path);
-	var title = req.body.title;
+var remove_pageEntry = function(postData, callback){
+	if(typeof(callback) != function) callback = function(){};
+
+	var userKey = postData.userKey;
+	var path = parsePath(postData.path);
+	var title = postData.title;
 
 	userDataModel.remove({userKey:userKey, "pageEntry.path": path, "pageEntry.title": title}, function(err, data){
-		if(err)
-			console.log(err);
-		console.log(data);
+		callback(err, data);
 	});
 }
 
-var remove_pageDir = function(req, res){
-	var userKey = req.body.userKey;
-	var path = parsePath(req.body.path);
-	var name = req.body.name;
+var remove_pageDir = function(postData, callback){
+	if(typeof(callback) != function) callback = function(){};
+
+	var userKey = postData.userKey;
+	var path = parsePath(postData.path);
+	var name = postData.name;
 
 	userDataModel.remove({userKey:userKey, "pageDir.path": path, "pageDir.name": name}, function(err, data){
-		if(err)
-			console.log(err);
-		console.log(data);
+		callback(err, data);
 	});
 }
 
-exports.update_pageEntry = function(req, res){
+exports.update_pageEntry = function(postData, callback){
+	if(typeof(callback) != function) callback = function(){};
 
 };
 
-exports.update_pageDir = function(req, res){
+exports.update_pageDir = function(postData, callback){
+	if(typeof(callback) != function) callback = function(){};
 
 };
 
@@ -165,10 +154,10 @@ function init(){
 
 init();
 
-// exports.set_list = function(req, res){
+// exports.set_list = function(postData, callback){
 
-// 	var pageInfo = req.body.pageInfo;
-// 	var userKey = req.body.userKey;
+// 	var pageInfo = postData.pageInfo;
+// 	var userKey = postData.userKey;
 
 // 	var visitpage = new userDataModel();
 
@@ -181,9 +170,9 @@ init();
 // 	});
 // }
 
-// exports.get_list = function(req, res){
+// exports.get_list = function(postData, callback){
 
-// 	var userKey = req.body.userKey;
+// 	var userKey = postData.userKey;
 
 // 	userDataModel.find({userKey:userKey}, function(err, docs){
 // 		if(err)
