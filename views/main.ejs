@@ -13,11 +13,11 @@
 		<div class="row">
 			<div class="col-lg-2 directory-list">
 				<h3><span class="label label-info">This is for directory</span></h3>
-				<ul class='list-group'>
+				<ul class='list-group' id="dir_only_list">
                 <% 
                   pageDir.forEach(function(file){ 
                 %>
-                  <li class='list-group-item droppable_forder' style='color:gray;background-color:whitesmoke'>
+                  <li class='list-group-item droppable_forder dir_only_elem' style='color:gray;background-color:whitesmoke'>
                     <div class='row'>
                       <div class='col-sm-12'>
                       	<div>
@@ -63,13 +63,16 @@
 
 	                    <li class='list-group-item draggable_file' style='color:gray;background-color:whitesmoke'>
 		                    <div class='row'>
-		                      <div class='col-sm-12'>
-		                        <div >
+		                      <div class='col-sm-4'>
 		                          <span class='glyphicon glyphicon-file'> </span>
 		                          <a class='file_a_tag' href="<%= file.url %>" data-path="<%= file.path %>">
 		                            <%= file.title %>
 		                          </a>
-		                        </div>
+		                      </div>
+		                      <div class ="col-sm-8">
+		                      	<a class='file_a_tag' href="<%= file.url %>" data-path="<%= file.path %>">
+		                            <%= file.content %>
+		                        </a>
 		                      </div>
 		                    </div>
 	                   </li>
@@ -120,11 +123,28 @@
 					dataType:"JSON", // 옵션이므로 JSON으로 받을게 아니면 안써도 됨
 					success : function(data) {
 						//data is list
+						$('.dir_only_elem').remove();
+						var result=data.pageDir;
+						var innerhtml_str=""
+						result.forEach(function(indata){
+							innerhtml_str+="<li class='list-group-item droppable_forder dir_only_elem' style='color:gray;background-color:whitesmoke'>"+
+			                    "<div class='row'>"+
+			                      "<div class='col-sm-12'>"+
+			                      	"<div>"+
+			                          "<span class='glyphicon glyphicon-folder-close'> </span>"+
+			                          "<a class='dir_only' data-path='&&dirpath&&'>"+
+			                            "&&dirname&&"+
+			                          "</a>"+
+			                    	"</div>"+
+			                      "</div>"+
+			                    "</div>"+
+			                "</li>";
+			                innerhtml_str.replace('&&dirname&&',indata.name).replace('&&dirpath&&',indata.path)
 
-                		console.log(data)
-					},
-					complete : function(data) {
-					    alert("Error");
+
+						})
+
+						document.getElementById("dir_only_elem").innerHTML=innerhtml_str;
 					},
 					error : function(xhr, status, error) {
 						alert("Error");
@@ -147,9 +167,6 @@
 						//data is list file and dir
 
                 		console.log(data)
-					},
-					complete : function(data) {
-					    alert("Error");
 					},
 					error : function(xhr, status, error) {
 						alert("Error");
@@ -181,9 +198,6 @@
 						success : function(data) {
                     		console.log("Succes")
 							$(ui.draggable).remove()
-						},
-						complete : function(data) {
-						    alert("Error");
 						},
 						error : function(xhr, status, error) {
 							alert("Error");
