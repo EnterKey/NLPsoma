@@ -36,7 +36,7 @@
 
 			</div>
 
-			<div class="col-lg-2 directory-list">
+			<div class="col-lg-4 directory-list">
 				<h3><span class="label label-info">This is for list in directory</span></h3>
 				<ul class='list-group' id='dir_with_file_list'>
 
@@ -85,7 +85,7 @@
 			</div>
 
 
-			<div class="col-lg-8">
+			<div class="col-lg-6">
 				<h3><span class="label label-info">This is View</span></h3>
 				<a href="http://www.w3schools.com" target="_blank">Visit W3Schools.com!</a> 
 			</div>
@@ -225,18 +225,20 @@
 
 			});
 			$('.droppable_forder').droppable({
-				var jquery_obj= $(this).find('.dir_share');
-				var dragobj=$(ui.draggable);
-				var params={
-					userKey:"TempUserKey",
-					pageInfo:{
-						oldPath:dragobj.find('.file_a_tag_title').data('path'),
-						newPath:jquery_obj.data('path')+jquery_obj.val(),
-						title:dragobj.find('.file_a_tag_title').val()
-					}
-				}
+
 
 				drop: function(event, ui) {
+					var jquery_obj= $(this).find(".dir_share");
+				
+					var dragobj=$(ui.draggable);
+					var params={
+						userKey:"TempUserKey",
+						pageInfo:{
+							oldPath:dragobj.find('.file_a_tag_title').data('path'),
+							newPath:jquery_obj.data('path')+jquery_obj.val(),
+							title:dragobj.find('.file_a_tag_title').val()
+						}
+					};
 					$.ajax({
 						type:"POST",
 						url:"/ajax/move_entryPath",
