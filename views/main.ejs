@@ -22,7 +22,7 @@
                       <div class='col-sm-12'>
                       	<div>
                           <span class='glyphicon glyphicon-folder-close'> </span>
-                          <a class='dir_only' data-path="<%= file.path %>">
+                          <a class='dir_only dir_share' data-path="<%= file.path %>">
                             <%= file.name %>
                           </a>
                     	</div>
@@ -38,17 +38,17 @@
 
 			<div class="col-lg-2 directory-list">
 				<h3><span class="label label-info">This is for list in directory</span></h3>
-				<ul class='list-group'>
+				<ul class='list-group' id='dir_with_file_list'>
 
                 	<% 
                       pageDir.forEach(function(file){ 
                     %>	
-	                    <li class='list-group-item droppable_forder' style='color:gray;background-color:whitesmoke'>
+	                    <li class='list-group-item droppable_forder dir_with_file_elem' style='color:gray;background-color:whitesmoke'>
 		                    <div class='row'>
 		                      <div class='col-sm-12'>
 		                        <div >
 		                          <span class='glyphicon glyphicon-folder-close'> </span>
-		                           <a class='dir_with_file' data-path="<%= file.path %>">
+		                           <a class='dir_with_file dir_share' data-path="<%= file.path %>">
 		                            <%= file.name %>
 		                          </a>
 		                        </div>
@@ -61,11 +61,11 @@
                       pageEntry.forEach(function(file){ 
                     %>
 
-	                    <li class='list-group-item draggable_file' style='color:gray;background-color:whitesmoke'>
+	                    <li class='list-group-item draggable_file dir_with_file_elem' style='color:gray;background-color:whitesmoke'>
 		                    <div class='row'>
 		                      <div class='col-sm-4'>
 		                          <span class='glyphicon glyphicon-file'> </span>
-		                          <a class='file_a_tag' href="<%= file.url %>" data-path="<%= file.path %>">
+		                          <a class='file_a_tag_title' href="<%= file.url %>" data-path="<%= file.path %>">
 		                            <%= file.title %>
 		                          </a>
 		                      </div>
@@ -114,7 +114,7 @@
 				var jquery_obj= $(this);
 				var params={
 					userKey:"TempUserKey",
-					path:jquery_obj.attr('data-path')+jquery_obj.val()
+					path:jquery_obj.data('path')+jquery_obj.val()
 				}
 				$.ajax({
 					type:"POST",
@@ -132,7 +132,7 @@
 			                      "<div class='col-sm-12'>"+
 			                      	"<div>"+
 			                          "<span class='glyphicon glyphicon-folder-close'> </span>"+
-			                          "<a class='dir_only' data-path='&&dirpath&&'>"+
+			                          "<a class='dir_only dir_share' data-path='&&dirpath&&'>"+
 			                            "&&dirname&&"+
 			                          "</a>"+
 			                    	"</div>"+
@@ -140,11 +140,9 @@
 			                    "</div>"+
 			                "</li>";
 			                innerhtml_str.replace('&&dirname&&',indata.name).replace('&&dirpath&&',indata.path)
-
-
 						})
 
-						document.getElementById("dir_only_elem").innerHTML=innerhtml_str;
+						document.getElementById("dir_only_list").innerHTML=innerhtml_str;
 					},
 					error : function(xhr, status, error) {
 						alert("Error");
@@ -156,7 +154,7 @@
 				var jquery_obj= $(this);
 				var params={
 					userKey:"TempUserKey",
-					path:jquery_obj.attr('data-path')+jquery_obj.val()
+					path:jquery_obj.data('path')+jquery_obj.val()
 				}
 				$.ajax({
 					type:"POST",
@@ -166,7 +164,45 @@
 					success : function(data) {
 						//data is list file and dir
 
-                		console.log(data)
+						$('.dir_with_file_elem').remove();
+						var resultDir=data.pageDir;
+						var resultEntry=data.pageEntry;
+						var innerhtml_str=""
+						resusultDir.forEach(function(indata){
+							innerhtml_str+="<li class='list-group-item droppable_forder dir_with_file_elem' style='color:gray;background-color:whitesmoke'>"+
+			                    "<div class='row'>"+
+			                      "<div class='col-sm-12'>"+
+			                      	"<div>"+
+			                          "<span class='glyphicon glyphicon-folder-close'> </span>"+
+			                          "<a class='dir_with_file dir_share' data-path='&&dirpath&&'>"+
+			                            "&&dirname&&"+
+			                          "</a>"+
+			                    	"</div>"+
+			                      "</div>"+
+			                    "</div>"+
+			                "</li>";
+			                innerhtml_str.replace('&&dirname&&',indata.name).replace('&&dirpath&&',indata.path)
+						})
+						resusultEntry.forEach(function(indata){
+							innerhtml_str+="<li class='list-group-item droppable_forder dir_with_file_elem' style='color:gray;background-color:whitesmoke'>"+
+			                    "<div class='row'>"+
+			                      "<div class='col-sm-4'>"+
+			                          "<span class='glyphicon glyphicon-file'> </span>"+
+			                          "<a class='file_a_tag_title' href='&&entryurl&&' data-path='&&entrypath&&'>"+
+			                            "&&title&&"+
+			                          "</a>"+
+			                      "</div>"+
+			                      "<div class='col-sm-8'>"+
+			                          "<a class='file_a_tag' href='&&entryurl&&' data-path='&&entrypath&&'>"+
+			                            "&&content&&"+
+			                          "</a>"+
+			                      "</div>"+
+			                    "</div>"+
+			                "</li>";
+			                innerhtml_str.replace(/&&entryurl&&/g,indata.url).replace(/&&entrypath&&/g,indata.path).replace('&&title&&',indata.title).replace('&&content&&',indata.content)
+						})
+
+						document.getElementById("dir_with_file_list").innerHTML=innerhtml_str;
 					},
 					error : function(xhr, status, error) {
 						alert("Error");
@@ -189,15 +225,25 @@
 
 			});
 			$('.droppable_forder').droppable({
+				var jquery_obj= $(this).find('.dir_share');
+				var dragobj=$(ui.draggable);
+				var params={
+					userKey:"TempUserKey",
+					pageInfo:{
+						oldPath:dragobj.find('.file_a_tag_title').data('path'),
+						newPath:jquery_obj.data('path')+jquery_obj.val(),
+						title:dragobj.find('.file_a_tag_title').val()
+					}
+				}
 
 				drop: function(event, ui) {
 					$.ajax({
 						type:"POST",
-						url:"/test",
+						url:"/ajax/move_entryPath",
 						dataType:"JSON", // 옵션이므로 JSON으로 받을게 아니면 안써도 됨
+						data:params,
 						success : function(data) {
-                    		console.log("Succes")
-							$(ui.draggable).remove()
+							dragobj.remove()
 						},
 						error : function(xhr, status, error) {
 							alert("Error");
