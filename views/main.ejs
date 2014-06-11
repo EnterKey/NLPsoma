@@ -114,7 +114,7 @@
 				var jquery_obj= $(this);
 				var params={
 					userKey:"TempUserKey",
-					path:jquery_obj.data('path')+jquery_obj.val()
+					path:jquery_obj.data('path')+jquery_obj.text().trim()
 				}
 				$.ajax({
 					type:"POST",
@@ -123,6 +123,11 @@
 					dataType:"JSON", // 옵션이므로 JSON으로 받을게 아니면 안써도 됨
 					success : function(data) {
 						//data is list
+						if(data.status==0){
+							alert('error');
+							return;
+						}
+						var data=data.data;
 						$('.dir_only_elem').remove();
 						var result=data.pageDir;
 						var innerhtml_str=""
@@ -139,7 +144,7 @@
 			                      "</div>"+
 			                    "</div>"+
 			                "</li>";
-			                innerhtml_str.replace('&&dirname&&',indata.name).replace('&&dirpath&&',indata.path)
+			                innerhtml_str=innerhtml_str.replace('&&dirname&&',indata.name).replace('&&dirpath&&',indata.path)
 						})
 
 						document.getElementById("dir_only_list").innerHTML=innerhtml_str;
@@ -154,8 +159,11 @@
 				var jquery_obj= $(this);
 				var params={
 					userKey:"TempUserKey",
-					path:jquery_obj.data('path')+jquery_obj.val()
+					path:jquery_obj.data('path')+jquery_obj.text().trim()
 				}
+				console.log(params)
+				console.log(jquery_obj)
+				
 				$.ajax({
 					type:"POST",
 					url:"/ajax/get_pageAll_list", //dir with file
@@ -163,12 +171,18 @@
 					dataType:"JSON", // 옵션이므로 JSON으로 받을게 아니면 안써도 됨
 					success : function(data) {
 						//data is list file and dir
+						if(data.status==0){
+							alert('error');
+							return;
+						}
+						var data=data.data;
 
 						$('.dir_with_file_elem').remove();
 						var resultDir=data.pageDir;
 						var resultEntry=data.pageEntry;
-						var innerhtml_str=""
-						resusultDir.forEach(function(indata){
+						var innerhtml_str="";
+						console.log(resultDir)
+						resultDir.forEach(function(indata){
 							innerhtml_str+="<li class='list-group-item droppable_forder dir_with_file_elem' style='color:gray;background-color:whitesmoke'>"+
 			                    "<div class='row'>"+
 			                      "<div class='col-sm-12'>"+
@@ -181,9 +195,9 @@
 			                      "</div>"+
 			                    "</div>"+
 			                "</li>";
-			                innerhtml_str.replace('&&dirname&&',indata.name).replace('&&dirpath&&',indata.path)
+			                innerhtml_str=innerhtml_str.replace(/&&dirname&&/g,indata.name).replace(/&&dirpath&&/g,indata.path)
 						})
-						resusultEntry.forEach(function(indata){
+						resultEntry.forEach(function(indata){
 							innerhtml_str+="<li class='list-group-item droppable_forder dir_with_file_elem' style='color:gray;background-color:whitesmoke'>"+
 			                    "<div class='row'>"+
 			                      "<div class='col-sm-4'>"+
@@ -199,7 +213,7 @@
 			                      "</div>"+
 			                    "</div>"+
 			                "</li>";
-			                innerhtml_str.replace(/&&entryurl&&/g,indata.url).replace(/&&entrypath&&/g,indata.path).replace('&&title&&',indata.title).replace('&&content&&',indata.content)
+			                innerhtml_str=innerhtml_str.replace(/&&entryurl&&/g,indata.url).replace(/&&entrypath&&/g,indata.path).replace(/&&title&&/g,indata.title).replace(/&&content&&/g,indata.content)
 						})
 
 						document.getElementById("dir_with_file_list").innerHTML=innerhtml_str;
@@ -235,8 +249,8 @@
 						userKey:"TempUserKey",
 						pageInfo:{
 							oldPath:dragobj.find('.file_a_tag_title').data('path'),
-							newPath:jquery_obj.data('path')+jquery_obj.val(),
-							title:dragobj.find('.file_a_tag_title').val()
+							newPath:jquery_obj.data('path')+jquery_obj.text().trim(),
+							title:dragobj.find('.file_a_tag_title').text().trim()
 						}
 					};
 					$.ajax({
