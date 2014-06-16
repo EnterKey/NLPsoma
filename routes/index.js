@@ -98,7 +98,7 @@ var insertTestData = function(){
 }
 
 
-insertTestData();
+//insertTestData();
 
 var dbError_handler = function(err){
   // error handler
