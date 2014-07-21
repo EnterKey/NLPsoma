@@ -6,7 +6,6 @@ mongoose.connect('mongodb://localhost/chrome_extension');
 
 var visitPageSchema = new Schema({
 	userKey:String,
-	visitedCnt : Number,
 	date: Date,
 	url : String,
 	title : String
@@ -14,30 +13,34 @@ var visitPageSchema = new Schema({
 
 var visitPageModel = mongoose.model('visitpage', visitPageSchema);
 
-exports.set_list = function(req,res){
+exports.set_list = function(req, res){
+
+	var pageInfo = req.body.pageInfo;
+	var userKey = req.body.userKey;
 
 	var visitpage = new visitPageModel();
-	var item = req.body.data.item; //maybe req.body.item
-	visitpage.userKey  = item.userKey;
-	visitpage.date= item.item.date;
-	visitpage.visitedCnt = item.visitedCnt;
-	visitpage.title = item.title;
+
+	visitpage.userKey = userKey;
+	visitpage.date = new Date();
+	visitpage.url = pageInfo.url;
+	visitpage.title = pageInfo.title;
 	visitpage.save(function (err) {
 	    if (!err) console.log('Success!');
 	});
 }
 
-exports.get_list = function(req,res){
-	var data= req.body.data;
-	userKey=data.userKey;
-	visitPageModel.find({userKey:userKey},function(err,docs){
+exports.get_list = function(req, res){
+
+	var userKey = req.body.userKey;
+
+	visitPageModel.find({userKey:userKey}, function(err, docs){
 		if(err)
 			throw err;
 		else
-			console.log(docs);
-	})
+			res.json(docs);
+	});
 
-}
+};
 
 
 
