@@ -31,9 +31,6 @@ app.get('/main', routes.main);
 
 
 
-
-
-
 app.post('/getlist', routes.get_list);
 app.post('/setlist', routes.set_list);
 
