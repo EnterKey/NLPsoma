@@ -47,7 +47,7 @@ exports.insert_user = function(postData, callback){
 		path : "/"
 	});
 
-	userData.save(function(err){
+	userData.save(function(err, data){
 		callback(err, data);
 	})
 };
