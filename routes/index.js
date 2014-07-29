@@ -11,7 +11,29 @@ var dbError_handler = function(err){
 }
 
 exports.main = function(req, res){
-  res.render('main');
+	//mocking
+	var dir_list=[
+			{
+				name : '/',
+				path : '/'
+			}
+		];
+	var all_list=[
+		{
+			type:'dir',
+			name : '/',
+			path : '/'
+		},
+		{
+			type:'page',
+			path : '/',
+			url : 'http://google.co.kr',
+			title : 'google'
+		}
+	]
+	//
+
+  res.render('main',{all_list:all_list, dir_list:dir_list});
 };
 
 exports.insert_user = function(req, res){
