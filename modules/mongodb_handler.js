@@ -16,7 +16,8 @@ var userDataSchema = new Schema({
 		{
 			path : String,
 			url : String,
-			title : String
+			title : String,
+			content: String
 		}
 	]
 });
@@ -58,7 +59,7 @@ exports.insert_pageDir = function(postData, callback){
 	var userKey = postData.userKey;
 	var pageDir = {};
 	pageDir.name = postData.dirInfo.name;
-	pageDir.path = pathgParsing(postData.dirPath.path);
+	pageDir.path = pathgParsing(postData.dirInfo.path);
 
 	userDataModel.update({userKey: userKey}, {'$push': { 'pageDir': pageDir}}, function(err, data){
 		callback(err, data);
@@ -72,7 +73,7 @@ exports.insert_pageEntry = function(postData, callback){
 	var pageEntry = {};
 	pageEntry.title = postData.pageInfo.title;
 	pageEntry.url = postData.pageInfo.url;
-	pageEntry.path = parsePath(postData.pageInfo.url);
+	pageEntry.path = parsePath(postData.pageInfo.path);
 	userDataModel.update({userKey: userKey}, {'$push': { 'pageEntry': pageEntry}}, function(err, data){
 		callback(err, data);
 	});
