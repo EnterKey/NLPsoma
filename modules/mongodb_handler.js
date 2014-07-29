@@ -36,7 +36,7 @@ var parsePath = function(path){
 }
 
 exports.insert_user = function(postData, callback){
-	if(typeof(callback) != function) callback = function(){};
+	if(typeof(callback) != "function") callback = function(){};
 
 	var userData = new userDataModel();
 
@@ -54,7 +54,7 @@ exports.insert_user = function(postData, callback){
 };
 
 exports.insert_pageDir = function(postData, callback){
-	if(typeof(callback) != function) callback = function(){};
+	if(typeof(callback) != "function") callback = function(){};
 
 	var userKey = postData.userKey;
 	var pageDir = {};
@@ -67,7 +67,7 @@ exports.insert_pageDir = function(postData, callback){
 };
 
 exports.insert_pageEntry = function(postData, callback){
-	if(typeof(callback) != function) callback = function(){};
+	if(typeof(callback) != "function") callback = function(){};
 
 	var userKey = postData.userKey;
 	var pageEntry = {};
@@ -81,7 +81,7 @@ exports.insert_pageEntry = function(postData, callback){
 
 
 exports.get_pageDir_list = function(postData, callback){
-	if(typeof(callback) != function) callback = function(){};
+	if(typeof(callback) != "function") callback = function(){};
 
 	var userKey = postData.userKey;
 	var path = parsePath(postData.path);
@@ -92,7 +92,7 @@ exports.get_pageDir_list = function(postData, callback){
 }
 
 exports.get_pageEntry_list = function(postData, callback){
-	if(typeof(callback) != function) callback = function(){};
+	if(typeof(callback) != "function") callback = function(){};
 
 	var userKey = postData.userKey;
 	var path = parsePath(postData.path);
@@ -104,7 +104,7 @@ exports.get_pageEntry_list = function(postData, callback){
 }
 
 var get_pageAll_list = function(postData, callback){
-	if(typeof(callback) != function) callback = function(){};
+	if(typeof(callback) != "function") callback = function(){};
 
 	var userKey = "TempUserKey";
 	var path = ",root,";
@@ -115,7 +115,7 @@ var get_pageAll_list = function(postData, callback){
 }
 
 var remove_pageEntry = function(postData, callback){
-	if(typeof(callback) != function) callback = function(){};
+	if(typeof(callback) != "function") callback = function(){};
 
 	var userKey = postData.userKey;
 	var path = parsePath(postData.path);
@@ -127,7 +127,7 @@ var remove_pageEntry = function(postData, callback){
 }
 
 var remove_pageDir = function(postData, callback){
-	if(typeof(callback) != function) callback = function(){};
+	if(typeof(callback) != "function") callback = function(){};
 
 	var userKey = postData.userKey;
 	var path = parsePath(postData.path);
@@ -139,12 +139,12 @@ var remove_pageDir = function(postData, callback){
 }
 
 exports.update_pageEntry = function(postData, callback){
-	if(typeof(callback) != function) callback = function(){};
+	if(typeof(callback) != "function") callback = function(){};
 
 };
 
 exports.update_pageDir = function(postData, callback){
-	if(typeof(callback) != function) callback = function(){};
+	if(typeof(callback) != "function") callback = function(){};
 
 };
 
