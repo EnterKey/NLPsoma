@@ -9,7 +9,7 @@ var userDataSchema = new Schema({
 	pageDir : [
 		{
 			name : String,
-			path : String		
+			path : String
 		}
 	],
 	pageEntry : [
@@ -18,14 +18,14 @@ var userDataSchema = new Schema({
 			url : String,
 			title : String
 		}
-	]		
+	]
 });
 
 var userDataModel = mongoose.model('user', userDataSchema);
 
 
 
-var pathParsing = function(path){
+var parsePath = function(path){
 	var parsePath = "";
 	if(path.slice(-1) != '/')
 		path += path + '/';
@@ -79,7 +79,7 @@ exports.insert_pageEntry = function(req, res){
 	var pageEntry = {};
 	pageEntry.title = req.body.pageInfo.title;
 	pageEntry.url = req.body.pageInfo.url;
-	pageEntry.path = pathParsing(req.body.pageInfo.url);
+	pageEntry.path = parsePath(req.body.pageInfo.url);
 	userDataModel.update({userKey: userKey}, {'$push': { 'pageEntry': pageEntry}}, function(err, data){
 		if(err){
 			console.log(err);
@@ -92,9 +92,9 @@ exports.insert_pageEntry = function(req, res){
 };
 
 
-var get_pageDir_list = function(req, res){
+exports.get_pageDir_list = function(req, res){
 	var userKey = req.body.userKey;
-	var path = pathParsing(req.body.path);
+	var path = parsePath(req.body.path);
 
 	userDataModel.find({userKey:userKey, "pageDir.path": path}, {"pageDir.$": 1} ,function(err, docs){
 		if(err)
@@ -103,9 +103,9 @@ var get_pageDir_list = function(req, res){
 	});
 }
 
-var get_pageEntry_list = function(req, res){
+exports.get_pageEntry_list = function(req, res){
 	var userKey = req.body.userKey;
-	var path = pathParsing(req.body.path);
+	var path = parsePath(req.body.path);
 
 	userDataModel.find({userKey:userKey, "pageEntry.path": path}, {"pageEntry.$": 1} ,function(err, docs){
 		if(err)
@@ -114,7 +114,6 @@ var get_pageEntry_list = function(req, res){
 	});
 
 }
-
 
 var get_pageAll_list = function(req, res){
 	var userKey = "TempUserKey";
@@ -127,54 +126,74 @@ var get_pageAll_list = function(req, res){
 	});
 }
 
-function init(){
-	console.log('mongo init');
-	get_pageAll_list();
-};
+var remove_pageEntry = function(req, res){
+	var userKey = req.body.userKey;
+	var path = parsePath(req.body.path);
+	var title = req.body.title;
 
+	userDataModel.remove({userKey:userKey, "pageEntry.path": path, "pageEntry.title": title}, function(err, data){
+		if(err)
+			console.log(err);
+		console.log(data);
+	});
+}
 
+var remove_pageDir = function(req, res){
+	var userKey = req.body.userKey;
+	var path = parsePath(req.body.path);
+	var name = req.body.name;
 
-
-
+	userDataModel.remove({userKey:userKey, "pageDir.path": path, "pageDir.name": name}, function(err, data){
+		if(err)
+			console.log(err);
+		console.log(data);
+	});
+}
 
 exports.update_pageEntry = function(req, res){
 
 };
 
 exports.update_pageDir = function(req, res){
-	
+
 };
 
-exports.set_list = function(req, res){
-
-	var pageInfo = req.body.pageInfo;
-	var userKey = req.body.userKey;
-
-	var visitpage = new userDataModel();
-
-	visitpage.userKey = userKey;
-	visitpage.date = new Date();
-	visitpage.url = pageInfo.url;
-	visitpage.title = pageInfo.title;
-	visitpage.save(function (err) {
-	    if (!err) console.log('Success!');
-	});
-}
-
-exports.get_list = function(req, res){
-
-	var userKey = req.body.userKey;
-
-	userDataModel.find({userKey:userKey}, function(err, docs){
-		if(err)
-			throw err;
-		else
-			res.json(docs);
-	});
-
+function init(){
+	console.log('mongo init');
+	// get_pageAll_list();
 };
 
 init();
+
+// exports.set_list = function(req, res){
+
+// 	var pageInfo = req.body.pageInfo;
+// 	var userKey = req.body.userKey;
+
+// 	var visitpage = new userDataModel();
+
+// 	visitpage.userKey = userKey;
+// 	visitpage.date = new Date();
+// 	visitpage.url = pageInfo.url;
+// 	visitpage.title = pageInfo.title;
+// 	visitpage.save(function (err) {
+// 	    if (!err) console.log('Success!');
+// 	});
+// }
+
+// exports.get_list = function(req, res){
+
+// 	var userKey = req.body.userKey;
+
+// 	userDataModel.find({userKey:userKey}, function(err, docs){
+// 		if(err)
+// 			throw err;
+// 		else
+// 			res.json(docs);
+// 	});
+
+// };
+
 
 
 
