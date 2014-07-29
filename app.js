@@ -30,9 +30,14 @@ if ('development' == app.get('env')) {
 app.get('/main', routes.main);
 
 
-
-app.post('/getlist', routes.get_list);
-app.post('/setlist', routes.set_list);
+app.post('/ajax/insert_user', routes.insert_user);
+app.post('/ajax/insert_pageEntry', routes.insert_pageEntry);
+app.post('/ajax/insert_pageDir', routes.insert_pageDir);
+app.post('/ajax/get_pageEntry_list', routes.get_pageEntry_list);
+app.post('/ajax/get_pageDir_list', routes.get_pageDir_list);
+app.post('/ajax/get_pageAll_list', routes.get_pageAll_list);
+app.post('/ajax/remove_pageEntry', routes.remove_pageEntry);
+app.post('/ajax/remove_pageDir', routes.remove_pageDir);
 
 http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));
