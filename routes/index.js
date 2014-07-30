@@ -12,54 +12,77 @@ var dbError_handler = function(err){
 
 exports.main = function(req, res){
 	//mocking
-	var dir_list=[
+	var pageDir=[
 			{
-				name : '/',
+				name : 'testDir1',
 				path : '/'
 			}
 		];
-	var all_list=[
+
+	var pageEntry=[
 		{
-			type:'dir',
-			name : '/',
-			path : '/'
+			path : '/',
+      url: 'http://www.naver.com',
+      title: 'naver',
+      content: 'naver is so useful'
 		},
 		{
-			type:'page',
-			path : '/',
-			url : 'http://google.co.kr',
-			title : 'google'
+			path : '/testDir1/',
+			url : 'http://www.google.co.kr',
+			title : 'google',
+      content: 'I love google'
 		}
 	]
 	//
 
-  res.render('main',{all_list:all_list, dir_list:dir_list});
+  res.render('main',{dir_list: pageDir, entry_list: pageEntry});
 };
 
 exports.insert_user = function(req, res){
   mongodb_handler.insert_user(req.body, function(err, data){
-    if(err)
+    if(err){
       dbError_handler(err);
-    else
-      res.json(data);
+    }
+    else{
+      var result = {}
+      if(data==1)
+        result.status = true;
+      else
+        result.status = false;
+      res.json(result);
+    }
   });
 };
 
 exports.insert_pageEntry = function(req, res){
   mongodb_handler.insert_pageEntry(req.body, function(err, data){
-    if(err)
+    if(err){
       dbError_handler(err);
-    else
-      res.json(data);
+    }
+    else{
+      var result = {}
+      if(data==1)
+        result.status = true;
+      else
+        result.status = false;
+      res.json(result);
+    }
   });
 };
 
 exports.insert_pageDir = function(req, res){
   mongodb_handler.insert_pageDir(req.body, function(err, data){
-    if(err)
+    if(err){
       dbError_handler(err);
-    else
-      res.json(data);
+    }
+    else{
+      var result = {}
+      if(data==1)
+        result.status = true;
+      else
+        result.status = false;
+      res.json(result);
+    }
   });
 };
 
