@@ -23,18 +23,91 @@ var userDataSchema = new Schema({
 	]
 });
 
+var testDirData = [
+	{
+		userKey: "TempUserKey",
+		dirInfo: {
+			name: "myDir",
+			path: "/"
+		}
+	},
+	{
+		userKey: "TempUserKey",
+		dirInfo: {
+			name: "myDir2",
+			path: "/"
+		}
+	},
+	{
+		userKey: "TempUserKey",
+		dirInfo: {
+			name: "childDir1",
+			path: "/myDir/"
+		}
+	}
+];
+
+var testEntryData = [
+	{
+		userKey: "TempUserKey",
+		pageInfo: {
+			title: "google",
+			content: "google page",
+			url: "http://www.google.co.kr",
+		}
+	},
+	{
+		userKey: "TempUserKey",
+		pageInfo: {
+			title: "naver",
+			path: "/",
+			content: "naver page",
+			url: "http://www.naver.com",
+		}
+	},
+	{
+		userKey: "TempUserKey",
+		pageInfo: {
+			title: "youtube",
+			path: "/myDir/",
+			content: "youtube page",
+			url: "http://www.youtube.com",
+
+		}
+	},
+	{
+		userKey: "TempUserKey",
+		pageInfo: {
+			title: "yahoo",
+			path: "/myDir/childDir1/",
+			content: "yahoo page",
+			url: "http://www.yahoo.com",
+
+		}
+	},
+	{
+		userKey: "TempUserKey",
+		pageInfo: {
+			title: "soma",
+			path: "/myDir2/",
+			content: "soma page",
+			url: "http://www.soma.com",
+		}
+	},				
+];
+
+
 var userDataModel = mongoose.model('user', userDataSchema);
 
 var parsePath = function(path){
-	var parsePath = "";
 	if(path.slice(-1) != '/')
-		path += path + '/';
+		path = path + '/';
 
 	// parsePath = path.replace(/\//, ",");
-	return parsePath;
+	return path;
 }
 
-exports.insert_user = function(postData, callback){
+var insert_user = function(postData, callback){
 	if(typeof(callback) != "function") callback = function(){};
 
 	var userData = new userDataModel();
@@ -47,29 +120,30 @@ exports.insert_user = function(postData, callback){
 	})
 };
 
-exports.insert_pageDir = function(postData, callback){
+var insert_pageDir = function(postData, callback){
 	if(typeof(callback) != "function") callback = function(){};
 
 	var userKey = postData.userKey;
 	var pageDir = {};
 	pageDir.name = postData.dirInfo.name;
-	pageDir.path = pathgParsing(postData.dirInfo.path);
+	pageDir.path = parsePath(postData.dirInfo.path);
 
 	userDataModel.update({userKey: userKey}, {'$push': { 'pageDir': pageDir}}, function(err, data){
 		callback(err, data);
 	});
 };
 
-exports.insert_pageEntry = function(postData, callback){
+ var insert_pageEntry = function(postData, callback){
 	if(typeof(callback) != "function") callback = function(){};
 
 	var userKey = postData.userKey;
 	var pageEntry = {};
 	pageEntry.title = postData.pageInfo.title;
 	pageEntry.url = postData.pageInfo.url;
+	pageEntry.content = postData.pageInfo.content;
 
-	if(postData.path == undefined){
-		pageEntry.path = "/";
+	if(postData.pageInfo.path == undefined){
+		pageEntry.path = parsePath("/");
 		pageEntry.status = false;
 	}else{
 		pageEntry.path = parsePath(postData.pageInfo.path);
@@ -81,28 +155,30 @@ exports.insert_pageEntry = function(postData, callback){
 	});
 };
 
-exports.get_pageDir_list = function(postData, callback){
+ // db.users.aggregate({$match: {userKey:"TempUserKey", pageDir: {$elemMatch:{path:"/"}}}}, {$unwind: "$pageDir"}, {$match: {"pageDir.path": "/"}}, {$group: {_id: "$_id", pageDir: {$push: "$pageDir"}}}).pretty();
+
+var get_pageDir_list = function(postData, callback){
 	if(typeof(callback) != "function") callback = function(){};
 
 	var userKey = postData.userKey;
-	var path = postData.path == undefined ? null : parsePath(postData.path);
+	var path = postData.path == undefined ? "/" : parsePath(postData.path);
 
-	userDataModel.find({userKey:userKey, "pageDir.path": path}, {"pageDir.$": 1} ,function(err, data){
+	// userDataModel.aggregate()
+	userDataModel.aggregate({$match: {userKey:userKey, pageDir: {$elemMatch:{path:path}}}}, {$unwind: "$pageDir"}, {$match: {"pageDir.path": path}},{$group: {_id: "$_id", pageDir: { $push: "$pageDir"}}}, function(err, data){
 		callback(err, data);
 	});
-}
+};
 
-exports.get_pageEntry_list = function(postData, callback){
+var get_pageEntry_list = function(postData, callback){
 	if(typeof(callback) != "function") callback = function(){};
 
 	var userKey = postData.userKey;
-	var path = postData.path == undefined ? null : parsePath(postData.path);
+	var path = postData.path == undefined ? "/" : parsePath(postData.path);
 
-	userDataModel.find({userKey:userKey, "pageEntry.path": path}, {"pageEntry.$": 1} ,function(err, data){
+	userDataModel.aggregate({$match: {userKey:userKey, pageEntry: {$elemMatch:{path:path}}}}, {$unwind: "$pageEntry"}, {$match: {"pageEntry.path": path}},{$group: {_id: "$_id", pageEntry: { $push: "$pageEntry"}}}, function(err, data){
 		callback(err, data);
 	});
-
-}
+};
 
 var get_pageAll_list = function(postData, callback){
 	if(typeof(callback) != "function") callback = function(){};
@@ -111,18 +187,6 @@ var get_pageAll_list = function(postData, callback){
 	var path = "/";
 
 	userDataModel.find({userKey:userKey, "pageEntry.path": path}, {"pageEntry.$": 1, "pageDir.$": 2} ,function(err, data){
-		callback(err, data);
-	});
-}
-
-var remove_pageEntry = function(postData, callback){
-	if(typeof(callback) != "function") callback = function(){};
-
-	var userKey = postData.userKey;
-	var path = postData.path == undefined ? null : parsePath(postData.path);
-	var title = postData.title;
-
-	userDataModel.remove({userKey:userKey, "pageEntry.path": path, "pageEntry.title": title}, function(err, data){
 		callback(err, data);
 	});
 }
@@ -139,7 +203,19 @@ var remove_pageDir = function(postData, callback){
 	});
 }
 
-exports.move_DirPath = function(postData, callback){
+var remove_pageEntry = function(postData, callback){
+	if(typeof(callback) != "function") callback = function(){};
+
+	var userKey = postData.userKey;
+	var path = postData.path == undefined ? null : parsePath(postData.path);
+	var title = postData.title;
+
+	userDataModel.remove({userKey:userKey, "pageEntry.path": path, "pageEntry.title": title}, function(err, data){
+		callback(err, data);
+	});
+}
+
+var move_DirPath = function(postData, callback){
 	if(typeof(callback) != "function") callback = function(){};
 
 	var pageInfo = postData.pageInfo;
@@ -147,13 +223,13 @@ exports.move_DirPath = function(postData, callback){
 
 	var searchQuery = {
 		userKey: userKey,
-		"pageDir.path": pageInfo.oldPath,
+		"pageDir.path": parsePath(pageInfo.oldPath),
 		"pageDir.title": pageInfo.name
 	};
 
 	var updateQuery = {
 		"$set": {
-			"pageDir.$.path": pageInfo.newPath
+			"pageDir.$.path": parsePath(pageInfo.newPath)
 		}
 	}
 
@@ -162,7 +238,7 @@ exports.move_DirPath = function(postData, callback){
 	});
 }
 
-exports.move_EntryPath = function(postData, callback){
+var move_EntryPath = function(postData, callback){
 	if(typeof(callback) != "function") callback = function(){};
 
 	var pageInfo = postData.pageInfo;
@@ -170,16 +246,17 @@ exports.move_EntryPath = function(postData, callback){
 
 	var searchQuery = {
 		userKey: userKey,
-		"pageEntry.path": pageInfo.oldPath,
-		"pageEntry.title": pageInfo.name
+		"pageEntry.path": parsePath(pageInfo.oldPath),
+		"pageEntry.title": pageInfo.title
 	};
 
 	var updateQuery = {
 		"$set": {
-			"pageEntry.$.path": pageInfo.newPath
+			"pageEntry.$.path": parsePath(pageInfo.newPath)
 		}
 	}
 
+	console.log(searchQuery, updateQuery);
 	userDataModel.update(searchQuery, updateQuery, function(err, data){
 		callback(err, data);
 	});
@@ -195,7 +272,25 @@ exports.update_pageDir = function(postData, callback){
 
 function init(){
 	console.log('mongo init');
+	// get_pageEntry_list({userKey:"TempUserKey", path: "/"}, function(err, data){
+	// 	console.log(data[0]);
+	// })
+	// move_EntryPath({userKey:"TempUserKey", pageInfo:{oldPath: "/myDir", newPath: "/myDir2/" ,title: "youtube"}}, function(err, data){
+	// 	console.log(err, data);
+	// })
+
 	// insert_user();
+	// var i;
+	// for(i in testDirData){
+	// 	insert_pageDir(testDirData[i],function(err, data){
+	// 		console.log(i, data);
+	// 	});
+	// }
+	// for(i in testEntryData){
+	// 	insert_pageEntry(testEntryData[i],function(err, data){
+	// 		console.log(i, data);
+	// 	});
+	// }	
 };
 
 init();
