@@ -8,8 +8,24 @@ var dbError_handler = function(err){
   // error handler
   // Have to change.
   console.log(err);
+  return false;
 }
 
+var dbResult_handler = function(err, data){
+  if(err){
+    return dbError_handler(err);
+
+  var result = {};
+  result.data = data;
+
+  result.status = data ? true : false
+  if(data)
+    result.status = true;
+  else
+    result.status = false;
+
+  return result;
+}
 exports.main = function(req, res){
 	//mocking
 	var pageDir=[
@@ -44,7 +60,8 @@ exports.insert_user = function(req, res){
       dbError_handler(err);
     }
     else{
-      var result = {}
+      var result = {};
+      result.data = data;
       if(data==1)
         result.status = true;
       else
@@ -124,6 +141,24 @@ exports.remove_pageEntry = function(req, res){
 
 exports.remove_pageDir = function(req, res){
   mongodb_handler.remove_pageDir(req.body, function(err, data){
+    if(err)
+      dbError_handler(err);
+    else
+      res.json(data);
+  });
+};
+
+exports.move_DirPath = function(req, res){
+  mongodb_handler.move_DirPath(req.body, function(err, data){
+    if(err)
+      dbError_handler(err);
+    else
+      res.json(data);
+  });
+};
+
+exports.move_EntryPath = function(req, res){
+  mongodb_handler.move_EntryPath(req.body, function(err, data){
     if(err)
       dbError_handler(err);
     else

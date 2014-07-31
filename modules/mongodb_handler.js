@@ -165,7 +165,7 @@ var get_pageDir_list = function(postData, callback){
 
 	// userDataModel.aggregate()
 	userDataModel.aggregate({$match: {userKey:userKey, pageDir: {$elemMatch:{path:path}}}}, {$unwind: "$pageDir"}, {$match: {"pageDir.path": path}},{$group: {_id: "$_id", pageDir: { $push: "$pageDir"}}}, function(err, data){
-		callback(err, data);
+		callback(err, data[0]);
 	});
 };
 
@@ -176,20 +176,33 @@ var get_pageEntry_list = function(postData, callback){
 	var path = postData.path == undefined ? "/" : parsePath(postData.path);
 
 	userDataModel.aggregate({$match: {userKey:userKey, pageEntry: {$elemMatch:{path:path}}}}, {$unwind: "$pageEntry"}, {$match: {"pageEntry.path": path}},{$group: {_id: "$_id", pageEntry: { $push: "$pageEntry"}}}, function(err, data){
-		callback(err, data);
+		callback(err, data[0]);
 	});
 };
 
 var get_pageAll_list = function(postData, callback){
 	if(typeof(callback) != "function") callback = function(){};
 
-	var userKey = "TempUserKey";
-	var path = "/";
+	var result = {
+		pageDir : [],
+		pageEntry : [],
+		status: false
+	};
 
-	userDataModel.find({userKey:userKey, "pageEntry.path": path}, {"pageEntry.$": 1, "pageDir.$": 2} ,function(err, data){
-		callback(err, data);
+	get_pageDir_list(postData, function(err, data){
+		if(err){
+			callback(err, result);
+		}else{
+			result.pageDir = data.pageDir;
+			get_pageEntry_list(postData, function(err, data){
+				if(!err)
+					result.status = true;
+				result.pageEntry = data.pageEntry;
+				callback(err, result);
+			});
+		}
 	});
-}
+};
 
 var remove_pageDir = function(postData, callback){
 	if(typeof(callback) != "function") callback = function(){};
@@ -201,7 +214,7 @@ var remove_pageDir = function(postData, callback){
 	userDataModel.remove({userKey:userKey, "pageDir.path": path, "pageDir.name": name}, function(err, data){
 		callback(err, data);
 	});
-}
+};
 
 var remove_pageEntry = function(postData, callback){
 	if(typeof(callback) != "function") callback = function(){};
@@ -213,7 +226,7 @@ var remove_pageEntry = function(postData, callback){
 	userDataModel.remove({userKey:userKey, "pageEntry.path": path, "pageEntry.title": title}, function(err, data){
 		callback(err, data);
 	});
-}
+};
 
 var move_DirPath = function(postData, callback){
 	if(typeof(callback) != "function") callback = function(){};
@@ -236,7 +249,7 @@ var move_DirPath = function(postData, callback){
 	userDataModel.update(searchQuery, updateQuery, function(err, data){
 		callback(err, data);
 	});
-}
+};
 
 var move_EntryPath = function(postData, callback){
 	if(typeof(callback) != "function") callback = function(){};
@@ -260,7 +273,7 @@ var move_EntryPath = function(postData, callback){
 	userDataModel.update(searchQuery, updateQuery, function(err, data){
 		callback(err, data);
 	});
-}
+};
 
 exports.update_pageEntry = function(postData, callback){
 	if(typeof(callback) != "function") callback = function(){};
@@ -272,8 +285,9 @@ exports.update_pageDir = function(postData, callback){
 
 function init(){
 	console.log('mongo init');
-	// get_pageEntry_list({userKey:"TempUserKey", path: "/"}, function(err, data){
-	// 	console.log(data[0]);
+
+	// get_pageAll_list({userKey:"TempUserKey", path: "/"}, function(err, result){
+	// 	console.log(result);
 	// })
 	// move_EntryPath({userKey:"TempUserKey", pageInfo:{oldPath: "/myDir", newPath: "/myDir2/" ,title: "youtube"}}, function(err, data){
 	// 	console.log(err, data);
@@ -295,34 +309,6 @@ function init(){
 
 init();
 
-// exports.set_list = function(postData, callback){
-
-// 	var pageInfo = postData.pageInfo;
-// 	var userKey = postData.userKey;
-
-// 	var visitpage = new userDataModel();
-
-// 	visitpage.userKey = userKey;
-// 	visitpage.date = new Date();
-// 	visitpage.url = pageInfo.url;
-// 	visitpage.title = pageInfo.title;
-// 	visitpage.save(function (err) {
-// 	    if (!err) console.log('Success!');
-// 	});
-// }
-
-// exports.get_list = function(postData, callback){
-
-// 	var userKey = postData.userKey;
-
-// 	userDataModel.find({userKey:userKey}, function(err, docs){
-// 		if(err)
-// 			throw err;
-// 		else
-// 			res.json(docs);
-// 	});
-
-// };
 
 
 
