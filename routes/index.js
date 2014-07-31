@@ -74,7 +74,7 @@ var insertTestData = function(){
         content: "soma page",
         url: "http://www.soma.com",
       }
-    },        
+    },
   ];
 
   mongodb_handler.insert_user({userKey:"TempUserKey"}, function(err, data){
@@ -86,19 +86,19 @@ var insertTestData = function(){
           console.log(i,'insert Dir',result);
         });
       }
-      
+
       for(i in testEntryData){
         mongodb_handler.insert_pageEntry(testEntryData[i],function(err, data){
           var result = dbResult_handler(err, data);
           console.log(i,'insert Entry',result);
         });
-      }      
+      }
     }
   });
 }
 
 
-// insertTestData();
+insertTestData();
 
 var dbError_handler = function(err){
   // error handler

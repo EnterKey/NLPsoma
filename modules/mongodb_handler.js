@@ -93,6 +93,8 @@ module.exports = {
 
 		// userDataModel.aggregate()
 		userDataModel.aggregate({$match: {userKey:userKey, pageDir: {$elemMatch:{path:path}}}}, {$unwind: "$pageDir"}, {$match: {"pageDir.path": path}},{$group: {_id: "$_id", pageDir: { $push: "$pageDir"}}}, function(err, data){
+			if(typeof(data) != "object")
+				data = [];
 			callback(err, data[0]);
 		});
 	},
@@ -104,6 +106,8 @@ module.exports = {
 		var path = postData.path == undefined ? "/" : parsePath(postData.path);
 
 		userDataModel.aggregate({$match: {userKey:userKey, pageEntry: {$elemMatch:{path:path}}}}, {$unwind: "$pageEntry"}, {$match: {"pageEntry.path": path}},{$group: {_id: "$_id", pageEntry: { $push: "$pageEntry"}}}, function(err, data){
+			if(typeof(data) != "object")
+				data = [];
 			callback(err, data[0]);
 		});
 	},
@@ -123,10 +127,15 @@ module.exports = {
 			if(err){
 				callback(err, result);
 			}else{
+				if(data == undefined)
+					data = {};
 				result.pageDir = data.pageDir;
 				self.get_pageEntry_list(postData, function(err, data){
 					if(!err)
 						result.status = true;
+					if(data == undefined)
+						data = {};
+
 					result.pageEntry = data.pageEntry;
 					callback(err, result);
 				});
