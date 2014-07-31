@@ -82,15 +82,15 @@ var insertTestData = function(){
       var i;
       for(i in testDirData){
         mongodb_handler.insert_pageDir(testDirData[i],function(err, data){
-          var result = dbResult_handler(err, data);
-          console.log(i,'insert Dir',result);
+          if(err)
+            console.log(err);
         });
       }
       
       for(i in testEntryData){
         mongodb_handler.insert_pageEntry(testEntryData[i],function(err, data){
-          var result = dbResult_handler(err, data);
-          console.log(i,'insert Dir',result);
+          if(err)
+            console.log(err);
         });
       }      
     }
@@ -104,11 +104,11 @@ var dbError_handler = function(err){
   // error handler
   // Have to change.
   console.log(err);
-  return {status: false};
+  return false;
 };
 
 
-var dbResult_handler = function(data){
+var dbResult_handler = function(err, data){
   if(err)
     return dbError_handler(err);
 
@@ -116,8 +116,11 @@ var dbResult_handler = function(data){
   result.data = data;
 
   result.status = data ? true : false
+  if(data)
+    result.status = true;
+  else
+    result.status = false;
 
-  console.log(result);
   return result;
 };
 
@@ -158,53 +161,50 @@ exports.main = function(req, res){
 
 exports.insert_user = function(req, res){
   mongodb_handler.insert_user(req.body, function(err, data){
-    var result = dbResult_handler(err, data);
-    res.json(result);
-      // var result = {};
-      // result.data = data;
-      // if(data==1)
-      //   result.status = true;
-      // else
-      //   result.status = false;
-      // res.json(result);
-      
+    if(err){
+      dbError_handler(err);
+    }
+    else{
+      var result = {};
+      result.data = data;
+      if(data==1)
+        result.status = true;
+      else
+        result.status = false;
+      res.json(result);
     }
   });
 };
 
 exports.insert_pageEntry = function(req, res){
   mongodb_handler.insert_pageEntry(req.body, function(err, data){
-    // if(err){
-    //   dbError_handler(err);
-    // }
-    // else{
-    //   var result = {}
-    //   if(data==1)
-    //     result.status = true;
-    //   else
-    //     result.status = false;
-    //   res.json(result);
-    // }
-    var result = dbResult_handler(err, data);
-    res.json(result);
+    if(err){
+      dbError_handler(err);
+    }
+    else{
+      var result = {}
+      if(data==1)
+        result.status = true;
+      else
+        result.status = false;
+      res.json(result);
+    }
   });
 };
 
 exports.insert_pageDir = function(req, res){
   mongodb_handler.insert_pageDir(req.body, function(err, data){
-    // if(err){
-    //   dbError_handler(err);
-    // }
-    // else{
-    //   var result = {}
-    //   if(data==1)
-    //     result.status = true;
-    //   else
-    //     result.status = false;
-    //   res.json(result);
-    // }
-    var result = dbResult_handler(err, data);
-    res.json(result);
+    if(err){
+      dbError_handler(err);
+    }
+    else{
+      var result = {}
+      if(data==1)
+        result.status = true;
+      else
+        result.status = false;
+      res.json(result);
+    }
   });
 };
 
