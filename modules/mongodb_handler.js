@@ -88,7 +88,6 @@ module.exports = {
 	get_pageDir_list: function(postData, callback){
 		if(typeof(callback) != "function") callback = function(){};
 
-		console.log(postData);
 		var userKey = postData.userKey;
 		var path = postData.path == undefined ? "/" : parsePath(postData.path);
 

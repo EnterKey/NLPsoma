@@ -82,15 +82,15 @@ var insertTestData = function(){
       var i;
       for(i in testDirData){
         mongodb_handler.insert_pageDir(testDirData[i],function(err, data){
-          if(err)
-            console.log(err);
+          var result = dbResult_handler(err, data);
+          console.log(i,'insert Dir',result);
         });
       }
       
       for(i in testEntryData){
         mongodb_handler.insert_pageEntry(testEntryData[i],function(err, data){
-          if(err)
-            console.log(err);
+          var result = dbResult_handler(err, data);
+          console.log(i,'insert Entry',result);
         });
       }      
     }
@@ -98,13 +98,13 @@ var insertTestData = function(){
 }
 
 
-insertTestData();
+// insertTestData();
 
 var dbError_handler = function(err){
   // error handler
   // Have to change.
   console.log(err);
-  return false;
+  return {status: false};
 };
 
 
@@ -116,11 +116,8 @@ var dbResult_handler = function(err, data){
   result.data = data;
 
   result.status = data ? true : false
-  if(data)
-    result.status = true;
-  else
-    result.status = false;
 
+  console.log(result);
   return result;
 };
 
@@ -161,112 +158,70 @@ exports.main = function(req, res){
 
 exports.insert_user = function(req, res){
   mongodb_handler.insert_user(req.body, function(err, data){
-    if(err){
-      dbError_handler(err);
-    }
-    else{
-      var result = {};
-      result.data = data;
-      if(data==1)
-        result.status = true;
-      else
-        result.status = false;
-      res.json(result);
-    }
+    var result = dbResult_handler(err, data);
+    res.json(result);
   });
 };
 
 exports.insert_pageEntry = function(req, res){
   mongodb_handler.insert_pageEntry(req.body, function(err, data){
-    if(err){
-      dbError_handler(err);
-    }
-    else{
-      var result = {}
-      if(data==1)
-        result.status = true;
-      else
-        result.status = false;
-      res.json(result);
-    }
+    var result = dbResult_handler(err, data);
+    res.json(result);
   });
 };
 
 exports.insert_pageDir = function(req, res){
   mongodb_handler.insert_pageDir(req.body, function(err, data){
-    if(err){
-      dbError_handler(err);
-    }
-    else{
-      var result = {}
-      if(data==1)
-        result.status = true;
-      else
-        result.status = false;
-      res.json(result);
-    }
+    var result = dbResult_handler(err, data);
+    res.json(result);
   });
 };
 
 exports.get_pageEntry_list = function(req, res){
   mongodb_handler.get_pageEntry_list(req.body, function(err, data){
-    if(err)
-      dbError_handler(err);
-    else
-      res.json(data);
+    var result = dbResult_handler(err, data);
+    res.json(result);
   });
 };
 
 exports.get_pageDir_list = function(req, res){
   mongodb_handler.get_pageDir_list(req.body, function(err, data){
-    if(err)
-      dbError_handler(err);
-    else
-      res.json(data);
+    var result = dbResult_handler(err, data);
+    res.json(result);
   });
 };
 
 exports.get_pageAll_list = function(req, res){
   mongodb_handler.get_pageAll_list(req.body, function(err, data){
-    if(err)
-      dbError_handler(err);
-    else
-      res.json(data);
+    var result = dbResult_handler(err, data);
+    res.json(result);
   });
 };
 
 exports.remove_pageEntry = function(req, res){
   mongodb_handler.remove_pageEntry(req.body, function(err, data){
-    if(err)
-      dbError_handler(err);
-    else
-      res.json(data);
+    var result = dbResult_handler(err, data);
+    res.json(result);
   });
 };
 
 exports.remove_pageDir = function(req, res){
   mongodb_handler.remove_pageDir(req.body, function(err, data){
-    if(err)
-      dbError_handler(err);
-    else
-      res.json(data);
+    var result = dbResult_handler(err, data);
+    res.json(result);
   });
 };
 
 exports.move_dirPath = function(req, res){
   mongodb_handler.move_dirPath(req.body, function(err, data){
-    if(err)
-      dbError_handler(err);
-    else
-      res.json(data);
+    var result = dbResult_handler(err, data);
+    res.json(result);
   });
 };
 
 exports.move_entryPath = function(req, res){
   mongodb_handler.move_entryPath(req.body, function(err, data){
-    if(err)
-      dbError_handler(err);
-    else
-      res.json(data);
+    var result = dbResult_handler(err, data);
+    res.json(result);
   });
 };
