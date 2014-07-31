@@ -6,24 +6,26 @@
 
 		<link href="/library/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 		<script src="/library/jquery/jquery-2.1.0.min.js"></script>
+		<script src="/library/jquery-ui/jquery-ui.min.js"></script>
+		<script src="/library/jquery-ui/jquery-ui-context.min.js"></script>
 	</head>
 	<body>
 		<div class="row">
 			<div class="col-lg-2 directory-list">
 				<h3><span class="label label-info">This is for directory</span></h3>
 				<ul class='list-group'>
-
                 <% 
-                  dir_list.forEach(function(file){ 
+                  pageDir.forEach(function(file){ 
                 %>
-                  <li class='list-group-item' style='color:gray;background-color:whitesmoke'>
+                  <li class='list-group-item droppable_forder' style='color:gray;background-color:whitesmoke'>
                     <div class='row'>
                       <div class='col-sm-12'>
-                        
+                      	<div>
                           <span class='glyphicon glyphicon-folder-close'> </span>
-                           <a class='dir_a_tag' >
+                          <a class='dir_only' data-path="<%= file.path %>">
                             <%= file.name %>
                           </a>
+                    	</div>
                       </div>
                     </div>
                   </li>
@@ -38,41 +40,44 @@
 				<h3><span class="label label-info">This is for list in directory</span></h3>
 				<ul class='list-group'>
 
-                <% 
-                    
-                  all_list.forEach(function(file){ 
-                %>
-                  <li class='list-group-item' style='color:gray;background-color:whitesmoke'>
-                    <div class='row'>
-                      <div class='col-sm-12'>
-                        <% 
-                          if (file.type=="dir"){
-                        %>
-                          <span class='glyphicon glyphicon-folder-close'> </span>
-                           <a class='dir_a_tag' >
-                            <%= file.name %>
-                          </a>
-                        <%    
-                          }else{
-                        %>
-                          <span class='glyphicon glyphicon-file'> </span>
+                	<% 
+                      pageDir.forEach(function(file){ 
+                    %>	
+	                    <li class='list-group-item droppable_forder' style='color:gray;background-color:whitesmoke'>
+		                    <div class='row'>
+		                      <div class='col-sm-12'>
+		                        <div >
+		                          <span class='glyphicon glyphicon-folder-close'> </span>
+		                           <a class='dir_with_file' data-path="<%= file.path %>">
+		                            <%= file.name %>
+		                          </a>
+		                        </div>
+		                      </div>
+		                    </div>
+	                   </li>
 
-                          <a class='file_a_tag' href="<%= file.url %>">
-                            <%= file.title %>
-                          </a>
-                        <%    
-                          }
-                        %>
-                      </div>
+                    <%    
+                      });
+                      pageEntry.forEach(function(file){ 
+                    %>
 
+	                    <li class='list-group-item draggable_file' style='color:gray;background-color:whitesmoke'>
+		                    <div class='row'>
+		                      <div class='col-sm-12'>
+		                        <div >
+		                          <span class='glyphicon glyphicon-file'> </span>
+		                          <a class='file_a_tag' href="<%= file.url %>" data-path="<%= file.path %>">
+		                            <%= file.title %>
+		                          </a>
+		                        </div>
+		                      </div>
+		                    </div>
+	                   </li>
 
-                      
-                    </div>
-                    
-                  </li>
-                <%    
-                  });
-                %>
+                    <%    
+                      });
+                    %>
+                  
               </ul> 
 			</div>
 
@@ -90,7 +95,104 @@
 
 			}
 
-
 		</style>
+		<script type="text/javascript">
+			$('.directory-list').contextmenu({
+				delegate: ".droppable_forder",
+				menu: [
+				    {title: "Delete", cmd: "delete", uiIcon: "ui-icon-delete"}
+				    ],
+				select: function(event, ui) {
+				    alert("select " + ui.cmd + " on " + ui.target.text());
+				}
+			})
+
+			$('.dir_only').on('click',function(event){
+				var jquery_obj= $(this);
+				var params={
+					userKey:"TempUserKey",
+					path:jquery_obj.attr('data-path')+jquery_obj.val()
+				}
+				$.ajax({
+					type:"POST",
+					url:"/ajax/get_pageDir_list", //only dir
+					data:params,
+					dataType:"JSON", // 옵션이므로 JSON으로 받을게 아니면 안써도 됨
+					success : function(data) {
+						//data is list
+
+                		console.log(data)
+					},
+					complete : function(data) {
+					    alert("Error");
+					},
+					error : function(xhr, status, error) {
+						alert("Error");
+					}
+				})
+
+			})
+			$('.dir_with_file').on('click',function(){
+				var jquery_obj= $(this);
+				var params={
+					userKey:"TempUserKey",
+					path:jquery_obj.attr('data-path')+jquery_obj.val()
+				}
+				$.ajax({
+					type:"POST",
+					url:"/ajax/get_pageAll_list", //dir with file
+					data:params,
+					dataType:"JSON", // 옵션이므로 JSON으로 받을게 아니면 안써도 됨
+					success : function(data) {
+						//data is list file and dir
+
+                		console.log(data)
+					},
+					complete : function(data) {
+					    alert("Error");
+					},
+					error : function(xhr, status, error) {
+						alert("Error");
+					}
+				})
+
+			})
+			$('.draggable_file').draggable( {
+				start:function(e,u){
+		           console.log("start")
+		        },
+		        drag:function(e,u){
+		           console.log("drag")
+		        },
+		        stop:function(e,u){
+		            console.log("stop")
+		        },
+		        revert: true,
+		        opacity:"0.3"
+
+			});
+			$('.droppable_forder').droppable({
+
+				drop: function(event, ui) {
+					$.ajax({
+						type:"POST",
+						url:"/test",
+						dataType:"JSON", // 옵션이므로 JSON으로 받을게 아니면 안써도 됨
+						success : function(data) {
+                    		console.log("Succes")
+							$(ui.draggable).remove()
+						},
+						complete : function(data) {
+						    alert("Error");
+						},
+						error : function(xhr, status, error) {
+							alert("Error");
+						}
+					})
+                }
+
+			})
+
+		</script>
 	</body>
 </html>

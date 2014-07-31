@@ -38,22 +38,27 @@ exports.main = function(req, res){
 	var pageEntry=[
 		{
 			path : '/',
-      url: 'http://www.naver.com',
-      title: 'naver',
-      content: 'naver is so useful'
+	        url: 'http://www.naver.com',
+	        title: 'naver',
+	        content: 'naver is so useful'
 		},
 		{
 			path : '/testDir1/',
 			url : 'http://www.google.co.kr',
 			title : 'google',
-      content: 'I love google'
+      		content: 'I love google'
 		}
-	]
-	//
-
-  res.render('main',{dir_list: pageDir, entry_list: pageEntry});
-};
-
+	];
+	var userKey=req.body?req.body.userKey:"TempUserKey";
+	var path = "/"
+	var postData={
+		userKey:userKey,
+		path:path
+	}
+	mongodb_handler.get_pageAll_list(postData,function(data){
+		res.render('/main',{pageDir: data.pageDir, pageEntry:data.pageEntry});
+	})
+}
 exports.insert_user = function(req, res){
   mongodb_handler.insert_user(req.body, function(err, data){
     if(err){
