@@ -3,29 +3,124 @@ var mongodb_handler = require('../modules/mongodb_handler');
  * GET home page.
  */
 
+var insertTestData = function(){
+  var testDirData = [
+    {
+      userKey: "TempUserKey",
+      dirInfo: {
+        name: "myDir",
+        path: "/"
+      }
+    },
+    {
+      userKey: "TempUserKey",
+      dirInfo: {
+        name: "myDir2",
+        path: "/"
+      }
+    },
+    {
+      userKey: "TempUserKey",
+      dirInfo: {
+        name: "childDir1",
+        path: "/myDir/"
+      }
+    }
+  ];
+
+  var testEntryData = [
+    {
+      userKey: "TempUserKey",
+      pageInfo: {
+        title: "google",
+        content: "google page",
+        url: "http://www.google.co.kr",
+      }
+    },
+    {
+      userKey: "TempUserKey",
+      pageInfo: {
+        title: "naver",
+        path: "/",
+        content: "naver page",
+        url: "http://www.naver.com",
+      }
+    },
+    {
+      userKey: "TempUserKey",
+      pageInfo: {
+        title: "youtube",
+        path: "/myDir/",
+        content: "youtube page",
+        url: "http://www.youtube.com",
+
+      }
+    },
+    {
+      userKey: "TempUserKey",
+      pageInfo: {
+        title: "yahoo",
+        path: "/myDir/childDir1/",
+        content: "yahoo page",
+        url: "http://www.yahoo.com",
+
+      }
+    },
+    {
+      userKey: "TempUserKey",
+      pageInfo: {
+        title: "soma",
+        path: "/myDir2/",
+        content: "soma page",
+        url: "http://www.soma.com",
+      }
+    },        
+  ];
+
+  mongodb_handler.insert_user({userKey:"TempUserKey"}, function(err, data){
+    if(!err){
+      var i;
+      for(i in testDirData){
+        mongodb_handler.insert_pageDir(testDirData[i],function(err, data){
+          var result = dbResult_handler(err, data);
+          console.log(i,'insert Dir',result);
+        });
+      }
+      
+      for(i in testEntryData){
+        mongodb_handler.insert_pageEntry(testEntryData[i],function(err, data){
+          var result = dbResult_handler(err, data);
+          console.log(i,'insert Dir',result);
+        });
+      }      
+    }
+  });
+}
+
+
+insertTestData();
 
 var dbError_handler = function(err){
   // error handler
   // Have to change.
   console.log(err);
-  return false;
-}
+  return {status: false};
+};
 
-var dbResult_handler = function(err, data){
-  if(err){
+
+var dbResult_handler = function(data){
+  if(err)
     return dbError_handler(err);
 
   var result = {};
   result.data = data;
 
   result.status = data ? true : false
-  if(data)
-    result.status = true;
-  else
-    result.status = false;
 
+  console.log(result);
   return result;
-}
+};
+
 exports.main = function(req, res){
 	//mocking
 	var pageDir=[
@@ -49,62 +144,67 @@ exports.main = function(req, res){
       		content: 'I love google'
 		}
 	];
-	var userKey=req.body?req.body.userKey:"TempUserKey";
+	var userKey=req.body.userKey?req.body.userKey:"TempUserKey";
 	var path = "/"
 	var postData={
 		userKey:userKey,
 		path:path
 	}
-	mongodb_handler.get_pageAll_list(postData,function(data){
-		res.render('/main',{pageDir: data.pageDir, pageEntry:data.pageEntry});
-	})
+	mongodb_handler.get_pageAll_list(postData, function(err, data){
+		res.render('main', {pageDir: data.pageDir, pageEntry:data.pageEntry});
+	});
 }
+
+
 exports.insert_user = function(req, res){
   mongodb_handler.insert_user(req.body, function(err, data){
-    if(err){
-      dbError_handler(err);
-    }
-    else{
-      var result = {};
-      result.data = data;
-      if(data==1)
-        result.status = true;
-      else
-        result.status = false;
-      res.json(result);
+    var result = dbResult_handler(err, data);
+    res.json(result);
+      // var result = {};
+      // result.data = data;
+      // if(data==1)
+      //   result.status = true;
+      // else
+      //   result.status = false;
+      // res.json(result);
+      
     }
   });
 };
 
 exports.insert_pageEntry = function(req, res){
   mongodb_handler.insert_pageEntry(req.body, function(err, data){
-    if(err){
-      dbError_handler(err);
-    }
-    else{
-      var result = {}
-      if(data==1)
-        result.status = true;
-      else
-        result.status = false;
-      res.json(result);
-    }
+    // if(err){
+    //   dbError_handler(err);
+    // }
+    // else{
+    //   var result = {}
+    //   if(data==1)
+    //     result.status = true;
+    //   else
+    //     result.status = false;
+    //   res.json(result);
+    // }
+    var result = dbResult_handler(err, data);
+    res.json(result);
   });
 };
 
 exports.insert_pageDir = function(req, res){
   mongodb_handler.insert_pageDir(req.body, function(err, data){
-    if(err){
-      dbError_handler(err);
-    }
-    else{
-      var result = {}
-      if(data==1)
-        result.status = true;
-      else
-        result.status = false;
-      res.json(result);
-    }
+    // if(err){
+    //   dbError_handler(err);
+    // }
+    // else{
+    //   var result = {}
+    //   if(data==1)
+    //     result.status = true;
+    //   else
+    //     result.status = false;
+    //   res.json(result);
+    // }
+    var result = dbResult_handler(err, data);
+    res.json(result);
   });
 };
 
@@ -153,8 +253,8 @@ exports.remove_pageDir = function(req, res){
   });
 };
 
-exports.move_DirPath = function(req, res){
-  mongodb_handler.move_DirPath(req.body, function(err, data){
+exports.move_dirPath = function(req, res){
+  mongodb_handler.move_dirPath(req.body, function(err, data){
     if(err)
       dbError_handler(err);
     else
@@ -162,19 +262,11 @@ exports.move_DirPath = function(req, res){
   });
 };
 
-exports.move_EntryPath = function(req, res){
-  mongodb_handler.move_EntryPath(req.body, function(err, data){
+exports.move_entryPath = function(req, res){
+  mongodb_handler.move_entryPath(req.body, function(err, data){
     if(err)
       dbError_handler(err);
     else
       res.json(data);
   });
 };
-
-// exports.set_list = function(req, res){
-// 	mongodb_handler.set_list(req,res);
-// };
-
-// exports.get_list = function(req, res){
-// 	mongodb_handler.get_list(req,res);
-// };
