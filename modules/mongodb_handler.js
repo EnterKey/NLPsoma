@@ -114,6 +114,7 @@ module.exports = {
 
 	get_pageAll_list: function(postData, callback){
 		var self = this;
+		console.log(postData)
 
 		if(typeof(callback) != "function") callback = function(){};
 
