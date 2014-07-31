@@ -80,12 +80,12 @@ var insertTestData = function(){
   mongodb_handler.insert_user({userKey:"TempUserKey"}, function(err, data){
     if(!err){
       var i;
-      for(i in testDirData){
-        mongodb_handler.insert_pageDir(testDirData[i],function(err, data){
-          var result = dbResult_handler(err, data);
-          console.log(i,'insert Dir',result);
-        });
-      }
+      // for(i in testDirData){
+      //   mongodb_handler.insert_pageDir(testDirData[i],function(err, data){
+      //     var result = dbResult_handler(err, data);
+      //     console.log(i,'insert Dir',result);
+      //   });
+      // }
 
       for(i in testEntryData){
         mongodb_handler.insert_pageEntry(testEntryData[i],function(err, data){

@@ -128,16 +128,13 @@ module.exports = {
 			if(err){
 				callback(err, result);
 			}else{
-				if(data == undefined)
-					data = {};
-				result.pageDir = data.pageDir;
+				result.pageDir = data ? data.pageDir : [];
+
 				self.get_pageEntry_list(postData, function(err, data){
 					if(!err)
 						result.status = true;
-					if(data == undefined)
-						data = {};
-
-					result.pageEntry = data.pageEntry;
+					result.pageEntry = data ? data.pageEntry : [];
+					console.log(result);
 					callback(err, result);
 				});
 			}
