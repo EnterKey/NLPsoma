@@ -103,35 +103,18 @@ var dbResult_handler = function(err, data){
 
   result.status = data ? true : false
 
-  console.log(result);
+  // console.log(result);
   return result;
 };
 
 exports.main = function(req, res){
+  console.log(req.query);
 	//mocking
-	var pageDir=[
-			{
-				name : 'testDir1',
-				path : '/'
-			}
-		];
 
-	var pageEntry=[
-		{
-			path : '/',
-	        url: 'http://www.naver.com',
-	        title: 'naver',
-	        content: 'naver is so useful'
-		},
-		{
-			path : '/testDir1/',
-			url : 'http://www.google.co.kr',
-			title : 'google',
-      		content: 'I love google'
-		}
-	];
-
-	var userEmail=req.body.userEmail?req.body.userEmail:"widianpear@gmail.com";
+  if(!req.query.userEmail){
+    res.redirect('/auth');
+  }
+	var userEmail=req.query.userEmail;
 	var path = "/"
 	var postData={
 		userInfo: {
@@ -216,3 +199,16 @@ exports.move_entryPath = function(req, res){
     res.json(result);
   });
 };
+
+exports.index = function(req, res){
+  res.redirect('/auth');
+}
+
+exports.auth = function(req, res){
+  res.render('auth');
+}
+
+exports.ajax_auth = function(req, res){
+  console.log(req.body);
+  res.end();
+}

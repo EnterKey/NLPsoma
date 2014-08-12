@@ -91,7 +91,6 @@ module.exports = {
 		var self = this;
 		var userEmail = postData.userInfo.email;
 		var pageEntry = {};
-		console.log(postData);
 		pageEntry.title = postData.pageInfo.title;
 		pageEntry.url = postData.pageInfo.url;
 		pageEntry.content = postData.pageInfo.content;
@@ -160,7 +159,6 @@ module.exports = {
 
 	get_pageAll_list: function(postData, callback){
 		var self = this;
-		console.log(postData)
 
 		if(typeof(callback) != "function") callback = function(){};
 
@@ -180,7 +178,6 @@ module.exports = {
 					if(!err)
 						result.status = true;
 					result.pageEntry = data ? data.pageEntry : [];
-					console.log(result);
 					callback(err, result);
 				});
 			}

@@ -28,6 +28,8 @@ if ('development' == app.get('env')) {
 }
 
 app.get('/main', routes.main);
+app.get('/auth', routes.auth);
+app.get('/', routes.index);
 
 app.post('/ajax/insert_user', routes.insert_user);
 app.post('/ajax/insert_pageEntry', routes.insert_pageEntry);
@@ -39,6 +41,7 @@ app.post('/ajax/remove_pageEntry', routes.remove_pageEntry);
 app.post('/ajax/remove_pageDir', routes.remove_pageDir);
 app.post('/ajax/move_dirPath', routes.move_dirPath);
 app.post('/ajax/move_entryPath', routes.move_entryPath);
+app.post('/ajax/auth', routes.ajax_auth);
 
 http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));
