@@ -30,5 +30,7 @@ $.oajax({
 		global_user.email = data.email;
 		global_user.name = data.name;
 		global_user.picture = data.picture;
+		make_page_dir_list()
+		make_page_all_list()
 	}
 });

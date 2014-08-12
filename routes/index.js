@@ -89,7 +89,7 @@ var insertTestData = function(){
 var dbError_handler = function(err){
   // error handler
   // Have to change.
-  console.log(err);
+  console.log('mongo db error :', err);
   return {status: false};
 };
 
@@ -157,6 +157,7 @@ exports.get_pageEntry_list = function(req, res){
 
 exports.get_pageDir_list = function(req, res){
   mongodb_handler.get_pageDir_list(req.body, function(err, data){
+    data = data ? data : [];
     var result = dbResult_handler(err, data);
     res.json(result);
   });
