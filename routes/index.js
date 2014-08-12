@@ -6,21 +6,33 @@ var mongodb_handler = require('../modules/mongodb_handler');
 var insertTestData = function(){
   var testDirData = [
     {
-      userKey: "TempUserKey",
+      userInfo: {
+        email: "widianpear@gmail.com",
+        name: '배병욱',
+        picture: 'https://lh3.googleusercontent.com/-XdUIqdMkCWA/AAAAAAAAAAI/AAAAAAAAAAA/4252rscbv5M/photo.jpg',
+      },
       dirInfo: {
         name: "myDir",
         path: "/"
       }
     },
     {
-      userKey: "TempUserKey",
+      userInfo: {
+        email: "widianpear@gmail.com",
+        name: '배병욱',
+        picture: 'https://lh3.googleusercontent.com/-XdUIqdMkCWA/AAAAAAAAAAI/AAAAAAAAAAA/4252rscbv5M/photo.jpg',
+      },
       dirInfo: {
         name: "myDir2",
         path: "/"
       }
     },
     {
-      userKey: "TempUserKey",
+      userInfo: {
+        email: "widianpear@gmail.com",
+        name: '배병욱',
+        picture: 'https://lh3.googleusercontent.com/-XdUIqdMkCWA/AAAAAAAAAAI/AAAAAAAAAAA/4252rscbv5M/photo.jpg',
+      },
       dirInfo: {
         name: "childDir1",
         path: "/myDir/"
@@ -30,7 +42,11 @@ var insertTestData = function(){
 
   var testEntryData = [
     {
-      userKey: "TempUserKey",
+      userInfo: {
+        email: "widianpear@gmail.com",
+        name: '배병욱',
+        picture: 'https://lh3.googleusercontent.com/-XdUIqdMkCWA/AAAAAAAAAAI/AAAAAAAAAAA/4252rscbv5M/photo.jpg',
+      },
       pageInfo: {
         title: "google",
         content: "google page",
@@ -38,67 +54,37 @@ var insertTestData = function(){
       }
     },
     {
-      userKey: "TempUserKey",
+      userInfo: {
+        email: "widianpear@gmail.com",
+        name: '배병욱',
+        picture: 'https://lh3.googleusercontent.com/-XdUIqdMkCWA/AAAAAAAAAAI/AAAAAAAAAAA/4252rscbv5M/photo.jpg',
+      },
       pageInfo: {
         title: "naver",
         path: "/",
         content: "naver page",
         url: "http://www.naver.com",
       }
-    },
-    {
-      userKey: "TempUserKey",
-      pageInfo: {
-        title: "youtube",
-        path: "/myDir/",
-        content: "youtube page",
-        url: "http://www.youtube.com",
-
-      }
-    },
-    {
-      userKey: "TempUserKey",
-      pageInfo: {
-        title: "yahoo",
-        path: "/myDir/childDir1/",
-        content: "yahoo page",
-        url: "http://www.yahoo.com",
-
-      }
-    },
-    {
-      userKey: "TempUserKey",
-      pageInfo: {
-        title: "soma",
-        path: "/myDir2/",
-        content: "soma page",
-        url: "http://www.soma.com",
-      }
-    },
-  ];
-
-  mongodb_handler.insert_user({userKey:"TempUserKey"}, function(err, data){
-    if(!err){
-      var i;
-      // for(i in testDirData){
-      //   mongodb_handler.insert_pageDir(testDirData[i],function(err, data){
-      //     var result = dbResult_handler(err, data);
-      //     console.log(i,'insert Dir',result);
-      //   });
-      // }
-
-      for(i in testEntryData){
-        mongodb_handler.insert_pageEntry(testEntryData[i],function(err, data){
-          var result = dbResult_handler(err, data);
-          console.log(i,'insert Entry',result);
-        });
-      }
     }
-  });
+  ];
+  var i;
+  for(i in testDirData){
+    mongodb_handler.insert_pageDir(testDirData[i],function(err, data){
+      var result = dbResult_handler(err, data);
+      // console.log(i,'insert Dir',result);
+    });
+  }
+
+  for(i in testEntryData){
+    mongodb_handler.insert_pageEntry(testEntryData[i],function(err, data){
+      var result = dbResult_handler(err, data);
+      // console.log(i,'insert Entry',result);
+    });
+  }
 }
 
 
-//insertTestData();
+// insertTestData();
 
 var dbError_handler = function(err){
   // error handler
@@ -144,10 +130,15 @@ exports.main = function(req, res){
       		content: 'I love google'
 		}
 	];
-	var userKey=req.body.userKey?req.body.userKey:"TempUserKey";
+
+	var userEmail=req.body.userEmail?req.body.userEmail:"widianpear@gmail.com";
 	var path = "/"
 	var postData={
-		userKey:userKey,
+		userInfo: {
+      email: userEmail,
+      name: 'bbu',
+      picture: 'https://lh3.googleusercontent.com/-XdUIqdMkCWA/AAAAAAAAAAI/AAAAAAAAAAA/4252rscbv5M/photo.jpg'
+    },
 		path:path
 	}
 	mongodb_handler.get_pageAll_list(postData, function(err, data){
