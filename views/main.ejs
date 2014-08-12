@@ -13,6 +13,7 @@
 	<body>
 		<div id="back_blur"> </div>
 		<div class="row">
+			<div id="title_div"><p>BookMark Managing Site</p></div>
 			<div class="col-xs-4 directory-list" id="directory-list-only">
 				<h3>Folder List</h3>
 				<ul class='list-group' id="dir_only_list">
@@ -98,10 +99,11 @@
 				-o-filter: blur(5px);
 				-ms-filter: blur(5px);
 				filter: blur(5px);
-				position: absolute;
+				position: fixed;
 				top: 0;
 				height:100%;
 				width: 100%;
+				z-index: -10;
 			}
 			.row{
 				background: transparent;
@@ -111,6 +113,9 @@
 				border-right: 3px solid #cccccc;
 				height: 100%;
 				background: transparent;
+				padding-right: 3px;
+				padding-left: 3px;
+
 			}
 			li{
 				background-color: rgba(255,255,255,0.2);
@@ -126,11 +131,23 @@
 		        float: left;
 			}
 			h3{
+				margin-top: 0;
 				font-size: 30pt;
 				width: 100%;
 				text-align: center;
 				background-color: rgba(255,255,255,0.2);
 				color: white;
+			}
+			#title_div{
+				width: 100%;
+			}
+			#title_div>p{
+				font-size: 50pt;
+				width: 100%;
+				text-align: center;
+				background-color: rgba(255,255,255,0.2);
+				color: white;
+				margin-bottom: 3px;
 			}
 
 		</style>
