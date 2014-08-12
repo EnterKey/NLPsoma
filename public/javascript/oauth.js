@@ -3,7 +3,7 @@ jso_configure({
 
 	"google": {
 		client_id: "994714572327-1rt0im4unhkai7brfp5mk904llu1kd3p.apps.googleusercontent.com",
-		redirect_uri: "http://localhost:4000/main",
+		redirect_uri: "http://aedilis5.vps.phps.kr:4000/main",
 		authorization: "https://accounts.google.com/o/oauth2/auth",
 		isDefault: true
 	}
