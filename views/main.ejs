@@ -11,9 +11,10 @@
 		<script src="/library/jquery-ui/jquery.contextMenu.js"></script>
 	</head>
 	<body>
+		<div id="back_blur"> </div>
 		<div class="row">
-			<div class="col-lg-2 directory-list" id="directory-list-only">
-				<h3><span class="label label-info">This is for directory</span></h3>
+			<div class="col-xs-6 directory-list" id="directory-list-only">
+				<h3>Folder List</h3>
 				<ul class='list-group' id="dir_only_list">
                 <% 
                   pageDir.forEach(function(file){ 
@@ -37,8 +38,8 @@
 
 			</div>
 
-			<div class="col-lg-4 directory-list" id="directory-list-both">
-				<h3><span class="label label-info">This is for list in directory</span></h3>
+			<div class="col-xs-6 directory-list" id="directory-list-both">
+				<h3>Bookmark List</h3>
 				<ul class='list-group' id='dir_with_file_list'>
 
                 	<% 
@@ -85,20 +86,34 @@
               </ul> 
 			</div>
 
-
-			<div class="col-lg-6">
-				<h3><span class="label label-info">This is View</span></h3>
-			</div>
-
 		</div>
 		<style type="text/css">
 			html, body, .row{
 				height: 100%;	
 			}
+			#back_blur{
+				background: url('/images/2.jpg') no-repeat fixed center;
+				-webkit-filter: blur(5px);
+				-moz-filter: blur(5px);
+				-o-filter: blur(5px);
+				-ms-filter: blur(5px);
+				filter: blur(5px);
+				position: absolute;
+				top: 0;
+				height:100%;
+				width: 100%;
+			}
+			.row{
+				background: transparent;
+			}
+
 			.directory-list{
 				border-right: 3px solid #cccccc;
 				height: 100%;
-
+				background: transparent;
+			}
+			li{
+				background-color: rgba(255,255,255,0.2);
 			}
 			.user_name_input_text{
 				border: 0 none;
@@ -109,6 +124,13 @@
 		        height: 40px;
 		        width: 100%;
 		        float: left;
+			}
+			h3{
+				font-size: 30pt;
+				width: 100%;
+				text-align: center;
+				background-color: rgba(255,255,255,0.2);
+				color: white;
 			}
 
 		</style>
