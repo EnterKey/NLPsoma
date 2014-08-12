@@ -116,6 +116,7 @@
 		function make_new_subfolder(jquery_obj,name){
 			var a_obj=jquery_obj.find('a')
 			var path=a_obj.data('path')+a_obj.text()
+			path=path?path:"/"
 			var params={
 				userInfo:{
 					email: "widianpear@gmail.com"
@@ -140,8 +141,8 @@
 			})
 		}
 		function make_new_folder(jquery_obj,name){
-			
 			var path=jquery_obj.find('a').data('path')
+			path=path?path:"/"
 			var params={
 				userInfo:{
 					email: "widianpear@gmail.com"
@@ -297,8 +298,9 @@
 				selector:"#directory-list-both",
 				callback: function(key, options) {
 		            if(key=="Newfolder"){
+		            	var self=$(this);
 		            	get_name_by_user(function(data){
-		            		make_new_folder($(this),data)
+		            		make_new_folder(self,data)
 		            	})
 		            }
 		        },
