@@ -157,7 +157,7 @@ exports.get_pageEntry_list = function(req, res){
 
 exports.get_pageDir_list = function(req, res){
   mongodb_handler.get_pageDir_list(req.body, function(err, data){
-    data = data ? data : [];
+    data = data ? data : {pageDir:[],status:1};
     var result = dbResult_handler(err, data);
     res.json(result);
   });
