@@ -4,8 +4,11 @@ var Schema=mongoose.Schema;
 mongoose.connect('mongodb://localhost/chrome_extension');
 
 var userDataSchema = new Schema({
-	userKey:String,
+	userEmail:String,
+	userName:String,
+	picture:String,
 	date: Date,
+
 	pageDir : [
 		{
 			name : String,
@@ -36,12 +39,32 @@ var parsePath = function(path){
 
 module.exports = {
 
+	isUserExist: function(userEmail){
+		if(!userEmail){
+			return false;
+		}
+
+		userDataModel.find({userEmail: userEmail}, function(err, data){
+			if(err){
+				console.log('isUserExist err', err);
+				return false;
+			}else{
+				if(data.length > 0)
+					return true;
+				else
+					return false;
+			}
+		});
+	},
+
 	insert_user: function(postData, callback){
 		if(typeof(callback) != "function") callback = function(){};
 
 		var userData = new userDataModel();
 
-		userData.userKey = postData.userKey;
+		userData.userEmail = postData.userInfo.email;
+		userData.userName = postData.userInfo.name;
+		userData.picture = postData.userInfo.picture;
 		userData.date = new Date();
 
 		userData.save(function(err, data){
@@ -52,12 +75,12 @@ module.exports = {
 	insert_pageDir: function(postData, callback){
 		if(typeof(callback) != "function") callback = function(){};
 
-		var userKey = postData.userKey;
+		var userEmail = postData.userInfo.email;
 		var pageDir = {};
 		pageDir.name = postData.dirInfo.name;
 		pageDir.path = parsePath(postData.dirInfo.path);
 
-		userDataModel.update({userKey: userKey}, {'$push': { 'pageDir': pageDir}}, function(err, data){
+		userDataModel.update({userEmail: userEmail}, {'$push': { 'pageDir': pageDir}}, function(err, data){
 			callback(err, data);
 		});
 	},
@@ -65,34 +88,57 @@ module.exports = {
 	 insert_pageEntry: function(postData, callback){
 		if(typeof(callback) != "function") callback = function(){};
 
-		var userKey = postData.userKey;
+		var self = this;
+		var userEmail = postData.userInfo.email;
 		var pageEntry = {};
+		console.log(postData);
 		pageEntry.title = postData.pageInfo.title;
 		pageEntry.url = postData.pageInfo.url;
 		pageEntry.content = postData.pageInfo.content;
 
-		if(postData.pageInfo.path == undefined){
-			pageEntry.path = parsePath("/");
-			pageEntry.status = false;
-		}else{
-			pageEntry.path = parsePath(postData.pageInfo.path);
-			pageEntry.status = true;
-		}
+		if(self.isUserExist(userEmail)){
+			if(postData.pageInfo.path == undefined){
+				pageEntry.path = parsePath("/");
+				pageEntry.status = false;
+			}else{
+				pageEntry.path = parsePath(postData.pageInfo.path);
+				pageEntry.status = true;
+			}
 
-		userDataModel.update({userKey: userKey}, {'$push': { 'pageEntry': pageEntry}}, function(err, data){
-			callback(err, data);
-		});
+			userDataModel.update({userEmail: userEmail}, {'$push': { 'pageEntry': pageEntry}}, function(err, data){
+				callback(err, data);
+			});
+		}else{
+			this.insert_user(postData, function(err, data){
+				if(err){
+					callback(err, data);
+				}
+				else{
+					if(postData.pageInfo.path == undefined){
+						pageEntry.path = parsePath("/");
+						pageEntry.status = false;
+					}else{
+						pageEntry.path = parsePath(postData.pageInfo.path);
+						pageEntry.status = true;
+					}
+
+					userDataModel.update({userEmail: userEmail}, {'$push': { 'pageEntry': pageEntry}}, function(err, data){
+						callback(err, data);
+					});					
+				}
+			});
+		}
 	},
 
 
 	get_pageDir_list: function(postData, callback){
 		if(typeof(callback) != "function") callback = function(){};
 
-		var userKey = postData.userKey;
+		var userEmail = postData.userInfo.email;
 		var path = postData.path == undefined ? "/" : parsePath(postData.path);
 
 		// userDataModel.aggregate()
-		userDataModel.aggregate({$match: {userKey:userKey, pageDir: {$elemMatch:{path:path}}}}, {$unwind: "$pageDir"}, {$match: {"pageDir.path": path}},{$group: {_id: "$_id", pageDir: { $push: "$pageDir"}}}, function(err, data){
+		userDataModel.aggregate({$match: {userEmail:userEmail, pageDir: {$elemMatch:{path:path}}}}, {$unwind: "$pageDir"}, {$match: {"pageDir.path": path}},{$group: {_id: "$_id", pageDir: { $push: "$pageDir"}}}, function(err, data){
 			if(typeof(data) != "object")
 				data = [];
 			callback(err, data[0]);
@@ -102,10 +148,10 @@ module.exports = {
 	get_pageEntry_list: function(postData, callback){
 		if(typeof(callback) != "function") callback = function(){};
 
-		var userKey = postData.userKey;
+		var userEmail = postData.userInfo.email;
 		var path = postData.path == undefined ? "/" : parsePath(postData.path);
 
-		userDataModel.aggregate({$match: {userKey:userKey, pageEntry: {$elemMatch:{path:path}}}}, {$unwind: "$pageEntry"}, {$match: {"pageEntry.path": path}},{$group: {_id: "$_id", pageEntry: { $push: "$pageEntry"}}}, function(err, data){
+		userDataModel.aggregate({$match: {userEmail:userEmail, pageEntry: {$elemMatch:{path:path}}}}, {$unwind: "$pageEntry"}, {$match: {"pageEntry.path": path}},{$group: {_id: "$_id", pageEntry: { $push: "$pageEntry"}}}, function(err, data){
 			if(typeof(data) != "object")
 				data = [];
 			callback(err, data[0]);
@@ -144,11 +190,11 @@ module.exports = {
 	remove_pageDir: function(postData, callback){
 		if(typeof(callback) != "function") callback = function(){};
 
-		var userKey = postData.userKey;
+		var userEmail = postData.userInfo.email;
 		var path = postData.path == undefined ? null : parsePath(postData.path);
 		var name = postData.name;
 
-		userDataModel.remove({userKey:userKey, "pageDir.path": path, "pageDir.name": name}, function(err, data){
+		userDataModel.remove({userEmail:userEmail, "pageDir.path": path, "pageDir.name": name}, function(err, data){
 			callback(err, data);
 		});
 	},
@@ -156,11 +202,11 @@ module.exports = {
 	remove_pageEntry: function(postData, callback){
 		if(typeof(callback) != "function") callback = function(){};
 
-		var userKey = postData.userKey;
+		var userEmail = postData.userInfo.email;
 		var path = postData.path == undefined ? null : parsePath(postData.path);
 		var title = postData.title;
 
-		userDataModel.remove({userKey:userKey, "pageEntry.path": path, "pageEntry.title": title}, function(err, data){
+		userDataModel.remove({userEmail:userEmail, "pageEntry.path": path, "pageEntry.title": title}, function(err, data){
 			callback(err, data);
 		});
 	},
@@ -169,12 +215,12 @@ module.exports = {
 		if(typeof(callback) != "function") callback = function(){};
 
 		var pageInfo = postData.pageInfo;
-		var userKey = postData.userKey;
+		var userEmail = postData.userInfo.email;
 
 		var searchQuery = {
-			userKey: userKey,
+			userEmail: userEmail,
 			"pageDir.path": parsePath(pageInfo.oldPath),
-			"pageDir.title": pageInfo.name
+			"pageDir.name": pageInfo.name
 		};
 
 		var updateQuery = {
@@ -192,10 +238,10 @@ module.exports = {
 		if(typeof(callback) != "function") callback = function(){};
 
 		var pageInfo = postData.pageInfo;
-		var userKey = postData.userKey;
+		var userEmail = postData.userInfo.email;
 
 		var searchQuery = {
-			userKey: userKey,
+			userEmail: userEmail,
 			"pageEntry.path": parsePath(pageInfo.oldPath),
 			"pageEntry.title": pageInfo.title
 		};
@@ -230,11 +276,11 @@ init();
 
 
 
-// db.users.aggregate({$match: {userKey:"TempUserKey", pageDir: {$elemMatch:{path:"/"}}}}, {$unwind: "$pageDir"}, {$match: {"pageDir.path": "/"}}, {$group: {_id: "$_id", pageDir: {$push: "$pageDir"}}}).pretty();
-// get_pageDir_list({userKey:"TempUserKey", path: "/"}, function(err, result){
+// db.users.aggregate({$match: {userEmail:"TempuserEmail", pageDir: {$elemMatch:{path:"/"}}}}, {$unwind: "$pageDir"}, {$match: {"pageDir.path": "/"}}, {$group: {_id: "$_id", pageDir: {$push: "$pageDir"}}}).pretty();
+// get_pageDir_list({userEmail:"TempuserEmail", path: "/"}, function(err, result){
 // 	console.log(result);
 // })
-// move_EntryPath({userKey:"TempUserKey", pageInfo:{oldPath: "/myDir", newPath: "/myDir2/" ,title: "youtube"}}, function(err, data){
+// move_EntryPath({userEmail:"TempuserEmail", pageInfo:{oldPath: "/myDir", newPath: "/myDir2/" ,title: "youtube"}}, function(err, data){
 // 	console.log(err, data);
 // })
 
