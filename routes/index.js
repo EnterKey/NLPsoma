@@ -111,22 +111,19 @@ exports.main = function(req, res){
   console.log(req.query);
 	//mocking
 
-  if(!req.query.userEmail){
-    res.redirect('/auth');
-  }
-	var userEmail=req.query.userEmail;
-	var path = "/"
-	var postData={
-		userInfo: {
-      email: userEmail,
-      name: 'bbu',
-      picture: 'https://lh3.googleusercontent.com/-XdUIqdMkCWA/AAAAAAAAAAI/AAAAAAAAAAA/4252rscbv5M/photo.jpg'
-    },
-		path:path
-	}
-	mongodb_handler.get_pageAll_list(postData, function(err, data){
-		res.render('main', {pageDir: data.pageDir, pageEntry:data.pageEntry});
-	});
+	// var path = "/"
+	// var postData={
+	// 	userInfo: {
+ //      email: userEmail,
+ //      name: 'bbu',
+ //      picture: 'https://lh3.googleusercontent.com/-XdUIqdMkCWA/AAAAAAAAAAI/AAAAAAAAAAA/4252rscbv5M/photo.jpg'
+ //    },
+	// 	path:path
+	// }
+	// mongodb_handler.get_pageAll_list(postData, function(err, data){
+
+	// });
+  res.render('main', {pageDir: [], pageEntry:[]});
 }
 
 
@@ -199,16 +196,3 @@ exports.move_entryPath = function(req, res){
     res.json(result);
   });
 };
-
-exports.index = function(req, res){
-  res.redirect('/auth');
-}
-
-exports.auth = function(req, res){
-  res.render('auth');
-}
-
-exports.ajax_auth = function(req, res){
-  console.log(req.body);
-  res.end();
-}
