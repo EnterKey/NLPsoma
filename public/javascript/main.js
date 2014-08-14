@@ -87,7 +87,7 @@ function make_html_all_list(data) {
         innerhtml_str=innerhtml_str.replace(/&&dirname&&/g,indata.name).replace(/&&dirpath&&/g,indata.path)
 	})
 	resultEntry.forEach(function(indata){
-		innerhtml_str+="<li class='list-group-item droppable_forder dir_with_file_elem' style='color:gray;background-color:whitesmoke'>"+
+		innerhtml_str+="<li class='list-group-item draggable_file dir_with_file_elem' style='color:gray;background-color:whitesmoke'>"+
             "<div class='row'>"+
               "<div class='col-sm-4'>"+
                   "<span class='glyphicon glyphicon-file'> </span>"+
