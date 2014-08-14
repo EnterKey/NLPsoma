@@ -37,9 +37,39 @@ var parsePath = function(path){
 	return path;
 }
 
+var push_pageDir = function(userEmail, dirInfo, callback){
+	var pageDir = {};
+	pageDir.name = dirInfo.name;
+	pageDir.path = parsePath(dirInfo.path);
+
+	userDataModel.update({userEmail: userEmail}, {'$push': { 'pageDir': pageDir}}, function(err, data){
+		callback(err, data);
+	});
+}
+
+
+var push_pageEntry = function(userEmail, pageInfo, callback){
+	var pageEntry = {};
+	pageEntry.title = pageInfo.title;
+	pageEntry.url = pageInfo.url;
+	pageEntry.content = pageInfo.content;
+
+	if(pageInfo.path == undefined){
+		pageEntry.path = parsePath("/");
+		pageEntry.status = false;
+	}else{
+		pageEntry.path = parsePath(pageInfo.path);
+		pageEntry.status = true;
+	}
+
+	userDataModel.update({userEmail: userEmail}, {'$push': { 'pageEntry': pageEntry}}, function(err, data){
+		callback(err, data);
+	});
+}
+
 module.exports = {
 
-	isUserExist: function(userEmail){
+	isUserExist: function(userEmail, callback){
 		if(!userEmail){
 			return false;
 		}
@@ -47,24 +77,26 @@ module.exports = {
 		userDataModel.find({userEmail: userEmail}, function(err, data){
 			if(err){
 				console.log('isUserExist err', err);
-				return false;
+				callback(false);
 			}else{
 				if(data.length > 0)
-					return true;
+					callback(true);
 				else
-					return false;
+					callback(false);
 			}
 		});
 	},
 
-	insert_user: function(postData, callback){
+	insert_user: function(userInfo, callback){
 		if(typeof(callback) != "function") callback = function(){};
-
 		var userData = new userDataModel();
 
-		userData.userEmail = postData.userInfo.email;
-		userData.userName = postData.userInfo.name;
-		userData.picture = postData.userInfo.picture;
+		if(!userInfo)
+			callback("no user Data");
+
+		userData.userEmail = userInfo.email;
+		userData.userName = userInfo.name;
+		userData.picture = userInfo.picture;
 		userData.date = new Date();
 
 		userData.save(function(err, data){
@@ -75,14 +107,29 @@ module.exports = {
 	insert_pageDir: function(postData, callback){
 		if(typeof(callback) != "function") callback = function(){};
 
-		var userEmail = postData.userInfo.email;
-		var pageDir = {};
-		pageDir.name = postData.dirInfo.name;
-		pageDir.path = parsePath(postData.dirInfo.path);
+		if(!postData.userInfo || !postData.dirInfo){
+			callback('query error', []);
+			return;
+		}
 
-		userDataModel.update({userEmail: userEmail}, {'$push': { 'pageDir': pageDir}}, function(err, data){
-			callback(err, data);
+		var self = this;
+		var userEmail = postData.userInfo.email;
+
+		self.isUserExist(userEmail, function(isExist){
+			if(isExist){
+				push_pageDir(userEmail, postData.dirInfo, callback);
+			}else{
+				self.insert_user(postData.userInfo, function(err, data){
+					if(err){
+						callback(err, data);
+					}
+					else{
+						push_pageDir(userEmail, postData.dirInfo, callback);
+					}
+				});
+			}
 		});
+
 	},
 
 	 insert_pageEntry: function(postData, callback){
@@ -90,43 +137,21 @@ module.exports = {
 
 		var self = this;
 		var userEmail = postData.userInfo.email;
-		var pageEntry = {};
-		pageEntry.title = postData.pageInfo.title;
-		pageEntry.url = postData.pageInfo.url;
-		pageEntry.content = postData.pageInfo.content;
 
-		if(self.isUserExist(userEmail)){
-			if(postData.pageInfo.path == undefined){
-				pageEntry.path = parsePath("/");
-				pageEntry.status = false;
+		self.isUserExist(userEmail, function(isExist){
+			if(isExist){
+				push_pageEntry(userEmail, postData.pageInfo, callback);
 			}else{
-				pageEntry.path = parsePath(postData.pageInfo.path);
-				pageEntry.status = true;
-			}
-
-			userDataModel.update({userEmail: userEmail}, {'$push': { 'pageEntry': pageEntry}}, function(err, data){
-				callback(err, data);
-			});
-		}else{
-			this.insert_user(postData, function(err, data){
-				if(err){
-					callback(err, data);
-				}
-				else{
-					if(postData.pageInfo.path == undefined){
-						pageEntry.path = parsePath("/");
-						pageEntry.status = false;
-					}else{
-						pageEntry.path = parsePath(postData.pageInfo.path);
-						pageEntry.status = true;
-					}
-
-					userDataModel.update({userEmail: userEmail}, {'$push': { 'pageEntry': pageEntry}}, function(err, data){
+				self.insert_user(postData.userInfo, function(err, data){
+					if(err){
 						callback(err, data);
-					});					
-				}
-			});
-		}
+					}
+					else{
+						push_pageEntry(userEmail, postData.pageInfo, callback);
+					}
+				});
+			}
+		});
 	},
 
 

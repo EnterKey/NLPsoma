@@ -160,9 +160,7 @@
 			var path=a_obj.data('path')+a_obj.text()
 			path=path&&path.trim()!="undefined"?path:"/"
 			var params={
-				userInfo:{
-					email: global_user.email
-				},
+				userInfo: global_user,
 				dirInfo:{
 					name:name,
 					path:path
@@ -187,9 +185,7 @@
 			var path=jquery_obj.find('a').data('path')
 			path=path&&path.trim()!="undefined"?path:"/"
 			var params={
-				userInfo:{
-					email: global_user.email
-				},
+				userInfo: global_user,
 				dirInfo:{
 					name:name,
 					path:path
@@ -274,9 +270,7 @@
 			var path=jquery_obj.data('path')+jquery_obj.text().trim()
 			path=path&&path.trim()!="undefined"?path:"/"
 			var params={
-				userInfo:{
-					email: global_user.email
-				},
+				userInfo: global_user,
 				path:path
 			}
 			$.ajax({
@@ -326,9 +320,7 @@
 			var path=jquery_obj.data('path')+jquery_obj.text().trim()
 			path=path&&path.trim()!="undefined"?path:"/"
 			var params={
-				userInfo:{
-					email: global_user.email
-				},
+				userInfo: global_user,
 				path:path
 			}
 			$.ajax({
@@ -410,9 +402,7 @@
 
 					var dragobj=$(ui.draggable);
 					var params={
-						userInfo:{
-							email: global_user.email
-						},
+						userInfo: global_user,
 						pageInfo:{
 							oldPath:dragobj.find('.file_a_tag_title').data('path'),
 							newPath:jquery_obj.data('path')+jquery_obj.text().trim(),
