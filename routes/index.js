@@ -87,6 +87,7 @@ var insertTestData = function(){
       }
     }
   ];
+
   mongodb_handler.insert_user(userInfo,function(){
     var i;
     for(i in testDirData){
@@ -95,15 +96,16 @@ var insertTestData = function(){
         // console.log(i,'insert Dir',result);
       });
     }
-
-    for(i in testEntryData){
-      mongodb_handler.insert_pageEntry(testEntryData[i],function(err, data){
-        var result = dbResult_handler(err, data);
-        // console.log(i,'insert Entry',result);
-      });
-    }
   });
+  //   for(i in testEntryData){
+  //     mongodb_handler.insert_pageEntry(testEntryData[i],function(err, data){
+  //       var result = dbResult_handler(err, data);
+  //       // console.log(i,'insert Entry',result);
+  //     });
+  //   }
+  // });
 }
+
 
 
 // insertTestData();
@@ -122,7 +124,12 @@ var dbError_handler = function(err){
   // error handler
   // Have to change.
   console.log('mongo db error :', err);
-  return {status: false};
+
+  var errorMsg = "데이터 저장 성공"
+  if(err=="PageExist"){
+    errorMsg +=":중복";
+  }
+  return {status: false, errorMsg: errorMsg};
 };
 
 
@@ -133,11 +140,15 @@ var dbResult_handler = function(err, data){
   var result = {};
   result.data = data;
 
-  result.status = data ? true : false
+  result.status = data ? true : false;
 
   // console.log(result);
   return result;
 };
+
+var insert_entry_handler = function(err, data){
+
+}
 
 exports.main = function(req, res){
   console.log(req.query);
@@ -189,6 +200,7 @@ exports.get_pageEntry_list = function(req, res){
 
 exports.get_pageDir_list = function(req, res){
   mongodb_handler.get_pageDir_list(req.body, function(err, data){
+    console.log('get dir list', data);
     data = data ? data : {pageDir:[],status:1};
     var result = dbResult_handler(err, data);
     res.json(result);
@@ -197,6 +209,7 @@ exports.get_pageDir_list = function(req, res){
 
 exports.get_pageAll_list = function(req, res){
   mongodb_handler.get_pageAll_list(req.body, function(err, data){
+    console.log('get all list', data);
     var result = dbResult_handler(err, data);
     res.json(result);
   });

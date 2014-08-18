@@ -9,7 +9,7 @@ if(location.hostname == 'localhost'){
 jso_configure({
 
 	"google": {
-		client_id: "994714572327-1rt0im4unhkai7brfp5mk904llu1kd3p.apps.googleusercontent.com",
+		client_id: "994714572327-7vm56ecmedqdgeelem26ci9vu6ji76hg.apps.googleusercontent.com",
 		redirect_uri: redirect_uri,
 		authorization: "https://accounts.google.com/o/oauth2/auth",
 		isDefault: true

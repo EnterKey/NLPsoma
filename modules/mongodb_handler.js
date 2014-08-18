@@ -47,24 +47,48 @@ var push_pageDir = function(userEmail, dirInfo, callback){
 	});
 }
 
+var isPageExist =  function(userEmail, url, callback){
+	if(!userEmail){
+		return callback("userEmail none", null);
+	}
+	userDataModel.find({userEmail: userEmail}, {"pageEntry": {"$elemMatch": {url:url}}}, function(err, data){
+		if(err){
+			// console.log('isPageExist err', err, data.pageEntry==undefined);
+			callback(err, null);
+		}else{
+			if(data[0].pageEntry != undefined && data[0].pageEntry.length > 0)
+				callback(null, true);
+			else
+				callback(null, false);
+		}
+	});
+}
 
 var push_pageEntry = function(userEmail, pageInfo, callback){
+	var self = this;
 	var pageEntry = {};
 	pageEntry.title = pageInfo.title;
 	pageEntry.url = pageInfo.url;
 	pageEntry.content = pageInfo.content;
 
-	if(pageInfo.path == undefined){
-		pageEntry.path = parsePath("/");
-		pageEntry.status = false;
-	}else{
-		pageEntry.path = parsePath(pageInfo.path);
-		pageEntry.status = true;
-	}
-
-	userDataModel.update({userEmail: userEmail}, {'$push': { 'pageEntry': pageEntry}}, function(err, data){
-		callback(err, data);
-	});
+	isPageExist(userEmail, pageEntry.url, function(err, isExist){
+		if(isExist){
+			callback("PageExist", null);
+		}else if(err){
+			callback(err, null);
+		}else{
+			if(pageInfo.path == undefined){
+				pageEntry.path = parsePath("/");
+				pageEntry.status = false;
+			}else{
+				pageEntry.path = parsePath(pageInfo.path);
+				pageEntry.status = true;
+			}
+			userDataModel.update({userEmail: userEmail}, {'$push': { 'pageEntry': pageEntry}}, function(err, data){
+				callback(err, data);
+			});
+		}
+	})
 }
 
 module.exports = {
@@ -129,7 +153,6 @@ module.exports = {
 				});
 			}
 		});
-
 	},
 
 	 insert_pageEntry: function(postData, callback){
@@ -153,7 +176,6 @@ module.exports = {
 			}
 		});
 	},
-
 
 	get_pageDir_list: function(postData, callback){
 		if(typeof(callback) != "function") callback = function(){};
