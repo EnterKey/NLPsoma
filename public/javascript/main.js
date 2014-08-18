@@ -64,7 +64,7 @@ function make_html_all_list(data) {
 		alert('last folder');
 		return;
 	}
-	var data=data.data;
+	data=data.data;
 
 	$('.dir_with_file_elem').remove();
 	var resultDir=data.pageDir;
@@ -133,9 +133,7 @@ function make_html_dir_list(data) {
 		alert('last folder');
 		return;
 	}
-	var data=data.data;
-	console.log(data)
-	console.log(typeof(data))
+	data=data.data;
 	$('.dir_only_elem').remove();
 	var result=data.pageDir;
 	var innerhtml_str=""
@@ -268,8 +266,8 @@ $.contextMenu({
         }else if(key=='Delete'){
 			var a_obj=$(this).find('a')
 			var data={};
-			var data.path=a_obj.data('path')
-			var data.name=a_obj.text()
+			data.path=a_obj.data('path')
+			data.name=a_obj.text()
 			delete_dir(data)
 		}
     },
@@ -285,8 +283,8 @@ $.contextMenu({
 		if(key=='Delete'){
 			var a_obj=$(this).find('.file_a_tag_title')
 			var data={};
-			var data.path=a_obj.data('path')
-			var data.title=a_obj.text()
+			data.path=a_obj.data('path')
+			data.title=a_obj.text()
 			delete_entry(data)
 		}
 
