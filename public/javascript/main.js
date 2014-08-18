@@ -207,7 +207,6 @@ function delete_dir(data){
 	var path=data.path;
 	var params={
 		userInfo: global_user,
-		path:path,
 		name:data.name,
 		path:path
 	}
@@ -228,7 +227,6 @@ function delete_entry(data){
 
 	var params={
 		userInfo: global_user,
-		path:path,
 		title:data.title,
 		path:data.path
 	}
@@ -325,7 +323,7 @@ var droppable_event=function(){$('.droppable_forder').droppable({
 			pageInfo:{
 				oldPath:dragobj.find('.file_a_tag_title').data('path'),
 				newPath:jquery_obj.data('path')+jquery_obj.text().trim(),
-				title:dragobj.find('.file_a_tag_title').text().trim()
+        url:dragobj.find('.file_a_tag_title').attr('href')
 			}
 		};
 		$.ajax({

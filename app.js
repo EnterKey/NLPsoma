@@ -39,6 +39,8 @@ app.post('/ajax/remove_pageEntry', routes.remove_pageEntry);
 app.post('/ajax/remove_pageDir', routes.remove_pageDir);
 app.post('/ajax/move_dirPath', routes.move_dirPath);
 app.post('/ajax/move_entryPath', routes.move_entryPath);
+app.post('/ajax/rename_pageDir', routes.rename_pageDir);
+app.post('/ajax/rename_pageEntry', routes.rename_pageEntry);
 
 http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));

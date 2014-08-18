@@ -43,6 +43,50 @@ var insertTestData = function(){
         name: "childDir1",
         path: "/myDir/"
       }
+    },
+    {
+      userInfo: {
+        email: "widianpear@gmail.com",
+        name: '배병욱',
+        picture: 'https://lh3.googleusercontent.com/-XdUIqdMkCWA/AAAAAAAAAAI/AAAAAAAAAAA/4252rscbv5M/photo.jpg',
+      },
+      dirInfo: {
+        name: "myDir3",
+        path: "/"
+      }
+    },
+    {
+      userInfo: {
+        email: "widianpear@gmail.com",
+        name: '배병욱',
+        picture: 'https://lh3.googleusercontent.com/-XdUIqdMkCWA/AAAAAAAAAAI/AAAAAAAAAAA/4252rscbv5M/photo.jpg',
+      },
+      dirInfo: {
+        name: "myDir4",
+        path: "/"
+      }
+    },
+    {
+      userInfo: {
+        email: "widianpear@gmail.com",
+        name: '배병욱',
+        picture: 'https://lh3.googleusercontent.com/-XdUIqdMkCWA/AAAAAAAAAAI/AAAAAAAAAAA/4252rscbv5M/photo.jpg',
+      },
+      dirInfo: {
+        name: "childDir2",
+        path: "/myDir/"
+      }
+    },
+    {
+      userInfo: {
+        email: "widianpear@gmail.com",
+        name: '배병욱',
+        picture: 'https://lh3.googleusercontent.com/-XdUIqdMkCWA/AAAAAAAAAAI/AAAAAAAAAAA/4252rscbv5M/photo.jpg',
+      },
+      dirInfo: {
+        name: "childDir3",
+        path: "/myDir2/"
+      }
     }
   ];
 
@@ -105,31 +149,14 @@ var insertTestData = function(){
   //   }
   // });
 }
-
-
-
 // insertTestData();
-// mongodb_handler.move_dirPath({
-//   userInfo: {
-//     email: "widianpear@gmail.com"
-//   },
-//   pageInfo: {
-//     oldPath: "/",
-//     newPath: "/hellllo/",
-//     name: "myDir"
-//   }
-// })
 
 var dbError_handler = function(err){
   // error handler
   // Have to change.
   console.log('mongo db error :', err);
 
-  var errorMsg = "데이터 저장 성공"
-  if(err=="PageExist"){
-    errorMsg +=":중복";
-  }
-  return {status: false, errorMsg: errorMsg};
+  return {status: false, errorMsg: err};
 };
 
 
@@ -146,8 +173,22 @@ var dbResult_handler = function(err, data){
   return result;
 };
 
-var insert_entry_handler = function(err, data){
+var insertEntry_handler = function(err, data){
+  var result = {
+    data: data,
+    errorMsg: null,
+    status: data ? true: false
+  };
 
+  if(err){
+    console.log('Insert Entry Error', err);
+    result.errorMsg="데이터 저장 실패";
+    if(err=="PageExist")
+      result.errorMsg += ":중복";
+    result.status = false;
+  }
+
+  return result;
 }
 
 exports.main = function(req, res){
@@ -179,7 +220,7 @@ exports.insert_user = function(req, res){
 
 exports.insert_pageEntry = function(req, res){
   mongodb_handler.insert_pageEntry(req.body, function(err, data){
-    var result = dbResult_handler(err, data);
+    var result = insertEntry_handler(err, data);
     res.json(result);
   });
 };
@@ -200,7 +241,6 @@ exports.get_pageEntry_list = function(req, res){
 
 exports.get_pageDir_list = function(req, res){
   mongodb_handler.get_pageDir_list(req.body, function(err, data){
-    console.log('get dir list', data);
     data = data ? data : {pageDir:[],status:1};
     var result = dbResult_handler(err, data);
     res.json(result);
@@ -209,7 +249,6 @@ exports.get_pageDir_list = function(req, res){
 
 exports.get_pageAll_list = function(req, res){
   mongodb_handler.get_pageAll_list(req.body, function(err, data){
-    console.log('get all list', data);
     var result = dbResult_handler(err, data);
     res.json(result);
   });
@@ -238,6 +277,20 @@ exports.move_dirPath = function(req, res){
 
 exports.move_entryPath = function(req, res){
   mongodb_handler.move_entryPath(req.body, function(err, data){
+    var result = dbResult_handler(err, data);
+    res.json(result);
+  });
+};
+
+exports.rename_pageDir = function(req, res){
+  mongodb_handler.rename_pageDir(req.body, function(err, data){
+    var result = dbResult_handler(err, data);
+    res.json(result);
+  });
+};
+
+exports.rename_pageEntry = function(req, res){
+  mongodb_handler.rename_pageEntry(req.body, function(err, data){
     var result = dbResult_handler(err, data);
     res.json(result);
   });
