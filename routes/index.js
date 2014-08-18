@@ -4,6 +4,12 @@ var mongodb_handler = require('../modules/mongodb_handler');
  */
 
 var insertTestData = function(){
+  var  userInfo= {
+        email: "widianpear@gmail.com",
+        name: '배병욱',
+        picture: 'https://lh3.googleusercontent.com/-XdUIqdMkCWA/AAAAAAAAAAI/AAAAAAAAAAA/4252rscbv5M/photo.jpg'
+      };
+
   var testDirData = [
     {
       userInfo: {
@@ -49,6 +55,7 @@ var insertTestData = function(){
       },
       pageInfo: {
         title: "google",
+        path: "/",
         content: "google page",
         url: "http://www.google.co.kr",
       }
@@ -65,27 +72,51 @@ var insertTestData = function(){
         content: "naver page",
         url: "http://www.naver.com",
       }
+    },
+    {
+      userInfo: {
+        email: "widianpear@gmail.com",
+        name: '배병욱',
+        picture: 'https://lh3.googleusercontent.com/-XdUIqdMkCWA/AAAAAAAAAAI/AAAAAAAAAAA/4252rscbv5M/photo.jpg',
+      },
+      pageInfo: {
+        title: "daum",
+        path: "/myDir/",
+        content: "daum page",
+        url: "http://www.daum.net",
+      }
     }
   ];
-  var i;
-  for(i in testDirData){
-    mongodb_handler.insert_pageDir(testDirData[i],function(err, data){
-      var result = dbResult_handler(err, data);
-      // console.log(i,'insert Dir',result);
-    });
-  }
+  mongodb_handler.insert_user(userInfo,function(){
+    var i;
+    for(i in testDirData){
+      mongodb_handler.insert_pageDir(testDirData[i],function(err, data){
+        var result = dbResult_handler(err, data);
+        // console.log(i,'insert Dir',result);
+      });
+    }
 
-  for(i in testEntryData){
-    mongodb_handler.insert_pageEntry(testEntryData[i],function(err, data){
-      var result = dbResult_handler(err, data);
-      // console.log(i,'insert Entry',result);
-    });
-  }
+    for(i in testEntryData){
+      mongodb_handler.insert_pageEntry(testEntryData[i],function(err, data){
+        var result = dbResult_handler(err, data);
+        // console.log(i,'insert Entry',result);
+      });
+    }
+  });
 }
 
 
 // insertTestData();
-
+mongodb_handler.move_dirPath({
+  userInfo: {
+    email: "widianpear@gmail.com"
+  },
+  pageInfo: {
+    oldPath: "/",
+    newPath: "/hellllo/",
+    name: "myDir"
+  }
+})
 var dbError_handler = function(err){
   // error handler
   // Have to change.

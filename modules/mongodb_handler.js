@@ -214,9 +214,10 @@ module.exports = {
 
 		var userEmail = postData.userInfo.email;
 		var path = postData.path == undefined ? null : parsePath(postData.path);
+		path = new RegExp('^' + path);
+		console.log(userEmail, path);
 		var name = postData.name;
-
-		userDataModel.remove({userEmail:userEmail, "pageDir.path": path, "pageDir.name": name}, function(err, data){
+		userDataModel.update({userEmail:userEmail},{"$pull":{"pageDir":{"path":path}}}, function(err, data){
 			callback(err, data);
 		});
 	},
@@ -226,9 +227,10 @@ module.exports = {
 
 		var userEmail = postData.userInfo.email;
 		var path = postData.path == undefined ? null : parsePath(postData.path);
-		var title = postData.title;
+		path = new RegExp('^' + path);
+		// var title = postData.title;
 
-		userDataModel.remove({userEmail:userEmail, "pageEntry.path": path, "pageEntry.title": title}, function(err, data){
+		userDataModel.update({userEmail:userEmail},{"$pull":{"pageEntry":{"path":path}}}, function(err, data){
 			callback(err, data);
 		});
 	},
@@ -236,23 +238,31 @@ module.exports = {
 	move_dirPath: function(postData, callback){
 		if(typeof(callback) != "function") callback = function(){};
 
-		var pageInfo = postData.pageInfo;
 		var userEmail = postData.userInfo.email;
+		var pageInfo = postData.pageInfo;
 
 		var searchQuery = {
 			userEmail: userEmail,
-			"pageDir.path": parsePath(pageInfo.oldPath),
-			"pageDir.name": pageInfo.name
 		};
 
-		var updateQuery = {
-			"$set": {
-				"pageDir.$.path": parsePath(pageInfo.newPath)
+		userDataModel.find(searchQuery, function(err, data){
+			if(err){
+				callback(err, data);
+				return;
 			}
-		}
 
-		userDataModel.update(searchQuery, updateQuery, function(err, data){
-			callback(err, data);
+			data[0].pageEntry.forEach(function(item){
+				item.path = item.path.replace(pageInfo.oldPath+pageInfo.name+'/', pageInfo.newPath+pageInfo.name+'/');
+			})
+			data[0].pageDir.forEach(function(item){
+				item.path = item.path.replace(pageInfo.oldPath+pageInfo.name+'/', pageInfo.newPath+pageInfo.name+'/');
+				if(item.name == pageInfo.name && item.path.indexOf(pageInfo.oldPath)==0)
+					item.path = item.path.replace(pageInfo.oldPath, pageInfo.newPath);
+			})
+
+			userDataModel.update(searchQuery, {pageDir: data[0].pageDir, pageEntry: data[0].pageEntry}, function(err, data){
+				callback(err, data);
+			});
 		});
 	},
 
@@ -264,18 +274,23 @@ module.exports = {
 
 		var searchQuery = {
 			userEmail: userEmail,
-			"pageEntry.path": parsePath(pageInfo.oldPath),
-			"pageEntry.title": pageInfo.title
 		};
 
-		var updateQuery = {
-			"$set": {
-				"pageEntry.$.path": parsePath(pageInfo.newPath)
-			}
-		}
 
-		userDataModel.update(searchQuery, updateQuery, function(err, data){
-			callback(err, data);
+		userDataModel.find(searchQuery, function(err, data){
+			if(err){
+				callback(err, data);
+				return;
+			}
+
+			data[0].pageEntry.forEach(function(item){
+				if(item.title == pageInfo.title && item.path.indexOf(pageInfo.oldPath)==0)
+					item.path = item.path.replace(pageInfo.oldPath, pageInfo.newPath);
+			})
+
+			userDataModel.update(searchQuery, {pageEntry: data[0].pageEntry}, function(err, data){
+				callback(err, data);
+			});
 		});
 	},
 
