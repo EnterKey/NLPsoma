@@ -64,7 +64,7 @@ function make_html_all_list(data) {
 		alert('last folder');
 		return;
 	}
-	var data=data.data;
+	data=data.data;
 
 	$('.dir_with_file_elem').remove();
 	var resultDir=data.pageDir;
@@ -133,9 +133,7 @@ function make_html_dir_list(data) {
 		alert('last folder');
 		return;
 	}
-	var data=data.data;
-	console.log(data)
-	console.log(typeof(data))
+	data=data.data;
 	$('.dir_only_elem').remove();
 	var result=data.pageDir;
 	var innerhtml_str=""
@@ -177,6 +175,74 @@ function make_page_dir_list(){
 		}
 	})
 }
+function make_both_view(path){
+	var params={
+		userInfo: global_user,
+		path:path
+	}
+	$.ajax({
+		type:"POST",
+		url:"/ajax/get_pageDir_list", //only dir
+		data:params,
+		dataType:"JSON", // 옵션이므로 JSON으로 받을게 아니면 안써도 됨
+		success : make_html_dir_list,
+		error : function(xhr, status, error) {
+			alert("Error");
+		}
+	})
+	$.ajax({
+		type:"POST",
+		url:"/ajax/get_pageAll_list", //dir with file
+		data:params,
+		dataType:"JSON", // 옵션이므로 JSON으로 받을게 아니면 안써도 됨
+		success : make_html_all_list,
+		error : function(xhr, status, error) {
+			alert("Error");
+		}
+	})
+
+}
+function delete_dir(data){
+
+	var path=data.path;
+	var params={
+		userInfo: global_user,
+		path:path,
+		name:data.name,
+		path:path
+	}
+	$.ajax({
+		type:"POST",
+		url:"/ajax/remove_pageDir", //only dir
+		data:params,
+		dataType:"JSON", // 옵션이므로 JSON으로 받을게 아니면 안써도 됨
+		success : function(){
+			make_both_view(path)
+		},
+		error : function(xhr, status, error) {
+			alert("Error");
+		}
+	})
+}
+function delete_entry(data){
+
+	var params={
+		userInfo: global_user,
+		path:path,
+		title:data.title,
+		path:data.path
+	}
+	$.ajax({
+		type:"POST",
+		url:"/ajax/remove_pageEntry", //only dir
+		data:params,
+		dataType:"JSON", // 옵션이므로 JSON으로 받을게 아니면 안써도 됨
+		success : make_html_all_list,
+		error : function(xhr, status, error) {
+			alert("Error");
+		}
+	})
+}
 $.contextMenu({
 	selector:"#directory-list-both",
 	callback: function(key, options) {
@@ -197,7 +263,13 @@ $.contextMenu({
         	get_name_by_user(function(data){
         		make_new_subfolder($(this),data)
         	})
-        }
+        }else if(key=='Delete'){
+			var a_obj=$(this).find('a')
+			var data={};
+			data.path=a_obj.data('path')
+			data.name=a_obj.text()
+			delete_dir(data)
+		}
     },
     items: {
         "Subdir": {name: "Subdir", icon: "edit"},
@@ -208,6 +280,13 @@ $.contextMenu({
 $.contextMenu({
 	selector:".draggable_file",
 	callback: function(key, options) {
+		if(key=='Delete'){
+			var a_obj=$(this).find('.file_a_tag_title')
+			var data={};
+			data.path=a_obj.data('path')
+			data.title=a_obj.text()
+			delete_entry(data)
+		}
 
     },
     items: {
@@ -225,13 +304,10 @@ var click_event_dir_only=function(){$('.dir_only').on('click',make_page_dir_list
 var click_event_dir_with_file=function(){$('.dir_with_file').on('click',make_page_all_list)}
 var draggable_event=function(){$('.draggable_file').draggable( {
 	start:function(e,u){
-       console.log("start")
     },
     drag:function(e,u){
-       console.log("drag")
     },
     stop:function(e,u){
-        console.log("stop")
     },
     revert: true,
     opacity:"0.3"
