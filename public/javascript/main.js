@@ -267,7 +267,7 @@ $.contextMenu({
         	})
         }else if(key=='Delete'){
 			var a_obj=$(this).find('a')
-			var data;
+			var data={};
 			var data.path=a_obj.data('path')
 			var data.name=a_obj.text()
 			delete_dir(data)
@@ -284,7 +284,7 @@ $.contextMenu({
 	callback: function(key, options) {
 		if(key=='Delete'){
 			var a_obj=$(this).find('.file_a_tag_title')
-			var data;
+			var data={};
 			var data.path=a_obj.data('path')
 			var data.title=a_obj.text()
 			delete_entry(data)
