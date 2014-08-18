@@ -107,16 +107,17 @@ var insertTestData = function(){
 
 
 // insertTestData();
-mongodb_handler.move_dirPath({
-  userInfo: {
-    email: "widianpear@gmail.com"
-  },
-  pageInfo: {
-    oldPath: "/",
-    newPath: "/hellllo/",
-    name: "myDir"
-  }
-})
+// mongodb_handler.move_dirPath({
+//   userInfo: {
+//     email: "widianpear@gmail.com"
+//   },
+//   pageInfo: {
+//     oldPath: "/",
+//     newPath: "/hellllo/",
+//     name: "myDir"
+//   }
+// })
+
 var dbError_handler = function(err){
   // error handler
   // Have to change.

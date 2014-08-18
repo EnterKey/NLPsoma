@@ -214,9 +214,8 @@ module.exports = {
 
 		var userEmail = postData.userInfo.email;
 		var path = postData.path == undefined ? null : parsePath(postData.path);
+		path = path + postData.name + '/';
 		path = new RegExp('^' + path);
-		console.log(userEmail, path);
-		var name = postData.name;
 		userDataModel.update({userEmail:userEmail},{"$pull":{"pageDir":{"path":path}}}, function(err, data){
 			callback(err, data);
 		});
@@ -228,7 +227,6 @@ module.exports = {
 		var userEmail = postData.userInfo.email;
 		var path = postData.path == undefined ? null : parsePath(postData.path);
 		path = new RegExp('^' + path);
-		// var title = postData.title;
 
 		userDataModel.update({userEmail:userEmail},{"$pull":{"pageEntry":{"path":path}}}, function(err, data){
 			callback(err, data);
