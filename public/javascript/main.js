@@ -401,8 +401,8 @@ var init=function(){
 		file_context_binding();
 		long_name_hover_animation();
 }
-var click_event_dir_only=function(){$('.dir_only').on('click',make_page_all_list)}
-var click_event_dir_with_file=function(){$('.dir_with_file').on('click',make_page_all_list)}
+var click_event_dir_only=function(){$('.dir_only').on('click', function(){ make_page_all_list)}}
+var click_event_dir_with_file=function(){$('.dir_with_file').on('click',function(){ make_page_all_list)})}
 var draggable_event=function(){$('.draggable_file').draggable( {
 	start:function(e,u){
     },
