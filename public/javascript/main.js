@@ -241,62 +241,71 @@ function delete_entry(data){
 		}
 	})
 }
-$.contextMenu({
-	selector:"#directory-list-both",
-	callback: function(key, options) {
-        if(key=="Newfolder"){
-        	get_name_by_user(function(data){
-        		make_new_folder($(this),data)
-        	})
-        }
-    },
-    items: {
-        "Newfolder": {name: "New folder", icon: "edit"}
-    }
-})
-$.contextMenu({
-	selector:".droppable_forder",
-	callback: function(key, options) {
-		if(key=="Subdir"){
-        	get_name_by_user(function(data){
-        		make_new_subfolder($(this),data)
-        	})
-        }else if(key=='Delete'){
-			var a_obj=$(this).find('a')
-			var data={};
-			data.path=a_obj.data('path')
-			data.name=a_obj.text()
-			delete_dir(data)
-		}
-    },
-    items: {
-        "Subdir": {name: "Subdir", icon: "edit"},
-        "Delete": {name: "Delete", icon: "delete"}
-    }
+function both_context_binding(){
+	$.contextMenu({
+		selector:"#directory-list-both",
+		callback: function(key, options) {
+	        if(key=="Newfolder"){
+	        	get_name_by_user(function(data){
+	        		make_new_folder($(this),data)
+	        	})
+	        }
+	    },
+	    items: {
+	        "Newfolder": {name: "New folder", icon: "edit"}
+	    }
+	})
+}
+function folder_context_binding(){
+	$.contextMenu({
+		selector:".droppable_forder",
+		callback: function(key, options) {
+			if(key=="Subdir"){
+	        	get_name_by_user(function(data){
+	        		make_new_subfolder($(this),data)
+	        	})
+	        }else if(key=='Delete'){
+				var a_obj=$(this).find('a')
+				var data={};
+				data.path=a_obj.data('path')
+				data.name=a_obj.text()
+				delete_dir(data)
+			}
+	    },
+	    items: {
+	        "Subdir": {name: "Subdir", icon: "edit"},
+	        "Delete": {name: "Delete", icon: "delete"}
+	    }
 
-})
-$.contextMenu({
-	selector:".draggable_file",
-	callback: function(key, options) {
-		if(key=='Delete'){
-			var a_obj=$(this).find('.file_a_tag_title')
-			var data={};
-			data.path=a_obj.data('path')
-			data.title=a_obj.text()
-			delete_entry(data)
-		}
+	})
+}
+function file_context_binding(){
+	$.contextMenu({
+		selector:".draggable_file",
+		callback: function(key, options) {
+			if(key=='Delete'){
+				var a_obj=$(this).find('.file_a_tag_title')
+				var data={};
+				data.path=a_obj.data('path')
+				data.title=a_obj.text()
+				delete_entry(data)
+			}
 
-    },
-    items: {
-        "Delete": {name: "Delete", icon: "delete"}
-    }
+	    },
+	    items: {
+	        "Delete": {name: "Delete", icon: "delete"}
+	    }
 
-})
+	})
+}
 var init=function(){
 		click_event_dir_only();
 		click_event_dir_with_file();
 		droppable_event();
 		draggable_event();
+		both_context_binding();
+		folder_context_binding();
+		file_context_binding();
 }
 var click_event_dir_only=function(){$('.dir_only').on('click',make_page_dir_list)}
 var click_event_dir_with_file=function(){$('.dir_with_file').on('click',make_page_all_list)}
