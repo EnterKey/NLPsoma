@@ -1,3 +1,4 @@
+global_current_path="/"
 function make_new_subfolder(jquery_obj,name){
 	var a_obj=jquery_obj.find('a')
 	var path=a_obj.data('path')+a_obj.text()
@@ -24,8 +25,7 @@ function make_new_subfolder(jquery_obj,name){
 	})
 }
 function make_new_folder(jquery_obj,name){
-
-	var path=jquery_obj.find('a').data('path')
+	var path=global_current_path
 	path=path&&path.trim()!="undefined"?path:"/"
 	var params={
 		userInfo: global_user,
@@ -160,6 +160,7 @@ function make_page_all_list(pathdata){
 	path=path&&path.trim()!="undefined"?path:"/"
 	if(path=="/"&& typeof(pathdata)=="string")
 		path=pathdata
+	global_current_path=path;
 	var params={
 		userInfo: global_user,
 		path:path
@@ -321,8 +322,9 @@ function folder_context_binding(){
 		selector:".droppable_forder",
 		callback: function(key, options) {
 			if(key=="Subdir"){
+				var self=($this)
 	        	get_name_by_user(function(data){
-	        		make_new_subfolder($(this),data)
+	        		make_new_subfolder(self,data)
 	        	})
 	        }else if(key=='Delete'){
 				var a_obj=$(this).find('a')
