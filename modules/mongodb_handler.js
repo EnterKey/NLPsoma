@@ -300,7 +300,7 @@ module.exports = {
 		if(typeof(callback) != "function") callback = function(){};
 
 		var email = postData.userInfo.email;
-		var url = postData.userInfo.url
+		var url = postData.pageInfo.url;
 		userDataModel.update({userEmail:email},{"$pull":{"pageEntry":{"url":url}}}, function(err, data){
 			callback(err, data);
 		});
