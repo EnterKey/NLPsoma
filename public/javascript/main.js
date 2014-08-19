@@ -98,7 +98,8 @@ function rename_file(data){
 }
 
 function get_name_by_user(callback){
-	$('body').append('<div class="user_name_input_div"><input type="search" class="user_name_input_text" autofocus></input></div>')
+	$('body').append('<div class="user_name_input_div"><input id="user_name_input_text" type="search" class="user_name_input_text" autofocus></input></div>')
+	document.getElementById("user_name_input_text").focus();
 	$('.user_name_input_text').keydown(function(e){
         if(e.keyCode == 13){
         	var data=$('.user_name_input_text').val()
