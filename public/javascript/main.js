@@ -81,7 +81,7 @@ function rename_file(data){
 		url:"/ajax/rename_pageEntry",
 		dataType:"JSON", // 옵션이므로 JSON으로 받을게 아니면 안써도 됨
 		data:params,
-		success : function(data) {
+		success : function() {
 			make_page_all_list(data.pageInfo.path)
 		},
 		error : function(xhr, status, error) {
