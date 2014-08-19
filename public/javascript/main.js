@@ -156,7 +156,7 @@ function make_html_all_list(data) {
 function make_page_all_list(pathdata){
 	var jquery_obj= $(this);
 	var name=jquery_obj.text().trim();
-	var path=jquery_obj.data('path')+name=="/"?"":name
+	var path=jquery_obj.data('path')+(name=="/"?"":name)
 	path=path&&path.trim()!="undefined"?path:"/"
 	if(path=="/"&& typeof(pathdata)=="string")
 		path=pathdata
