@@ -332,17 +332,19 @@ function folder_context_binding(){
 				data.dirInfo={};
 				data.dirInfo.path=a_obj.data('path')
 				data.dirInfo.name=a_obj.text()
-				delete_dir(data)
+				if(data.dirInfo.name!="/")
+					delete_dir(data)
 			}else if(key=='Rename'){
 				var a_obj=$(this).find('a')
 				var data={};
 				data.dirInfo={};
 				data.dirInfo.path=a_obj.data('path')
 				data.dirInfo.name=a_obj.text()
-				get_name_by_user(function(new_name){
-					data.dirInfo.new_name=new_name
-	        		rename_folder(data)
-	        	})
+				if(data.dirInfo.name!="/")
+					get_name_by_user(function(new_name){
+						data.dirInfo.new_name=new_name
+		        		rename_folder(data)
+		        	})
 			}
 	    },
 	    items: {
