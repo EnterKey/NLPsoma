@@ -98,11 +98,11 @@ function rename_file(data){
 }
 
 function get_name_by_user(callback){
-	$('body').append('<div id="user_name_input_div"><input type="search" class="user_name_input_text" autofocus></input></div>')
+	$('body').append('<div class="user_name_input_div"><input type="search" class="user_name_input_text" autofocus></input></div>')
 	$('.user_name_input_text').keydown(function(e){
         if(e.keyCode == 13){
         	var data=$('.user_name_input_text').val()
-        	$('#user_name_input_div').remove()
+        	$('.user_name_input_div').remove()
         	var alphaExp = /^[a-zA-Z_-]+$/;
         	if(data.match(alphaExp))
           		callback(data);
@@ -256,7 +256,7 @@ function make_both_view(path){
 }
 function delete_dir(data){
 
-	var path=data.path;
+	var path=data.dirInfo.path;
 	var params={
 		userInfo: global_user,
 		dirInfo:data.dirInfo
