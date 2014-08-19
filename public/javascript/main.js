@@ -161,10 +161,12 @@ function make_html_all_list(data) {
 	document.getElementById("dir_with_file_list").innerHTML=innerhtml_str;
 	init();
 }
-function make_page_all_list(){
+function make_page_all_list(pathdata){
 	var jquery_obj= $(this);
 	var path=jquery_obj.data('path')+jquery_obj.text().trim()
 	path=path&&path.trim()!="undefined"?path:"/"
+	if(path=="/"&& pathdata)
+		path=pathdata
 	var params={
 		userInfo: global_user,
 		path:path
@@ -287,7 +289,7 @@ function delete_entry(data){
 		data:params,
 		dataType:"JSON", // 옵션이므로 JSON으로 받을게 아니면 안써도 됨
 		success : function (){
-			make_page_all_list()
+			make_page_all_list(data.pageInfo.path)
 		},
 		error : function(xhr, status, error) {
 			alert("Error");
@@ -347,6 +349,7 @@ function file_context_binding(){
 				var data={};
 				data.pageInfo={};
 				data.pageInfo.url=a_obj.attr('href')
+				data.pageInfo.path=a_obj.data('path')
 				delete_entry(data)
 			}else if(key=='Rename'){
 				var a_obj=$(this).find('.file_a_tag_title')
