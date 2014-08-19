@@ -295,7 +295,6 @@ function file_context_binding(){
 	    items: {
 	        "Delete": {name: "Delete", icon: "delete"}
 	    }
-
 	})
 }
 var init=function(){
