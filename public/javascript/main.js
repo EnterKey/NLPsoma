@@ -186,7 +186,7 @@ function make_html_dir_list(data) {
 	$('.dir_only_elem').remove();
 	var result=data.pageDir;
 	var innerhtml_str=""
-	innerhtml_str+="<li class='list-group-item droppable_forder dir_only_elem' style='color:gray;background-color:whitesmoke'>"+
+	innerhtml_str+="<li class='list-group-item dir_only_elem' style='color:gray;background-color:whitesmoke'>"+
             "<div class='row'>"+
               "<div class='col-sm-12'>"+
               	"<div>"+
