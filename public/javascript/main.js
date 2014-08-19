@@ -49,13 +49,65 @@ function make_new_folder(jquery_obj,name){
 	})
 }
 
+function rename_folder(jquery_obj,name){
+	var a_obj=jquery_obj.find('a');
+	var path=a_obj.data('path')
+	path=path&&path.trim()!="undefined"?path:"/"
+	var name=a_obj.text()
+	var params={
+		userInfo: global_user,
+		dirInfo:{
+			name:name,
+			new_name:new_name,
+			path:path
+		}
+	}
+	$.ajax({
+		type:"POST",
+		url:"/ajax/rename_pageDir",
+		dataType:"JSON", // 옵션이므로 JSON으로 받을게 아니면 안써도 됨
+		data:params,
+		success : function(data) {
+			make_page_dir_list()
+			make_page_all_list()
+		},
+		error : function(xhr, status, error) {
+			alert("Error");
+		}
+	})
+}
+
+function rename_file(jquery_obj,name){
+
+	var params={
+		userInfo: global_user,
+		pageInfo:data.pageInfo
+	}
+	$.ajax({
+		type:"POST",
+		url:"/ajax/rename_pageEntry",
+		dataType:"JSON", // 옵션이므로 JSON으로 받을게 아니면 안써도 됨
+		data:params,
+		success : function(data) {
+			make_page_all_list()
+		},
+		error : function(xhr, status, error) {
+			alert("Error");
+		}
+	})
+}
+
 function get_name_by_user(callback){
 	$('body').append('<div id="user_name_input_div"><input type="search" class="user_name_input_text" autofocus></input></div>')
 	$('.user_name_input_text').keydown(function(e){
         if(e.keyCode == 13){
         	var data=$('.user_name_input_text').val()
         	$('#user_name_input_div').remove()
-          	callback(data);
+        	var alphaExp = /^[a-zA-Z_-]+$/;
+        	if(data.match(alphaExp))
+          		callback(data);
+          	else
+          		alert("File name contains bad character")
         }
     });
 }
@@ -207,8 +259,7 @@ function delete_dir(data){
 	var path=data.path;
 	var params={
 		userInfo: global_user,
-		name:data.name,
-		path:path
+		dirInfo:data.dirInfo
 	}
 	$.ajax({
 		type:"POST",
@@ -227,8 +278,7 @@ function delete_entry(data){
 
 	var params={
 		userInfo: global_user,
-		url:data.url,
-		path:data.path
+		pageInfo:data.pageInfo
 	}
 	$.ajax({
 		type:"POST",
@@ -267,14 +317,20 @@ function folder_context_binding(){
 	        }else if(key=='Delete'){
 				var a_obj=$(this).find('a')
 				var data={};
-				data.path=a_obj.data('path')
-				data.name=a_obj.text()
+				data.dirInfo={};
+				data.dirInfo.path=a_obj.data('path')
+				data.dirInfo.name=a_obj.text()
 				delete_dir(data)
+			}else if(key=='Rename'){
+				get_name_by_user(function(data){
+	        		rename_folder($(this),data)
+	        	})
 			}
 	    },
 	    items: {
-	        "Subdir": {name: "Subdir", icon: "edit"},
-	        "Delete": {name: "Delete", icon: "delete"}
+	        "Subdir": {name: "Subdir", icon: "new"},
+	        "Delete": {name: "Delete", icon: "delete"},
+	        "Rename": {name: "Rename", icon: "edit"}
 	    }
 
 	})
@@ -286,13 +342,23 @@ function file_context_binding(){
 			if(key=='Delete'){
 				var a_obj=$(this).find('.file_a_tag_title')
 				var data={};
-				data.path=a_obj.data('path')
-				data.url=a_obj.attr('href')
+				data.pageInfo={};
+				data.pageInfo.url=a_obj.attr('href')
 				delete_entry(data)
+			}else if(key=='Rename'){
+				var a_obj=$(this).find('.file_a_tag_title')
+				var data={};
+				data.pageInfo={};
+				data.pageInfo.url=a_obj.attr('href')
+				get_name_by_user(function(new_title){
+					data.pageInfo.new_title=new_title;
+	        		rename_file(data)
+	        	})
 			}
 	    },
 	    items: {
-	        "Delete": {name: "Delete", icon: "delete"}
+	        "Delete": {name: "Delete", icon: "delete"},
+	        "Rename": {name: "Rename", icon: "edit"}
 	    }
 	})
 }
