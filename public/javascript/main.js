@@ -141,9 +141,9 @@ function make_html_all_list(data) {
                   "</a>"+
               "</div>"+
               "<div class='col-sm-8'>"+
-                  "<a class='file_a_tag long_name_overflow' href='&&entryurl&&' data-path='&&entrypath&&'>"+
+                  "<p class='file_a_tag long_name_overflow' href='&&entryurl&&' data-path='&&entrypath&&'>"+
                     "&&content&&"+
-                  "</a>"+
+                  "</p>"+
               "</div>"+
             "</div>"+
         "</li>";
