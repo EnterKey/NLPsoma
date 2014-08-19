@@ -227,7 +227,7 @@ function delete_entry(data){
 
 	var params={
 		userInfo: global_user,
-		title:data.title,
+		url:data.url,
 		path:data.path
 	}
 	$.ajax({
@@ -287,10 +287,9 @@ function file_context_binding(){
 				var a_obj=$(this).find('.file_a_tag_title')
 				var data={};
 				data.path=a_obj.data('path')
-				data.title=a_obj.text()
+				data.url=a_obj.attr('href')
 				delete_entry(data)
 			}
-
 	    },
 	    items: {
 	        "Delete": {name: "Delete", icon: "delete"}
@@ -331,7 +330,7 @@ var droppable_event=function(){$('.droppable_forder').droppable({
 			pageInfo:{
 				oldPath:dragobj.find('.file_a_tag_title').data('path'),
 				newPath:jquery_obj.data('path')+jquery_obj.text().trim(),
-        url:dragobj.find('.file_a_tag_title').attr('href')
+       			url:dragobj.find('.file_a_tag_title').attr('href')
 			}
 		};
 		$.ajax({
