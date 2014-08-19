@@ -123,7 +123,6 @@ function make_html_all_list(data) {
 	var resultDir=data.pageDir;
 	var resultEntry=data.pageEntry;
 	var innerhtml_str="";
-	console.log(resultDir)
 	resultDir.forEach(function(indata){
 		innerhtml_str+="<li class='list-group-item droppable_forder dir_with_file_elem' style='color:gray;background-color:whitesmoke'>"+
             "<div class='row'>"+
@@ -320,7 +319,7 @@ function folder_context_binding(){
 	        		make_new_subfolder($(this),data)
 	        	})
 	        }else if(key=='Delete'){
-				var a_obj=$(this).find('a')
+				var a_obj=$(this).find('.dir_share')
 				var data={};
 				data.dirInfo={};
 				data.dirInfo.path=a_obj.data('path')
