@@ -209,7 +209,7 @@ function make_html_dir_list(data) {
 	document.getElementById("dir_only_list").innerHTML=innerhtml_str;
 	init();
 }
-function make_page_dir_list(){
+function make_page_all_list(){
 	var jquery_obj= $(this);
 	var path=jquery_obj.data('path')+jquery_obj.text().trim()
 	path=path&&path.trim()!="undefined"?path:"/"
@@ -286,7 +286,9 @@ function delete_entry(data){
 		url:"/ajax/remove_pageEntry", //only dir
 		data:params,
 		dataType:"JSON", // 옵션이므로 JSON으로 받을게 아니면 안써도 됨
-		success : make_html_all_list,
+		success : function (){
+			make_page_all_list();
+		},
 		error : function(xhr, status, error) {
 			alert("Error");
 		}
