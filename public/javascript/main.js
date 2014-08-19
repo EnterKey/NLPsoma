@@ -49,7 +49,7 @@ function make_new_folder(jquery_obj,name){
 	})
 }
 
-function rename_folder(jquery_obj,name){
+function rename_folder(jquery_obj,new_name){
 	var a_obj=jquery_obj.find('a');
 	var path=a_obj.data('path')
 	path=path&&path.trim()!="undefined"?path:"/"
@@ -77,7 +77,7 @@ function rename_folder(jquery_obj,name){
 	})
 }
 
-function rename_file(jquery_obj,name){
+function rename_file(data){
 
 	var params={
 		userInfo: global_user,
