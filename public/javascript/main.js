@@ -377,7 +377,7 @@ var init=function(){
 		folder_context_binding();
 		file_context_binding();
 }
-var click_event_dir_only=function(){$('.dir_only').on('click',make_page_dir_list)}
+var click_event_dir_only=function(){$('.dir_only').on('click',make_page_all_list)}
 var click_event_dir_with_file=function(){$('.dir_with_file').on('click',make_page_all_list)}
 var draggable_event=function(){$('.draggable_file').draggable( {
 	start:function(e,u){
