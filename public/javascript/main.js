@@ -322,7 +322,7 @@ function folder_context_binding(){
 		selector:".droppable_forder",
 		callback: function(key, options) {
 			if(key=="Subdir"){
-				var self=($this)
+				var self=$(this)
 	        	get_name_by_user(function(data){
 	        		make_new_subfolder(self,data)
 	        	})
