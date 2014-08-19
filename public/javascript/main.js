@@ -122,7 +122,7 @@ function make_html_all_list(data) {
               "<div class='col-sm-12'>"+
               	"<div>"+
                   "<span class='glyphicon glyphicon-folder-close'> </span>"+
-                  "<a class='dir_with_file dir_share' data-path='&&dirpath&&'>"+
+                  "<a class='dir_with_file dir_share long_name_overflow' data-path='&&dirpath&&'>"+
                     "&&dirname&&"+
                   "</a>"+
             	"</div>"+
@@ -136,12 +136,12 @@ function make_html_all_list(data) {
             "<div class='row'>"+
               "<div class='col-sm-4'>"+
                   "<span class='glyphicon glyphicon-file'> </span>"+
-                  "<a class='file_a_tag_title' href='&&entryurl&&' data-path='&&entrypath&&'>"+
+                  "<a class='file_a_tag_title long_name_overflow' href='&&entryurl&&' data-path='&&entrypath&&'>"+
                     "&&title&&"+
                   "</a>"+
               "</div>"+
               "<div class='col-sm-8'>"+
-                  "<a class='file_a_tag' href='&&entryurl&&' data-path='&&entrypath&&'>"+
+                  "<a class='file_a_tag long_name_overflow' href='&&entryurl&&' data-path='&&entrypath&&'>"+
                     "&&content&&"+
                   "</a>"+
               "</div>"+
@@ -366,6 +366,18 @@ function file_context_binding(){
 	    }
 	})
 }
+var long_name_hover_animation=function(){
+    var long_name_animateright=function(){
+      $(this).animate({scrollLeft:this.scrollWidth-$(this).width()}, (this.scrollWidth-$(this).width())*15);
+      $(this).one('mouseleave',long_name_animateleft)
+    }
+    var long_name_animateleft=function(){
+      $(this).animate({scrollLeft:0}, (this.scrollWidth-$(this).width())*15);
+      $(this).one('mouseover',long_name_animateright)
+    }
+    $('.long_name_overflow').one('mouseover',long_name_animateright)
+    $('.long_name_overflow').one('mouseleave',long_name_animateleft)
+}
 var init=function(){
 		click_event_dir_only();
 		click_event_dir_with_file();
@@ -374,6 +386,7 @@ var init=function(){
 		both_context_binding();
 		folder_context_binding();
 		file_context_binding();
+		long_name_hover_animation();
 }
 var click_event_dir_only=function(){$('.dir_only').on('click',make_page_all_list)}
 var click_event_dir_with_file=function(){$('.dir_with_file').on('click',make_page_all_list)}
