@@ -248,8 +248,16 @@ module.exports = {
 		};
 
 		userDataModel.find(searchQuery, function(err, data){
-			if(err)
+			if(err){
 				callback(err, result);
+				return;
+			}
+
+			if(data.length == 0){
+				console.log('none user');
+				callback("None user data", result);
+				return;
+			}
 
 			data[0].pageDir.forEach(function(item){
 				if(typeof(item.path)=='string' && item.path == path)
