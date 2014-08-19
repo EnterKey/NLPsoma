@@ -82,7 +82,7 @@ function rename_file(data){
 		dataType:"JSON", // 옵션이므로 JSON으로 받을게 아니면 안써도 됨
 		data:params,
 		success : function(data) {
-			make_page_all_list()
+			make_page_all_list(data.pageInfo.path)
 		},
 		error : function(xhr, status, error) {
 			alert("Error");
@@ -367,6 +367,7 @@ function file_context_binding(){
 				var data={};
 				data.pageInfo={};
 				data.pageInfo.url=a_obj.attr('href')
+				data.pageInfo.path=a_obj.data('path')
 				get_name_by_user(function(new_title){
 					data.pageInfo.new_title=new_title;
 	        		rename_file(data)
