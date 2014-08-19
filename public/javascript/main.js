@@ -17,7 +17,7 @@ function make_new_subfolder(jquery_obj,name){
 		data:params,
 		success : function(data) {
 			make_page_dir_list()
-			make_page_all_list()
+			make_page_all_list(path)
 		},
 		error : function(xhr, status, error) {
 			alert("Error");
@@ -41,7 +41,7 @@ function make_new_folder(jquery_obj,name){
 		data:params,
 		success : function(data) {
 			make_page_dir_list()
-			make_page_all_list()
+			make_page_all_list(path)
 		},
 		error : function(xhr, status, error) {
 			alert("Error");
