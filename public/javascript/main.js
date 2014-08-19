@@ -49,18 +49,11 @@ function make_new_folder(jquery_obj,name){
 	})
 }
 
-function rename_folder(jquery_obj,new_name){
-	var a_obj=jquery_obj.find('a');
-	var path=a_obj.data('path')
-	path=path&&path.trim()!="undefined"?path:"/"
-	var name=a_obj.text()
+function rename_folder(data){
+
 	var params={
 		userInfo: global_user,
-		dirInfo:{
-			name:name,
-			new_name:new_name,
-			path:path
-		}
+		dirInfo:data.dirInfo
 	}
 	$.ajax({
 		type:"POST",
@@ -319,15 +312,21 @@ function folder_context_binding(){
 	        		make_new_subfolder($(this),data)
 	        	})
 	        }else if(key=='Delete'){
-				var a_obj=$(this).find('.dir_share')
+				var a_obj=$(this).find('a')
 				var data={};
 				data.dirInfo={};
 				data.dirInfo.path=a_obj.data('path')
 				data.dirInfo.name=a_obj.text()
 				delete_dir(data)
 			}else if(key=='Rename'){
-				get_name_by_user(function(data){
-	        		rename_folder($(this),data)
+				var a_obj=$(this).find('a')
+				var data={};
+				data.dirInfo={};
+				data.dirInfo.path=a_obj.data('path')
+				data.dirInfo.name=a_obj.text()
+				get_name_by_user(function(new_name){
+					data.dirInfo.new_name=new_name
+	        		rename_folder(data)
 	        	})
 			}
 	    },
