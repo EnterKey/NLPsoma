@@ -6,21 +6,14 @@
 
 		<link href="/library/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 		<link href="/library/jquery-ui/jquery.contextMenu.css" rel="stylesheet">
-		<script src="/library/jquery/jquery-2.1.0.min.js"></script>
-		<script src="/library/jquery-ui/jquery-ui.min.js"></script>
-		<script src="/library/jquery-ui/jquery.contextMenu.js"></script>
-		<script src="/library/jso/jso.js"></script>
-		<script src="/javascript/common.js"></script>
-		<script src="/javascript/main.js"></script>
-		<script src="/javascript/oauth.js"></script>
 		<style type="text/css">
 			.long_name_overflow{
 			  white-space:nowrap;
 			  overflow:auto;
 			  text-overflow:clip;
 			}
-			.long_name_overflow::-webkit-scrollbar { 
-			    display: none; 
+			.long_name_overflow::-webkit-scrollbar {
+			    display: none;
 			}
 			html, body, .row{
 				height: 100%;
@@ -50,7 +43,7 @@
 				padding-left: 3px;
 
 			}
-			li{
+			#notehub-bookmark-contents > li{
 				background-color: rgba(255,255,255,0.2);
 			}
 			.user_name_input_text{
@@ -63,7 +56,7 @@
 		        width: 100%;
 		        float: left;
 			}
-			h3{
+			#notehub-bookmark-contents h3{
 				margin-top: 0;
 				font-size: 30pt;
 				width: 100%;
@@ -91,7 +84,7 @@
 			<div class="col-xs-4 directory-list" id="directory-list-only">
 				<h3>Folder List</h3>
 				<ul class='list-group' id="dir_only_list">
-                
+
               </ul>
 
 			</div>
@@ -105,5 +98,12 @@
 			</div>
 
 		</div>
+
+    <script src="/library/jquery/jquery-2.1.0.min.js"></script>
+    <script src="/library/jquery-ui/jquery-ui.min.js"></script>
+    <script src="/library/jquery-ui/jquery.contextMenu.js"></script>
+    <script src="/library/jso/jso.js"></script>
+    <script src="/javascript/common.js"></script>
+    <script src="/javascript/bookmark.js"></script>
 	</body>
 </html>

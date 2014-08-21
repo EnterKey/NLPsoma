@@ -192,24 +192,25 @@ var insertEntry_handler = function(err, data){
 }
 
 exports.main = function(req, res){
-  console.log(req.query);
-	//mocking
 
-	// var path = "/"
-	// var postData={
-	// 	userInfo: {
- //      email: userEmail,
- //      name: 'bbu',
- //      picture: 'https://lh3.googleusercontent.com/-XdUIqdMkCWA/AAAAAAAAAAI/AAAAAAAAAAA/4252rscbv5M/photo.jpg'
- //    },
-	// 	path:path
-	// }
-	// mongodb_handler.get_pageAll_list(postData, function(err, data){
-
-	// });
-  res.render('main', {pageDir: [], pageEntry:[]});
+  if(!req.session || !req.user){
+    res.render('login');
+  }else{
+    res.render('document');
+  }
 }
 
+exports.bookmark = function(req, res){
+  res.render('bookmark', {pageDir: [], pageEntry:[]});
+}
+
+exports.document = function(req, res){
+  res.render('document');
+}
+
+exports.editor = function(req, res){
+  res.render('editor', {pageDir: [], pageEntry:[]});
+}
 
 exports.insert_user = function(req, res){
   mongodb_handler.insert_user(req.body, function(err, data){
