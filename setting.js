@@ -10,16 +10,16 @@ switch(process.NODE_ENV){
   case "dev":
     console.log("Node mode : dev");
     oauth.google = {
-      "GOOGLE_APP_ID": "994714572327-7vm56ecmedqdgeelem26ci9vu6ji76hg.apps.googleusercontent.com",
-      "GOOGLE_APP_SECRET": "30Ujwwh_R5AO2hopwolneBs5",
+      "GOOGLE_APP_ID": "371816793466-s68muv1k5gob0gq7pn0blv6lb97l9i9c.apps.googleusercontent.com",
+      "GOOGLE_APP_SECRET": "YtakTTgVw21lNnjWU3GHJIep",
       "callbackURL": "http://localhost:4000/auth/google/callback"
     }
     break;
   case "pro":
     console.log("Node mode : pro");
     oauth.google = {
-      "GOOGLE_APP_ID": "994714572327-1rt0im4unhkai7brfp5mk904llu1kd3p.apps.googleusercontent.com",
-      "GOOGLE_APP_SECRET": "uA6A1WKOksw63OgKP-kYY29Q",
+      "GOOGLE_APP_ID": "371816793466-arbhv87h7rljd6grcgrena0d42tdgiuq.apps.googleusercontent.com",
+      "GOOGLE_APP_SECRET": "DMdx3ZPzeqZq8MBW_Fmwwnz-",
       "callbackURL": "http://aedilis5.vps.phps.kr:4000/auth/google/callback"
     }
     break;
@@ -27,8 +27,8 @@ switch(process.NODE_ENV){
   default:
     console.log("Node mode : default");
     oauth.google = {
-      "GOOGLE_APP_ID": "994714572327-7vm56ecmedqdgeelem26ci9vu6ji76hg.apps.googleusercontent.com",
-      "GOOGLE_APP_SECRET": "30Ujwwh_R5AO2hopwolneBs5",
+      "GOOGLE_APP_ID": "371816793466-s68muv1k5gob0gq7pn0blv6lb97l9i9c.apps.googleusercontent.com",
+      "GOOGLE_APP_SECRET": "YtakTTgVw21lNnjWU3GHJIep",
       "callbackURL": "http://localhost:4000/auth/google/callback"
     }
 }
