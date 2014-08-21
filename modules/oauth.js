@@ -39,6 +39,7 @@ function init(app) {
     successRedirect: '/document',
     failureRedirect: '/'
   }));
+
   app.get('/logout', function(req, res){
     //
     // passport 에서 지원하는 logout 메소드이다.

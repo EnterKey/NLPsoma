@@ -234,7 +234,7 @@ module.exports = {
 
 	get_pageAll_list: function(postData, callback){
 		var self = this;
-		var path =  parsePath(postData.path);
+		var path = postData.path == undefined ? "/" : parsePath(postData.path);
 		if(typeof(callback) != "function") callback = function(){};
 
 		var result = {
