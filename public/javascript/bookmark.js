@@ -4,6 +4,7 @@ function make_new_subfolder(jquery_obj,name){
 	var path=a_obj.data('path')+a_obj.text()
 	path=path&&path.trim()!="undefined"?path:"/"
 	var params={
+		userInfo: global_user,
 		dirInfo:{
 			name:name,
 			path:path
@@ -27,6 +28,7 @@ function make_new_folder(jquery_obj,name){
 	var path=global_current_path
 	path=path&&path.trim()!="undefined"?path:"/"
 	var params={
+		userInfo: global_user,
 		dirInfo:{
 			name:name,
 			path:path
@@ -50,6 +52,7 @@ function make_new_folder(jquery_obj,name){
 function rename_folder(data){
 
 	var params={
+		userInfo: global_user,
 		dirInfo:data.dirInfo
 	}
 	$.ajax({
@@ -70,6 +73,7 @@ function rename_folder(data){
 function rename_file(data){
 
 	var params={
+		userInfo: global_user,
 		pageInfo:data.pageInfo
 	}
 	$.ajax({
@@ -158,6 +162,7 @@ function make_page_all_list(pathdata){
 		path=pathdata
 	global_current_path=path;
 	var params={
+		userInfo: global_user,
 		path:path
 	}
 	$.ajax({
@@ -181,7 +186,7 @@ function make_html_dir_list(data) {
 	$('.dir_only_elem').remove();
 	var result=data.pageDir;
 	var innerhtml_str=""
-	innerhtml_str+="<li class='list-group-item dir_only_elem' style='color:gray;background-color:whitesmoke'>"+
+	innerhtml_str+="<li class='list-group-item droppable_forder dir_only_elem' style='color:gray;background-color:whitesmoke'>"+
             "<div class='row'>"+
               "<div class='col-sm-12'>"+
               	"<div>"+
@@ -217,6 +222,7 @@ function make_page_dir_list(){
 	var path=jquery_obj.data('path')+jquery_obj.text().trim()
 	path=path&&path.trim()!="undefined"?path:"/"
 	var params={
+		userInfo: global_user,
 		path:path
 	}
 	$.ajax({
@@ -232,6 +238,7 @@ function make_page_dir_list(){
 }
 function make_both_view(path){
 	var params={
+		userInfo: global_user,
 		path:path
 	}
 	$.ajax({
@@ -260,6 +267,7 @@ function delete_dir(data){
 
 	var path=data.dirInfo.path;
 	var params={
+		userInfo: global_user,
 		dirInfo:data.dirInfo
 	}
 	$.ajax({
@@ -278,6 +286,7 @@ function delete_dir(data){
 function delete_entry(data){
 
 	var params={
+		userInfo: global_user,
 		pageInfo:data.pageInfo
 	}
 	$.ajax({
@@ -323,19 +332,17 @@ function folder_context_binding(){
 				data.dirInfo={};
 				data.dirInfo.path=a_obj.data('path')
 				data.dirInfo.name=a_obj.text()
-				if(data.dirInfo.name!="/")
-					delete_dir(data)
+				delete_dir(data)
 			}else if(key=='Rename'){
 				var a_obj=$(this).find('a')
 				var data={};
 				data.dirInfo={};
 				data.dirInfo.path=a_obj.data('path')
 				data.dirInfo.name=a_obj.text()
-				if(data.dirInfo.name!="/")
-					get_name_by_user(function(new_name){
-						data.dirInfo.new_name=new_name
-		        		rename_folder(data)
-		        	})
+				get_name_by_user(function(new_name){
+					data.dirInfo.new_name=new_name
+	        		rename_folder(data)
+	        	})
 			}
 	    },
 	    items: {
@@ -388,7 +395,9 @@ var long_name_hover_animation=function(){
     $('.long_name_overflow').one('mouseleave',long_name_animateleft)
 }
 var init=function(){
+		off_click_event_dir_only();	
 		click_event_dir_only();
+		off_click_event_dir_with_file();
 		click_event_dir_with_file();
 		droppable_event();
 		draggable_event();
@@ -398,6 +407,9 @@ var init=function(){
 		long_name_hover_animation();
 }
 var click_event_dir_only=function(){$('.dir_only').on('click', make_page_all_list)}
+var off_click_event_dir_only=function(){$('.dir_only').off('click')}
+
+var off_click_event_dir_with_file=function(){$('.dir_with_file').off('click')}
 var click_event_dir_with_file=function(){$('.dir_with_file').on('click',make_page_all_list)}
 var draggable_event=function(){$('.draggable_file').draggable( {
 	start:function(e,u){
@@ -418,6 +430,7 @@ var droppable_event=function(){$('.droppable_forder').droppable({
 
 		var dragobj=$(ui.draggable);
 		var params={
+			userInfo: global_user,
 			pageInfo:{
 				oldPath:dragobj.find('.file_a_tag_title').data('path'),
 				newPath:jquery_obj.data('path')+jquery_obj.text().trim(),
@@ -441,11 +454,6 @@ var droppable_event=function(){$('.droppable_forder').droppable({
 
 })
 }
-
-$( document ).ready(function() {
-  init();
-});
-
 $(window).load(function(){
-  make_both_view();
+	init();
 })
