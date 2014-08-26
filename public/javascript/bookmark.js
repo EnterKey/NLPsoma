@@ -457,3 +457,10 @@ var droppable_event=function(){$('.droppable_forder').droppable({
 $(window).load(function(){
 	init();
 })
+
+
+
+
+$(window).load(function(){
+  make_both_view();
+})
