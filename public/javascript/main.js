@@ -399,12 +399,6 @@ var init=function(){
 		click_event_dir_only();
 		off_click_event_dir_with_file();
 		click_event_dir_with_file();
-		droppable_event();
-		draggable_event();
-		both_context_binding();
-		folder_context_binding();
-		file_context_binding();
-		long_name_hover_animation();
 }
 var click_event_dir_only=function(){$('.dir_only').on('click', make_page_all_list)}
 var off_click_event_dir_only=function(){$('.dir_only').off('click', make_page_all_list)}
@@ -456,4 +450,11 @@ var droppable_event=function(){$('.droppable_forder').droppable({
 }
 $(window).load(function(){
 	init();
+	
+		droppable_event();
+		draggable_event();
+		both_context_binding();
+		folder_context_binding();
+		file_context_binding();
+		long_name_hover_animation();
 })
