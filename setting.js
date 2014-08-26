@@ -6,7 +6,7 @@ var oauth = {
   }
 }
 
-switch(process.NODE_ENV){
+switch(process.env.NODE_ENV){
   case "dev":
     console.log("Node mode : dev");
     oauth.google = {
