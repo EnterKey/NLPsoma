@@ -1,4 +1,13 @@
 var mongodb_handler = require('../modules/mongodb_handler');
+var phantomjs = require('phantomjs')
+var binPath = phantomjs.path
+var path = require('path');
+var fs = require('fs');
+var childProcess = require('child_process')
+
+
+
+
 /*
  * GET home page.
  */
@@ -24,6 +33,17 @@ var dbResult_handler = function(err, data){
   // console.log(result);
   return result;
 };
+var phantom_snapshot = function(url,email,callback){
+  var childArgs = [
+    path.join(__dirname, 'phantom.js'),
+    url,
+    path.join(__dirname,'../..','snapshot', email,new Buffer(url).toString('base64')+'.png')
+  ]
+  console.log(childArgs)
+  childProcess.execFile(binPath, childArgs, function(err, stdout, stderr) {
+    callback();
+  })
+}
 
 var insertEntry_handler = function(err, data){
   var result = {
@@ -38,6 +58,8 @@ var insertEntry_handler = function(err, data){
     if(err=="PageExist")
       result.errorMsg += ":중복";
     result.status = false;
+  }else{
+
   }
 
   return result;
@@ -70,12 +92,33 @@ exports.insert_user = function(req, res){
     res.json(result);
   });
 };
+exports.snapshot=function(req, res){
+  var useremail= req.body.userInfo.email;
+  var hashurl=req.params.hashurl;
+  var imagePath =  path.join(__dirname,'../..','snapshot', useremail,hashurl+'.png')
+  console.log(imagePath)
+  fs.readFile(imagePath, function(err, data){
+    if(err) throw err;
+    res.writeHead(200, {
+      'Content-Type': 'image/png',
+      'Content-Length': data.length
+    });
+    res.end(data, 'binary');
+  })
+}
 
 exports.insert_pageEntry = function(req, res){
-  mongodb_handler.insert_pageEntry(req.body, function(err, data){
-    var result = insertEntry_handler(err, data);
-    res.json(result);
-  });
+    mongodb_handler.insert_pageEntry(req.body, function(err, data){
+      var result = insertEntry_handler(err, data);
+      if(!err){
+        phantom_snapshot(req.body.pageInfo.url,req.body.userInfo.email,function(){
+          res.json(result);
+        })
+      }
+      else{
+        res.json(result);
+      }
+    });
 };
 
 exports.insert_pageDir = function(req, res){

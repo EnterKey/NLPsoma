@@ -44,6 +44,7 @@ app.get('/', routes.main);
 app.get('/document', checkSession_get, routes.document);
 app.get('/bookmark', checkSession_get, routes.bookmark);
 app.get('/editor', checkSession_get, routes.editor);
+app.get('/snapshot/:hashurl', checkSession_get, routes.snapshot);
 
 app.post('/ajax/insert_user', checkSession_post, routes.insert_user);
 app.post('/ajax/insert_pageEntry', checkSession_post, routes.insert_pageEntry);
