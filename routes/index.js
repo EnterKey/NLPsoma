@@ -110,12 +110,17 @@ exports.snapshot=function(req, res){
   var hashurl=req.params.hashurl;
   var imagePath =  path.join(__dirname,'../..','snapshot', useremail,hashurl+'.png')
   fs.readFile(imagePath, function(err, data){
-    if(err) throw err;
-    res.writeHead(200, {
-      'Content-Type': 'image/png',
-      'Content-Length': data.length
-    });
-    res.end(data, 'binary');
+    if(err) {
+      res.writeHead(501);
+      res.end();
+    }else{
+
+      res.writeHead(200, {
+        'Content-Type': 'image/png',
+        'Content-Length': data.length
+      });
+      res.end(data, 'binary');
+    }
   })
 }
 
