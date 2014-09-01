@@ -368,7 +368,7 @@ function file_context_binding(){
 			}else if(key='View'){
 				var a_obj=$(this).find('.file_a_tag_title')
 				var url=a_obj.attr('href')
-				window.open('/snapshot/'+new Buffer(url).toString('base64'))
+				window.open('/snapshot/'+btoa(url))
 			}
 	    },
 	    items: {
