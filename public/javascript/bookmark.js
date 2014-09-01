@@ -28,7 +28,6 @@ function make_new_folder(jquery_obj,name){
 	var path=global_current_path
 	path=path&&path.trim()!="undefined"?path:"/"
 	var params={
-		userInfo: global_user,
 		dirInfo:{
 			name:name,
 			path:path
