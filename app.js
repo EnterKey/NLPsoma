@@ -75,7 +75,7 @@ function checkSession_get(req, res, next){
     var userInfo = {
       email:req.user._json.email,
       name:req.user._json.name,
-      pciture:req.user._json.picture
+      picture:req.user._json.picture
     }
 
     req.body.userInfo = userInfo;
@@ -94,7 +94,7 @@ function checkSession_post(req, res, next){
     var userInfo = {
       email:req.user._json.email,
       name:req.user._json.name,
-      pciture:req.user._json.picture
+      picture:req.user._json.picture
     }
 
     req.body.userInfo = userInfo;

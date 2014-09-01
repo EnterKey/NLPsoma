@@ -75,15 +75,28 @@ exports.main = function(req, res){
 }
 
 exports.bookmark = function(req, res){
-  res.render('bookmark', {pageDir: [], pageEntry:[]});
+  var renderInfo = {
+    pageDir: [],
+    pageEntry: []
+  }
+  renderInfo.userInfo = req.body.userInfo;
+  res.render('bookmark', renderInfo);
 }
 
 exports.document = function(req, res){
-  res.render('document');
+  var renderInfo = {}
+  renderInfo.userInfo = req.body.userInfo;
+  res.render('document', renderInfo);
 }
 
 exports.editor = function(req, res){
-  res.render('editor', {pageDir: [], pageEntry:[]});
+  var renderInfo = {
+    pageDir: [],
+    pageEntry: []
+  }
+  renderInfo.userInfo = req.body.userInfo;
+
+  res.render('editor', renderInfo);
 }
 
 exports.insert_user = function(req, res){
@@ -96,7 +109,6 @@ exports.snapshot=function(req, res){
   var useremail= req.body.userInfo.email;
   var hashurl=req.params.hashurl;
   var imagePath =  path.join(__dirname,'../..','snapshot', useremail,hashurl+'.png')
-  console.log(imagePath)
   fs.readFile(imagePath, function(err, data){
     if(err) throw err;
     res.writeHead(200, {
