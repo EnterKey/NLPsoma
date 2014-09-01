@@ -47,18 +47,18 @@ app.get('/editor', checkSession_get, routes.editor);
 app.get('/snapshot/:hashurl', checkSession_get, routes.snapshot);
 
 app.post('/ajax/insert_user', checkSession_post, routes.insert_user);
-app.post('/ajax/insert_pageEntry', checkSession_post, routes.insert_pageEntry);
-app.post('/ajax/insert_pageDir', checkSession_post, routes.insert_pageDir);
-app.post('/ajax/get_pageEntry_list', checkSession_post, routes.get_pageEntry_list);
-app.post('/ajax/get_pageDir_list', checkSession_post, routes.get_pageDir_list);
-app.post('/ajax/get_pageAll_list', checkSession_post, routes.get_pageAll_list);
-app.post('/ajax/remove_pageEntry', checkSession_post, routes.remove_pageEntry);
-app.post('/ajax/remove_pageDir', checkSession_post, routes.remove_pageDir);
-app.post('/ajax/move_dirPath', checkSession_post, routes.move_dirPath);
-app.post('/ajax/move_entryPath', checkSession_post, routes.move_entryPath);
-app.post('/ajax/rename_pageDir', checkSession_post, routes.rename_pageDir);
-app.post('/ajax/rename_pageEntry', checkSession_post, routes.rename_pageEntry);
-app.post('/ajax/auth/extension/google', extensionCheckSession);
+app.post('/ajax/insert_pageEntry', checkSession_post, routes.insert_pageEntry);			//extension 에서 page를 추가할 때 쓰는 요청을 받는 부분입니다.
+app.post('/ajax/insert_pageDir', checkSession_post, routes.insert_pageDir);			//extension 에서 directory를 추가할 때 쓰는 요청을 받는 부분입니다.
+app.post('/ajax/get_pageEntry_list', checkSession_post, routes.get_pageEntry_list);		//Bookmark view에서 Entry list를 전부 가져올때 쓰는 부분입니다.
+app.post('/ajax/get_pageDir_list', checkSession_post, routes.get_pageDir_list);			//Bookmark view에서 directory list를 전부 가져올때 쓰는 부분입니다.
+app.post('/ajax/get_pageAll_list', checkSession_post, routes.get_pageAll_list);			//Bookmark view에서 directorym, entry list를 전부 가져올때 쓰는 부분입니다.
+app.post('/ajax/remove_pageEntry', checkSession_post, routes.remove_pageEntry);			//Bookmark view에서 entry를 지울 때 쓰는 부분입니다.
+app.post('/ajax/remove_pageDir', checkSession_post, routes.remove_pageDir);			//Bookmark view에서 Directory를 지울 때 쓰는 부분입니다.
+app.post('/ajax/move_dirPath', checkSession_post, routes.move_dirPath);				//Bookmark view에서 Directory위치를 변경할 때 쓰는 부분입니다.
+app.post('/ajax/move_entryPath', checkSession_post, routes.move_entryPath);			//Bookmark view에서 Entry위치를 변경할 때 쓰는 부분입니다.
+app.post('/ajax/rename_pageDir', checkSession_post, routes.rename_pageDir);			//Bookmark view에서 Directory 이름을 변경할 때 쓰는 부분입니다.
+app.post('/ajax/rename_pageEntry', checkSession_post, routes.rename_pageEntry);			//Bookmark view에서 Entry 이름을 변경할 때 쓰는 부분입니다.
+app.post('/ajax/auth/extension/google', extensionCheckSession);					//outh를 관장하는 부분입니다.
 
 
 http.createServer(app).listen(app.get('port'), function(){

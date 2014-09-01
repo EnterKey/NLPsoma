@@ -395,16 +395,16 @@ var long_name_hover_animation=function(){
     $('.long_name_overflow').one('mouseleave',long_name_animateleft)
 }
 var init=function(){
-		off_click_event_dir_only();	
-		click_event_dir_only();
-		off_click_event_dir_with_file();
-		click_event_dir_with_file();
-		droppable_event();
-		draggable_event();
-		both_context_binding();
-		folder_context_binding();
-		file_context_binding();
-		long_name_hover_animation();
+		off_click_event_dir_only();	//directory 목록에 걸린 클릭이벤트를 off 합니다.
+		click_event_dir_only();		//directory 목록에 걸린 클릭이벤트를 on 합니다.
+		off_click_event_dir_with_file(); //directory와 content가 같이 나오는 view의 클릭이벤트를 off 합니다.
+		click_event_dir_with_file();	// directory와 content가 같이 나오는 view의 클릭이벤트를 on 합니다.
+		droppable_event();		// drag and drop에서 drop 이벤트를 directory에 활성화 시키는 함수입니다.
+		draggable_event();		// drag and drop에서 drag 이벤트를 content에 활성화 시키는 함수입니다.
+		both_context_binding();		// 양쪽 뷰 모두에게 오른쪽 클릭시 나오는 context 메뉴 이벤트를 바인딩합니다.
+		folder_context_binding();	// directory 뷰에 오른쪽 클릭시 나오는 context 메뉴 이벤트를 바인딩합니다.
+		file_context_binding();		// content 뷰에 오른쪽 클릭시 나오는 context 메뉴 이벤트를 바인딩합니다.
+		long_name_hover_animation();	// content의 내용이 길어지는 경우 hover시 좌우로 움직이는 애니매이션을 넣어 길이를 일정하게 만들어 주는 함수입니다.
 }
 var click_event_dir_only=function(){$('.dir_only').on('click', make_page_all_list)}
 var off_click_event_dir_only=function(){$('.dir_only').off('click')}

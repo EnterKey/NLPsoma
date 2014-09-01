@@ -105,7 +105,7 @@ function get_name_by_user(callback){
         }
     });
 }
-function make_html_all_list(data) {
+function make_html_all_list(data) { //
 	if(data.status==0){
 		alert('last folder');
 		return;
@@ -374,11 +374,16 @@ function file_context_binding(){
 					data.pageInfo.new_title=new_title;
 	        		rename_file(data)
 	        	})
+			}else if(key='View'){
+				var a_obj=$(this).find('.file_a_tag_title')
+				var url=a_obj.attr('href')
+				window.open('/snapshot/'+new Buffer(url).toString('base64'))
 			}
 	    },
 	    items: {
 	        "Delete": {name: "Delete", icon: "delete"},
-	        "Rename": {name: "Rename", icon: "edit"}
+	        "Rename": {name: "Rename", icon: "edit"},
+	        "View": {name: "View", icon: "edit"}
 	    }
 	})
 }
