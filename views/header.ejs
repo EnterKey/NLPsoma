@@ -1,3 +1,5 @@
+<link href="/stylesheets/header.css" rel="stylesheet">
+
 <div id="notehub-header" class="navbar navbar-inverse navbar-fixed-top" role="navigation">
   <div class="container">
     <div class="navbar-header">
@@ -16,18 +18,45 @@
         <li><a href="/editor">Editor</a></li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
-        <li><a href="/logout">Logout</a></li>
+        <li class="dropdown user user-menu">
+          <!-- <a href="/logout">Logout</a> -->
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+              <i class="glyphicon glyphicon-user"></i>
+              <span><%=userInfo.name%> <i class="caret"></i></span>
+          </a>
+          <ul class="dropdown-menu">
+              <!-- User image -->
+              <li class="user-header">
+                  <img src=<%=userInfo.picture%> class="img-circle" alt="User Image">
+                  <p>
+                      <%=userInfo.name%>
+                      <small>Member since Sep. 2014</small>
+                  </p>
+              </li>
+              <!-- Menu Body -->
+<!--               <li class="user-body">
+                  <div class="col-xs-4 text-center">
+                      <a href="#">Followers</a>
+                  </div>
+                  <div class="col-xs-4 text-center">
+                      <a href="#">Sales</a>
+                  </div>
+                  <div class="col-xs-4 text-center">
+                      <a href="#">Friends</a>
+                  </div>
+              </li> -->
+              <!-- Menu Footer-->
+              <li class="user-footer">
+                  <div class="pull-left">
+                      <a href="#" class="btn btn-default btn-flat">Profile</a>
+                  </div>
+                  <div class="pull-right">
+                      <a href="/logout" class="btn btn-default btn-flat">Sign out</a>
+                  </div>
+              </li>
+          </ul>
+        </li>
       </ul>
     </div><!--/.nav-collapse -->
   </div>
 </div>
-
-
-
-<style>
-
-body {
-  padding-top: 50px
-}
-
-</style>

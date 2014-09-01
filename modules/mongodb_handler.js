@@ -24,9 +24,20 @@ var userDataSchema = new Schema({
 			content: String,
 			status: Boolean
 		}
+	],
+	docsData : [
+		{
+			name : String,
+			content : String
+		}
 	]
 });
 
+// var DocsDataSchema = new Schema({
+// 	userEmail : String,
+// 	title : String,
+// 	content: String
+// })
 
 var userDataModel = mongoose.model('user', userDataSchema);
 
@@ -70,6 +81,24 @@ var isDirExist = function(userEmail, name, path, callback){
 		}
 	})
 }
+
+var isDocsExist = function(userEmail, name, callback){
+	if(!userEmail){
+		return callback("userEmail none", null);
+	}
+
+	userDataModel.find({userEmail: userEmail}, {"docsData": {"$elemMatch": {name:name}}}, function(err, data){
+		if(err){
+			callback(err, null);
+		}else{
+			if(data[0].docsData != undefined && data[0].docsData.length > 0)
+				callback(null, true);
+			else
+				callback(null, false);
+		}
+	})
+}
+
 
 var push_pageEntry = function(userEmail, pageInfo, callback){
 	var self = this;
@@ -424,6 +453,83 @@ module.exports = {
     userDataModel.update({userEmail:postData.userInfo.email, "pageEntry.url":pageInfo.url}, {"$set":{"pageEntry.$.title":pageInfo.new_title}}, function(err, data){
       callback(err, data);
     });
+  },
+
+  insert_docsData: function(postData, callback){
+    if(typeof(callback) != "function") callback = function(){};
+
+    var docsData = postData.docsInfo;
+    var userEmail = postData.userInfo.email;
+
+    if(!userEmail || !docsData){
+    	callback("Insert Document Fail", null);
+    	return;
+    }
+
+		isDocsExist(userEmail, docsData.name, function(err, isExist){
+			if(err){
+				callback(err, data);
+			}else if(isExist){
+				callback("DocExist", null);
+			}else{
+				userDataModel.update({userEmail: userEmail}, {'$push': { 'docsData': docsData}}, function(err, data){
+					callback(err, data);
+				});
+			}
+		});
+
+  },
+
+  update_docsData: function(postData, callback){
+    if(typeof(callback) != "function") callback = function(){};
+
+    var docsData = postData.docsInfo;
+    var userEmail = postData.userInfo.email;
+
+    if(!userEmail || !docsData){
+    	callback("Update Document Fail", null);
+    	return;
+    }
+
+		userDataModel.find({userEmail:userEmail}, function(err, data){
+			if(err){
+				callback(err, data);
+				return;
+			}
+
+			data[0].docsData.forEach(function(item){
+				if(item.title == docsData.title)
+					item.content = docsData.content;
+			})
+
+			userDataModel.update(searchQuery, {docsData: data[0].docsData}, function(err, data){
+				callback(err, data);
+			});
+		});
+  },
+
+  remove_docsData: function(postData, callback){
+    if(typeof(callback) != "function") callback = function(){};
+
+    var docsData = postData.docsInfo;
+    var userEmail = postData.userInfo.email;
+
+    if(!userEmail || typeof(docsData)!= "object"){
+    	callback("Remove Document Fail", null);
+    	return;
+    }
+
+		isDocsExist(userEmail, docsData.name, function(err, isExist){
+			if(err){
+				callback(err, data);
+			}else if(isExist){
+				userDataModel.update({userEmail:userEmail},{"$pull":{"docsData":{"title":docsData.title}}}, function(err, data){
+					callback(err, data);
+				});
+			}else{
+				callback("Document None Exist", null);
+			}
+		});
   }
 
 }
