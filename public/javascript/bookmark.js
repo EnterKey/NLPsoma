@@ -4,7 +4,6 @@ function make_new_subfolder(jquery_obj,name){
 	var path=a_obj.data('path')+a_obj.text()
 	path=path&&path.trim()!="undefined"?path:"/"
 	var params={
-		userInfo: global_user,
 		dirInfo:{
 			name:name,
 			path:path
@@ -51,7 +50,6 @@ function make_new_folder(jquery_obj,name){
 function rename_folder(data){
 
 	var params={
-		userInfo: global_user,
 		dirInfo:data.dirInfo
 	}
 	$.ajax({
@@ -72,7 +70,6 @@ function rename_folder(data){
 function rename_file(data){
 
 	var params={
-		userInfo: global_user,
 		pageInfo:data.pageInfo
 	}
 	$.ajax({
@@ -161,7 +158,6 @@ function make_page_all_list(pathdata){
 		path=pathdata
 	global_current_path=path;
 	var params={
-		userInfo: global_user,
 		path:path
 	}
 	$.ajax({
@@ -221,7 +217,6 @@ function make_page_dir_list(){
 	var path=jquery_obj.data('path')+jquery_obj.text().trim()
 	path=path&&path.trim()!="undefined"?path:"/"
 	var params={
-		userInfo: global_user,
 		path:path
 	}
 	$.ajax({
@@ -237,7 +232,6 @@ function make_page_dir_list(){
 }
 function make_both_view(path){
 	var params={
-		userInfo: global_user,
 		path:path
 	}
 	$.ajax({
@@ -266,7 +260,6 @@ function delete_dir(data){
 
 	var path=data.dirInfo.path;
 	var params={
-		userInfo: global_user,
 		dirInfo:data.dirInfo
 	}
 	$.ajax({
@@ -285,7 +278,6 @@ function delete_dir(data){
 function delete_entry(data){
 
 	var params={
-		userInfo: global_user,
 		pageInfo:data.pageInfo
 	}
 	$.ajax({
@@ -434,7 +426,6 @@ var droppable_event=function(){$('.droppable_forder').droppable({
 
 		var dragobj=$(ui.draggable);
 		var params={
-			userInfo: global_user,
 			pageInfo:{
 				oldPath:dragobj.find('.file_a_tag_title').data('path'),
 				newPath:jquery_obj.data('path')+jquery_obj.text().trim(),
