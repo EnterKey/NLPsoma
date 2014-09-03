@@ -59,12 +59,12 @@ app.post('/ajax/move_entryPath', checkSession_post, routes.move_entryPath);			//
 app.post('/ajax/rename_pageDir', checkSession_post, routes.rename_pageDir);			//Bookmark view에서 Directory 이름을 변경할 때 쓰는 부분입니다.
 app.post('/ajax/rename_pageEntry', checkSession_post, routes.rename_pageEntry);			//Bookmark view에서 Entry 이름을 변경할 때 쓰는 부분입니다.
 app.post('/ajax/auth/extension/google', extensionCheckSession);					//outh를 관장하는 부분입니다.
-app.post('/ajax/document/get_docs_list', checkSession_post)
 
 app.post('/ajax/document/insert', checkSession_post, routes.insert_document);
 app.post('/ajax/document/update', checkSession_post, routes.update_document);
 app.post('/ajax/document/remove', checkSession_post, routes.remove_document);
 app.post('/ajax/document/get_list', checkSession_post, routes.get_document_list);
+app.post('/ajax/document/get_content', checkSession_post, routes.get_document_content);
 
 app.post('/ajax/category/insert', checkSession_post, routes.insert_category);
 app.post('/ajax/category/update', checkSession_post, routes.update_category);

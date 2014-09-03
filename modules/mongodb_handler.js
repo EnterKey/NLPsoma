@@ -90,7 +90,7 @@ var isDocsExist = function(userEmail, name, callback){
 		return callback("userEmail none", null);
 	}
 
-	userDataModel.find({userEmail: userEmail}, {"docsData": {"$elemMatch": {name:name}}}, function(err, data){
+	userDataModel.find({userEmail: userEmail}, {"docsData": {"$elemMatch": {filename:name}}}, function(err, data){
 		if(err){
 			callback(err, null);
 		}else{
@@ -575,6 +575,38 @@ module.exports = {
 
 			callback(err, result);
 		});
+  },
+
+  get_document_content: function(postData, callback){
+    if(typeof(callback) != "function") callback = function(){};
+    var userEmail = postData.userInfo.email;
+    var filename = postData.docsInfo.filename;
+
+		var result = {}
+
+		userDataModel.find({userEmail:userEmail}, {"docsData": {"$elemMatch": {filename:filename}}},function(err, data){
+			if(err){
+				callback(err, result);
+				return;
+			}
+
+			if(data.length == 0){
+				console.log('none user');
+				callback("None user data", null);
+				return;
+			}
+
+			if(data[0].docsData.length == 0){
+				console.log('none document data');
+				callback("None document data", null);
+				return;
+			}
+
+			result = data[0].docsData[0];
+
+			callback(err, result);
+		});
+
   },
 
   insert_docsCategory: function(postData, callback){

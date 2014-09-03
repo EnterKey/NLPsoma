@@ -237,6 +237,13 @@ exports.get_document_list = function(req, res){
   });
 }
 
+exports.get_document_content = function(req, res){
+  mongodb_handler.get_document_content(req.body, function(err, data){
+    var result = dbResult_handler(err, data);
+    res.json(result);
+  });
+}
+
 exports.insert_category = function(req, res){
   mongodb_handler.insert_docsCategory(req.body, function(err, data){
     var result = dbResult_handler(err, data);
