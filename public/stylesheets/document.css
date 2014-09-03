@@ -1,3 +1,7 @@
+/**
+ * @author dooseong, eom
+ */
+
 /* #def defult rules */
 @import url(http://fonts.googleapis.com/earlyaccess/nanumgothic.css);
 
@@ -19,7 +23,7 @@ html, body, div, ul, li, h1, input, label, img {
 }
 
 .document-container {
-    margin-top : 60px;
+    /*margin-top : 60px;*/
 }
 
 .sidebar {
@@ -221,4 +225,14 @@ a, a:hover, a:visited, .btn-link:hover { text-decoration: none; }
 }
 @media (max-width: 600px) {
 	.list-thum .info-div .info > .name { width: 30% }
+}
+
+.category-li-menu-hide {
+	display: none ! important;
+	z-index:1000;
+}
+
+.category-li-menu-show {
+	display: block ! important;
+	z-index:1000;
 }

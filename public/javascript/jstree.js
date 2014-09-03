@@ -1,3 +1,7 @@
+/**
+ * @author dooseong, eom
+ */
+
 $(function() {
 	$('#jstree').jstree({
 		"core" : {

@@ -1,232 +1,228 @@
 <!DOCTYPE html>
-<html>
-  <head>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta name="description" content="">
+		<meta name="author" content="">
 
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="">
-    <meta name="author" content="">
+		<title>Note Hub</title>
 
-    <title>NoteHub</title>
+		<!-- Bootstrap core CSS -->
+		<link href="/library/bootstrap-3.2.0/css/bootstrap.css" rel="stylesheet">
+		<!--[if lt IE 9]><script src="/library/bootstrap-3.2.0/assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
+		<script src="/library/bootstrap-3.2.0/assets/js/ie-emulation-modes-warning.js"></script>
+		<script src="/library/bootstrap-3.2.0/assets/js/ie10-viewport-bug-workaround.js"></script>
+		
+		<!-- Global CSS -->
+		<link rel="stylesheet" href="/stylesheets/common.css">
+		
+		<!-- editor page css -->
+		<link rel="stylesheet" href="/stylesheets/editor.css" />
+		
+		<!-- jstree -->
+		<link rel="stylesheet" href="/library/jstree/dist/themes/default/style.min.css" />
+		
+		<link href="/library/jquery.ui.smoothness/jquery-ui.css" rel="stylesheet">
+	</head>
 
-    <!-- CSS Files -->
-    <link href="/library/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+	<body>
 
-    <!-- Global CSS -->
-    <link rel="stylesheet" href="/stylesheets/common.css">
+		<% include ./header.ejs %>
 
-    <!-- editor page css -->
-    <link rel="stylesheet" href="/stylesheets/editor.css" />
+		<div class="container-fluid">
+			<!-- Navigation -->
+			<nav id="slide-menu">
+				<div class="slide-menu-bookmarkList">
+					<div id="jstree-wrapper">
+						<!-- 3 setup a container element -->
+						<div id="jstree">
+							<!-- in this example the tree is populated from inline HTML -->
+							<ul>
+								<li>
+									Root node 1
+									<ul>
+										<li id="child_node_1">
+											Child node 1
+										</li>
+										<li>
+											Child node 2
+										</li>
+										<li>
+											Child node 3
+										</li>
+										<li>
+											Child node 4
+										</li>
+										<li>
+											Child node 5
+										</li>
+										<li>
+											Child node 6
+										</li>
+										<li>
+											Child node 7
+										</li>
+										<li>
+											Child node 8
+										</li>
+										<li>
+											Child node 9
+										</li>
+										<li>
+											Child node 10
+										</li>
+										<li>
+											Child node 11
+										</li>
+										<li>
+											Child node 12
+										</li>
+										<li>
+											Child node 13
+										</li>
+									</ul>
+								</li>
+								<li>
+									Root node 2
+								</li>
+							</ul>
+						</div>
+					</div>
+					<div class="addPreviewBtn-wrapper">
+						<button id="add-preview-btn" class="btn btn-default btn-sm">View Bookmark</button>
+					</div>
+				</div>
+				
+				<ul>
+					<li>
+						Document List
+					</li>
+					<li>
+						Document Write
+					</li>
+					<li>
+						Document Preview
+					</li>
+					
+					<li class="sep">
+						Profile
+					</li>
+					<li>
+						Settings
+					</li>
+				</ul>
+			</nav>
+			<!-- Content panel -->
+			<div id="content">
+				<div class="menu-trigger"></div>
+				<div class='header row'>
+					<div class='col-sm-6'>
+						<h1 class='current_writing_title text-ellipsis display_inline' id='writing_title'>Untitled Document</h1>
+					</div>
+				</div>
+				<div class='menu row'>
+					<div class='col-sm-12'>
+						<div class='menu'>
+							<a class="btn btn-sm btn-default default-tooltip" data-toggle="tooltip" href="#" id="save_writing_button" title="Save writing">
+								<span class='glyphicon glyphicon-floppy-saved'></span>
+							</a>
 
-    <!-- jstree -->
-    <link rel="stylesheet" href="/library/jstree/dist/themes/default/style.min.css" />
+							<div class='btn-group' data-toggle='buttons' id="toggle_preview_btn">
+								<label class='btn btn-sm btn-default btn-checkbox active default-tooltip' data-toggle='tooltip' title='Show/Hide Review'>
+									<input type="checkbox" checked="checked" id="toggle_preview" name="toggle_preview" value="" />
+									<span class='glyphicon glyphicon-align-justify'></span>
+								</label>
+							</div>
+						</div>
+					</div>
+				</div>
 
-    <link href="/library/jquery-ui//jquery-ui.min.css" rel="stylesheet">
-  </head>
-  <body>
+				<div class='contents row'>
+					<div class='col-sm-6' id='editor'>
+						<textarea class="ckeditor1 source box" cols="80" id="editor1" name="editor1" rows="10"></textarea>
+					</div>
+					<div class='col-sm-6' id='preview'>
+						<div id="tabs" class="previewTabs">
+						  <ul>
+						    <li><a href="#tabs-1">Nunc tincidunt</a></li>
+						    <li><a href="#tabs-2">Proin dolor</a></li>
+						    <li><a href="#tabs-3">Aenean lacinia</a></li>
+						  </ul>
+						  <div id="tabs-1">
+						    <p>Proin elit arcu, rutrum commodo, vehicula tempus, commodo a, risus. Curabitur nec arcu. Donec sollicitudin mi sit amet mauris. Nam elementum quam ullamcorper ante. Etiam aliquet massa et lorem. Mauris dapibus lacus auctor risus. Aenean tempor ullamcorper leo. Vivamus sed magna quis ligula eleifend adipiscing. Duis orci. Aliquam sodales tortor vitae ipsum. Aliquam nulla. Duis aliquam molestie erat. Ut et mauris vel pede varius sollicitudin. Sed ut dolor nec orci tincidunt interdum. Phasellus ipsum. Nunc tristique tempus lectus.</p>
+						  </div>
+						  <div id="tabs-2">
+						    <p>Morbi tincidunt, dui sit amet facilisis feugiat, odio metus gravida ante, ut pharetra massa metus id nunc. Duis scelerisque molestie turpis. Sed fringilla, massa eget luctus malesuada, metus eros molestie lectus, ut tempus eros massa ut dolor. Aenean aliquet fringilla sem. Suspendisse sed ligula in ligula suscipit aliquam. Praesent in eros vestibulum mi adipiscing adipiscing. Morbi facilisis. Curabitur ornare consequat nunc. Aenean vel metus. Ut posuere viverra nulla. Aliquam erat volutpat. Pellentesque convallis. Maecenas feugiat, tellus pellentesque pretium posuere, felis lorem euismod felis, eu ornare leo nisi vel felis. Mauris consectetur tortor et purus.</p>
+						  </div>
+						  <div id="tabs-3">
+						    <p>Mauris eleifend est et turpis. Duis id erat. Suspendisse potenti. Aliquam vulputate, pede vel vehicula accumsan, mi neque rutrum erat, eu congue orci lorem eget lorem. Vestibulum non ante. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Fusce sodales. Quisque eu urna vel enim commodo pellentesque. Praesent eu risus hendrerit ligula tempus pretium. Curabitur lorem enim, pretium nec, feugiat nec, luctus a, lacus.</p>
+						    <p>Duis cursus. Maecenas ligula eros, blandit nec, pharetra at, semper at, magna. Nullam ac lacus. Nulla facilisi. Praesent viverra justo vitae neque. Praesent blandit adipiscing velit. Suspendisse potenti. Donec mattis, pede vel pharetra blandit, magna ligula faucibus eros, id euismod lacus dolor eget odio. Nam scelerisque. Donec non libero sed nulla mattis commodo. Ut sagittis. Donec nisi lectus, feugiat porttitor, tempor ac, tempor vitae, pede. Aenean vehicula velit eu tellus interdum rutrum. Maecenas commodo. Pellentesque nec elit. Fusce in lacus. Vivamus a libero vitae lectus hendrerit hendrerit.</p>
+						  </div>
+						</div>
+					</div>
+				</div>
 
-    <!-- NoteHub Header -->
-    <% include ./header.ejs %>
+				<div class='modal fade' id='modal-edit-writing'>
+					<div class='modal-dialog'>
+						<div class='modal-content'>
+							<div class='modal-header'>
+								<button aria-hidden='true' class='close' data-dismiss='modal' type='button'>
+									&times;
+								</button>
+								<h4 class='modal-title'>Change Title and Category</h4>
+							</div>
+							<div class='modal-body'>
+								<div class='form-horizontal'>
+									<div class='modal-message'></div>
+									<div class='form-group'>
+										<label class="control-label col-sm-2" for="title">Title</label>
+										<div class='col-sm-8'>
+											<input autofocus="autofocus" class="form-control" id="modal-title" name="title" type="text" value="" />
+										</div>
+									</div>
+									<div class='form-group'>
+										<label class="control-label col-sm-2" for="category_id">Category</label>
+										<div class='col-sm-8'>
+											<select class="form-control" id="category_id" name="category_id">
+												<option value="">Choose Category</option>
+											</select>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class='modal-footer'>
+								<button class='btn btn-primary' data-dismiss='modal' id='btn-done' type='button'>
+									Done
+								</button>
+								<button class='btn btn-default' data-dismiss='modal' type='button'>
+									Cancel
+								</button>
+							</div>
+						</div>
+					</div>
+				</div> <!-- end of modal -->
+				
+			</div> <!-- end of main content -->
+		</div>
 
-    <!-- Contents -->
+		<!-- Placed at the end of the document so the pages load faster -->
+		<script src="/library/jquery/jquery-1.9.1.js"></script>
+		<script src="/library/bootstrap-3.2.0/js/bootstrap.min.js"></script>
+		<script src="/library/jquery.ui.smoothness/jquery-ui.js"></script>
+		<script src="/library/Class/class.js"></script>
+		
+		<!-- Global Script -->
+		<script src="/javascript/common.js"></script>
+		<script src="/javascript/editor.js"></script>
+        <script src="/javascript/document.js"></script>
 
-    <div class="container-fluid">
-      <!-- Navigation -->
-      <nav id="slide-menu">
-        <div class="slide-menu-bookmarkList">
-          <div id="jstree-wrapper">
-            <!-- 3 setup a container element -->
-            <div id="jstree">
-              <!-- in this example the tree is populated from inline HTML -->
-              <ul>
-                <li>
-                  Root node 1
-                  <ul>
-                    <li id="child_node_1">
-                      Child node 1
-                    </li>
-                    <li>
-                      Child node 2
-                    </li>
-                    <li>
-                      Child node 3
-                    </li>
-                    <li>
-                      Child node 4
-                    </li>
-                    <li>
-                      Child node 5
-                    </li>
-                    <li>
-                      Child node 6
-                    </li>
-                    <li>
-                      Child node 7
-                    </li>
-                    <li>
-                      Child node 8
-                    </li>
-                    <li>
-                      Child node 9
-                    </li>
-                    <li>
-                      Child node 10
-                    </li>
-                    <li>
-                      Child node 11
-                    </li>
-                    <li>
-                      Child node 12
-                    </li>
-                    <li>
-                      Child node 13
-                    </li>
-                  </ul>
-                </li>
-                <li>
-                  Root node 2
-                </li>
-              </ul>
-            </div>
-          </div>
-          <div class="addPreviewBtn-wrapper">
-            <button id="add-preview-btn" class="btn btn-default btn-sm">View Bookmark</button>
-          </div>
-        </div>
-
-        <ul>
-          <li>
-            Document List
-          </li>
-          <li>
-            Document Write
-          </li>
-          <li>
-            Document Preview
-          </li>
-
-          <li class="sep">
-            Profile
-          </li>
-          <li>
-            Settings
-          </li>
-        </ul>
-      </nav>
-      <!-- Content panel -->
-      <div id="content">
-        <div class="menu-trigger"></div>
-        <div class='header row'>
-          <div class='col-sm-6'>
-            <h1 class='current_writing_title text-ellipsis display_inline' id='writing_title'>Untitled Document</h1>
-          </div>
-        </div>
-        <div class='menu row'>
-          <div class='col-sm-12'>
-            <div class='menu'>
-              <a class="btn btn-sm btn-default default-tooltip" data-toggle="tooltip" href="#" id="save_writing_button" title="Save writing">
-                <span class='glyphicon glyphicon-floppy-saved'></span>
-              </a>
-
-              <div class='btn-group' data-toggle='buttons' id="toggle_preview_btn">
-                <label class='btn btn-sm btn-default btn-checkbox active default-tooltip' data-toggle='tooltip' title='Show/Hide Review'>
-                  <input type="checkbox" checked="checked" id="toggle_preview" name="toggle_preview" value="" />
-                  <span class='glyphicon glyphicon-align-justify'></span>
-                </label>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class='contents row'>
-          <div class='col-sm-6' id='editor'>
-            <textarea class="ckeditor1 source box" cols="80" id="editor1" name="editor1" rows="10"></textarea>
-          </div>
-          <div class='col-sm-6' id='preview'>
-            <div id="tabs" class="previewTabs">
-              <ul>
-                <li><a href="#tabs-1">Nunc tincidunt</a></li>
-                <li><a href="#tabs-2">Proin dolor</a></li>
-                <li><a href="#tabs-3">Aenean lacinia</a></li>
-              </ul>
-              <div id="tabs-1">
-                <p>Proin elit arcu, rutrum commodo, vehicula tempus, commodo a, risus. Curabitur nec arcu. Donec sollicitudin mi sit amet mauris. Nam elementum quam ullamcorper ante. Etiam aliquet massa et lorem. Mauris dapibus lacus auctor risus. Aenean tempor ullamcorper leo. Vivamus sed magna quis ligula eleifend adipiscing. Duis orci. Aliquam sodales tortor vitae ipsum. Aliquam nulla. Duis aliquam molestie erat. Ut et mauris vel pede varius sollicitudin. Sed ut dolor nec orci tincidunt interdum. Phasellus ipsum. Nunc tristique tempus lectus.</p>
-              </div>
-              <div id="tabs-2">
-                <p>Morbi tincidunt, dui sit amet facilisis feugiat, odio metus gravida ante, ut pharetra massa metus id nunc. Duis scelerisque molestie turpis. Sed fringilla, massa eget luctus malesuada, metus eros molestie lectus, ut tempus eros massa ut dolor. Aenean aliquet fringilla sem. Suspendisse sed ligula in ligula suscipit aliquam. Praesent in eros vestibulum mi adipiscing adipiscing. Morbi facilisis. Curabitur ornare consequat nunc. Aenean vel metus. Ut posuere viverra nulla. Aliquam erat volutpat. Pellentesque convallis. Maecenas feugiat, tellus pellentesque pretium posuere, felis lorem euismod felis, eu ornare leo nisi vel felis. Mauris consectetur tortor et purus.</p>
-              </div>
-              <div id="tabs-3">
-                <p>Mauris eleifend est et turpis. Duis id erat. Suspendisse potenti. Aliquam vulputate, pede vel vehicula accumsan, mi neque rutrum erat, eu congue orci lorem eget lorem. Vestibulum non ante. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Fusce sodales. Quisque eu urna vel enim commodo pellentesque. Praesent eu risus hendrerit ligula tempus pretium. Curabitur lorem enim, pretium nec, feugiat nec, luctus a, lacus.</p>
-                <p>Duis cursus. Maecenas ligula eros, blandit nec, pharetra at, semper at, magna. Nullam ac lacus. Nulla facilisi. Praesent viverra justo vitae neque. Praesent blandit adipiscing velit. Suspendisse potenti. Donec mattis, pede vel pharetra blandit, magna ligula faucibus eros, id euismod lacus dolor eget odio. Nam scelerisque. Donec non libero sed nulla mattis commodo. Ut sagittis. Donec nisi lectus, feugiat porttitor, tempor ac, tempor vitae, pede. Aenean vehicula velit eu tellus interdum rutrum. Maecenas commodo. Pellentesque nec elit. Fusce in lacus. Vivamus a libero vitae lectus hendrerit hendrerit.</p>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class='modal fade' id='modal-edit-writing'>
-          <div class='modal-dialog'>
-            <div class='modal-content'>
-              <div class='modal-header'>
-                <button aria-hidden='true' class='close' data-dismiss='modal' type='button'>
-                  &times;
-                </button>
-                <h4 class='modal-title'>Change Title and Category</h4>
-              </div>
-              <div class='modal-body'>
-                <div class='form-horizontal'>
-                  <div class='modal-message'></div>
-                  <div class='form-group'>
-                    <label class="control-label col-sm-2" for="title">Title</label>
-                    <div class='col-sm-8'>
-                      <input autofocus="autofocus" class="form-control" id="modal-title" name="title" type="text" value="" />
-                    </div>
-                  </div>
-                  <div class='form-group'>
-                    <label class="control-label col-sm-2" for="category_id">Category</label>
-                    <div class='col-sm-8'>
-                      <select class="form-control" id="category_id" name="category_id">
-                        <option value="">Choose Category</option>
-                      </select>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class='modal-footer'>
-                <button class='btn btn-primary' data-dismiss='modal' id='btn-done' type='button'>
-                  Done
-                </button>
-                <button class='btn btn-default' data-dismiss='modal' type='button'>
-                  Cancel
-                </button>
-              </div>
-            </div>
-          </div>
-        </div> <!-- end of modal -->
-
-      </div> <!-- end of main content -->
-    </div>
-
-
-    <!-- Script Files -->
-    <!-- Placed at the end of the document so the pages load faster -->
-    <script src="/library/jquery/jquery-2.1.0.min.js"></script>
-    <script src="/library/bootstrap/js/bootstrap.min.js"></script>
-    <script src="/library/jquery-ui/jquery-ui.min.js"></script>
-    <script src="/library/Class/class.js"></script>
-
-    <!-- Global Script -->
-    <script src="/javascript/common.js"></script>
-    <script src="/javascript/editor.js"></script>
-    <script src="/javascript/document.js"></script>
-
-    <!-- ckEditor -->
-    <script src="/library/CKEditor4/ckeditor.js"></script>
-
-    <!-- jstree -->
-    <script src="/library/jstree/dist/jstree.min.js"></script>
-    <script src="/javascript/jstree.js"></script>
-
-
-  </body>
+		<!-- ckEditor -->
+		<script src="/library/CKEditor4/ckeditor.js"></script>
+		
+		<!-- jstree -->
+		<script src="/library/jstree/dist/jstree.min.js"></script>
+		<script src="/javascript/jstree.js"></script>
+	</body>
 </html>

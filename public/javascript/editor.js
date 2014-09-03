@@ -1,3 +1,7 @@
+/**
+ * @author dooseong, eom
+ */
+
 /** @class editor.html Page의 Controller
 * @auther EnterKey
 * @version 1
@@ -18,13 +22,14 @@ var EditorAppController = Class.extend({
 */
 var EditorAppMainContentView = Class.extend({
 	_cacheElement : {
-		writingDocumentTitle : '#writing_title',
-		titleOfToggleModal : '#modal-title',
-        editorDiv : '#editor',
-        prevviewDiv : '#preview',
+		writingDocumentTitle 		: '#writing_title',
+		titleOfToggleModal 			: '#modal-title',
+        editorDiv 					: '#editor',
+        prevviewDiv 				: '#preview',
         modalForChangeDocumentTitle : '#modal-edit-writing',
-        previewNewTab : 'div.previewTabs ul li', 
-        addPreviewBtn : 'button#add-preview-btn'
+        previewNewTab 				: 'div.previewTabs ul li', 
+        addPreviewBtn 				: 'button#add-preview-btn', 
+        previewTabHeight 			: '550px'
 	},
 	
 	init : function() {
@@ -79,7 +84,8 @@ var EditorAppMainContentView = Class.extend({
 	}, 
 	
 	initReviewTab : function() {
-		$( "#tabs" ).tabs();
+		$("#tabs").tabs();
+		$('#tabs').height(this._cacheElement.previewTabHeight);
 	}, 
 	
 	addNewPreviewTab : function() {
