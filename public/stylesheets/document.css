@@ -1,0 +1,238 @@
+/**
+ * @author dooseong, eom
+ */
+
+/* #def defult rules */
+@import url(http://fonts.googleapis.com/earlyaccess/nanumgothic.css);
+
+/* reset css */
+* {
+	/*outline: 1px dashed skyblue;*/
+	-webkit-touch-callout: none;
+	-webkit-overflow-scrolling: touch;
+	-webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+	font-family: "Nanum Gothic"
+}
+
+html, body, div, ul, li, h1, input, label, img {
+	margin: 0;
+	border: 0;
+	padding: 0;
+	list-style: none;
+	text-decoration: none;
+}
+
+.document-container {
+    /*margin-top : 60px;*/
+}
+
+.sidebar {
+	margin-top : 30px;
+}
+
+.document-sidebar-category > a.active {
+	background-color : #C0C0C0 ! important; 
+	border-color : #C0C0C0 ! important;
+}
+
+.document-sidebar-category > li > a {
+	color : #000000 !important;
+}
+
+.document-container-tableWrapper{
+	margin-top : 40px;
+}
+
+.pagination-wrapper {
+	text-align: center;
+}
+
+.document-write-btn {
+	margin-top : 15px;
+}
+
+.document-active {
+	border-left: 3px solid #000000;
+	background: #f9f9f9;
+}
+
+a, a:hover, a:visited, .btn-link:hover { text-decoration: none; }
+
+/* common property */
+.block { display: block; }
+.inline { display: inline-block; }
+
+.left { float: left; }
+.right { float: right; }
+.clear { clear: both; }
+
+.col-centered {
+	float: none;
+	margin: 0 auto;
+}
+
+/* list */
+.list-title {
+	padding-left: 25px;
+	margin: 8px 0 20px 0;
+	text-align: left;
+	color: #FF760E;
+	font-size: 2em;
+	text-shadow: 0px 0px 2px #FF760E;
+}
+
+.list-title > span {
+	padding: 4px 8px 4px 8px; 
+	/*background: RGBA(252, 235, 182, 0.2);*/
+	/*box-shadow: 0 1px 0px #FF760E;*/
+	border-top-right-radius: 30px 20px;
+	/*border-bottom-right-radius: 30px 20px;*/
+}
+
+.btn-right {
+	margin: 4px 24px;
+}
+
+.edit-menu {
+	margin: 8px 0 0 0;
+	font: bold 1.3em/1.3em "Nanum Gothic";
+}
+
+/* list common */
+.list {
+	padding: 0 12px;
+}
+
+.list-item {
+	margin-bottom: 12px;
+	padding: 8px;
+	/*padding: 0;*/
+	/*max-width: 500px;*/
+	border-radius: 2px;
+	box-shadow: 1px 1px 1px #999;
+	background-color: RGBA(255, 255, 255, 0.4);
+	background-color: RGBA(182, 182, 182, 0.08);
+}
+
+.list .thum {
+	outline: 1px solid #ccc;
+	/*border: 8px solid #fefefe;*/
+	width: 100%; /*height: 150px;*/
+}
+
+.list .no-title {
+	padding: 4px 8px 0 8px;
+	width: 100%;
+	text-align: center;
+	font: bold 1.15em/2.2em "Nanum Gothic";
+	color: #555;
+}
+
+.list .title {
+	/*border: 2px solid #31B0D5;*/
+	/*outline: 5px solid #fff;*/
+	padding: 0 8px;
+	width: 100%;
+	/*background: #ccc;*/	text-align: left;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	font: bold 1.3em/2.2em "Nanum Gothic";
+	color: #555;
+}
+
+.list .info {
+	/*border: 4px solid #31B0D5;*/
+	/*border-top: 4px solid #31B0D5;*/
+	/*outline: 5px solid #fff;*/
+	padding: 0 8px;
+	font: 1.2em/1.2em "Nanum Gothic";
+	color: #555;
+	/*background: #ccc;*/
+}
+
+#userPic {
+	/*outline: 1px solid #ccc;*/
+	margin-top: -3px;
+	margin-right: 4px;
+	/*border: 1px solid #ddd;*/
+	width: 34px; height: 34px;
+	border-radius: 18px;
+}
+@media (max-width: 520px) {
+	#userPic { width: 28px; height: 28px; }
+}
+
+.list .date {
+	font: 0.9em/1.2em "Nanum Gothic";
+	color: #999;
+}
+
+
+.list .dim-div {
+	position: absolute;
+	top: 2px;
+	bottom: 2px;
+	left: 2px;
+	right: 2px;
+	background: rgba(0, 0, 0, 0.5);
+	border-radius: 3px;
+}
+
+.list .progress-div {
+	position: absolute;
+	top: 50%;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	margin-top: -10px;
+	padding: 0 6%;
+}
+@media (min-width: 768px) and (max-width: 991px) {
+	.col-sm-6 {
+	    margin: 0 1.2%;
+	    margin-bottom: 16px;
+	    width: 23%; /* non-css3 fallback */
+	    width: calc( 50% - 2.4% ); /* css3 calculation */
+	}
+}
+
+@media (min-width: 992px) {
+	.col-md-3 {
+	    margin: 0 1.2%;
+	    margin-bottom: 22px;
+	    width: 23%; /* non-css3 fallback */
+	    width: calc( 25% - 2.4% ); /* css3 calculation */
+	}
+	
+	.col-md-6 {
+	    margin: 0 1.5%;
+	    margin-bottom: 28px;
+	    width: 50%; /* non-css3 fallback */
+	    width: calc( 50% - 3% ); /* css3 calculation */
+	}
+}
+
+/* list - thum */
+.list-thum .info-div .info > .name {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	width: 40%
+}
+@media (min-width: 992px) and (max-width: 1200px) {
+	.list-thum .info-div .info > .name { width: 27% }
+}
+@media (max-width: 600px) {
+	.list-thum .info-div .info > .name { width: 30% }
+}
+
+.category-li-menu-hide {
+	display: none ! important;
+	z-index:1000;
+}
+
+.category-li-menu-show {
+	display: block ! important;
+	z-index:1000;
+}

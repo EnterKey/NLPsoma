@@ -1,4 +1,17 @@
 var mongodb_handler = require('../modules/mongodb_handler');
+var phantomjs = require('phantomjs')
+var binPath = phantomjs.path
+var path = require('path');
+var fs = require('fs');
+var childProcess = require('child_process')
+
+var editorRenderInfo = {
+  userInfo : {},
+  documentName : null,
+  editorState : null
+}
+
+
 /*
  * GET home page.
  */
@@ -24,6 +37,17 @@ var dbResult_handler = function(err, data){
   // console.log(result);
   return result;
 };
+var phantom_snapshot = function(url,email,callback){
+  var childArgs = [
+    path.join(__dirname, 'phantom.js'),
+    url,
+    path.join(__dirname,'../..','snapshot', email,new Buffer(url).toString('base64')+'.png')
+  ]
+  console.log(childArgs)
+  childProcess.execFile(binPath, childArgs, function(err, stdout, stderr) {
+    callback();
+  })
+}
 
 var insertEntry_handler = function(err, data){
   var result = {
@@ -38,6 +62,8 @@ var insertEntry_handler = function(err, data){
     if(err=="PageExist")
       result.errorMsg += ":중복";
     result.status = false;
+  }else{
+
   }
 
   return result;
@@ -53,15 +79,26 @@ exports.main = function(req, res){
 }
 
 exports.bookmark = function(req, res){
-  res.render('bookmark', {pageDir: [], pageEntry:[]});
+  var renderInfo = {
+    pageDir: [],
+    pageEntry: []
+  }
+  renderInfo.userInfo = req.body.userInfo;
+  res.render('bookmark', renderInfo);
 }
 
 exports.document = function(req, res){
-  res.render('document');
+  var renderInfo = {}
+  renderInfo.userInfo = req.body.userInfo;
+  res.render('document', renderInfo);
 }
 
 exports.editor = function(req, res){
-  res.render('editor', {pageDir: [], pageEntry:[]});
+  var renderInfo = editorRenderInfo;
+  renderInfo.userInfo = req.body.userInfo;
+  renderInfo.editorState = 'new';
+
+  res.render('editor', renderInfo);
 }
 
 exports.insert_user = function(req, res){
@@ -70,12 +107,37 @@ exports.insert_user = function(req, res){
     res.json(result);
   });
 };
+exports.snapshot=function(req, res){
+  var useremail= req.body.userInfo.email;
+  var hashurl=req.params.hashurl;
+  var imagePath =  path.join(__dirname,'../..','snapshot', useremail,hashurl+'.png')
+  fs.readFile(imagePath, function(err, data){
+    if(err) {
+      res.writeHead(501);
+      res.end();
+    }else{
+
+      res.writeHead(200, {
+        'Content-Type': 'image/png',
+        'Content-Length': data.length
+      });
+      res.end(data, 'binary');
+    }
+  })
+}
 
 exports.insert_pageEntry = function(req, res){
-  mongodb_handler.insert_pageEntry(req.body, function(err, data){
-    var result = insertEntry_handler(err, data);
-    res.json(result);
-  });
+    mongodb_handler.insert_pageEntry(req.body, function(err, data){
+      var result = insertEntry_handler(err, data);
+      if(!err){
+        phantom_snapshot(req.body.pageInfo.url,req.body.userInfo.email,function(){
+          res.json(result);
+        })
+      }
+      else{
+        res.json(result);
+      }
+    });
 };
 
 exports.insert_pageDir = function(req, res){
@@ -148,3 +210,85 @@ exports.rename_pageEntry = function(req, res){
     res.json(result);
   });
 };
+
+exports.insert_document = function(req, res){
+  mongodb_handler.insert_docsData(req.body, function(err, data){
+    var result = dbResult_handler(err, data);
+    res.json(result);
+  });
+}
+
+exports.update_document = function(req, res){
+  mongodb_handler.update_docsData(req.body, function(err, data){
+    var result = dbResult_handler(err, data);
+    res.json(result);
+  });
+}
+
+exports.remove_document = function(req, res){
+  mongodb_handler.remove_docsData(req.body, function(err, data){
+    var result = dbResult_handler(err, data);
+    res.json(result);
+  });
+}
+
+exports.get_document_list = function(req, res){
+  mongodb_handler.get_all_docsData(req.body, function(err, data){
+    var result = dbResult_handler(err, data);
+    res.json(result);
+  });
+}
+
+exports.get_document_content = function(req, res){
+  mongodb_handler.get_document_content(req.body, function(err, data){
+    var result = dbResult_handler(err, data);
+    res.json(result);
+  });
+}
+
+exports.insert_category = function(req, res){
+  mongodb_handler.insert_docsCategory(req.body, function(err, data){
+    var result = dbResult_handler(err, data);
+    res.json(result);
+  });
+}
+
+exports.update_category = function(req, res){
+  mongodb_handler.update_docsCategory(req.body, function(err, data){
+    var result = dbResult_handler(err, data);
+    res.json(result);
+  });
+}
+
+exports.remove_category = function(req, res){
+  mongodb_handler.remove_docsCategory(req.body, function(err, data){
+    var result = dbResult_handler(err, data);
+    res.json(result);
+  });
+}
+
+exports.documentEdit = function(req, res){
+  var renderInfo = editorRenderInfo;
+
+  renderInfo.userInfo = req.body.userInfo;
+  renderInfo.documentName = req.params.documentName;
+  renderInfo.editorState = 'edit';
+
+  res.render('editor', renderInfo);
+}
+
+exports.userChecking = function(req, res){
+  var userInfo = req.body.userInfo;
+
+  mongodb_handler.isUserExist(userInfo.email, function(isExist){
+    if(isExist){
+      res.redirect('/document');
+    }else{
+      mongodb_handler.insert_user(userInfo, function(err, data){
+        if(err)
+          console.log(err);
+        res.redirect('/document');
+      })
+    }
+  });
+}

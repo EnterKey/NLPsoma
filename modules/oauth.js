@@ -36,7 +36,7 @@ function init(app) {
   }));
 
   app.get('/auth/google/callback', passport.authenticate('google', {
-    successRedirect: '/document',
+    successRedirect: '/main',
     failureRedirect: '/'
   }));
 
