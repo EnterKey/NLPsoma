@@ -208,3 +208,52 @@ exports.rename_pageEntry = function(req, res){
     res.json(result);
   });
 };
+
+exports.insert_document = function(req, res){
+  mongodb_handler.insert_docsData(req.body, function(err, data){
+    var result = dbResult_handler(err, data);
+    res.json(result);
+  });
+}
+
+exports.update_document = function(req, res){
+  mongodb_handler.update_docsData(req.body, function(err, data){
+    var result = dbResult_handler(err, data);
+    res.json(result);
+  });
+}
+
+exports.remove_document = function(req, res){
+  mongodb_handler.remove_docsData(req.body, function(err, data){
+    var result = dbResult_handler(err, data);
+    res.json(result);
+  });
+}
+
+exports.get_document_list = function(req, res){
+  mongodb_handler.get_all_docsData(req.body, function(err, data){
+    var result = dbResult_handler(err, data);
+    res.json(result);
+  });
+}
+
+exports.insert_category = function(req, res){
+  mongodb_handler.insert_docsCategory(req.body, function(err, data){
+    var result = dbResult_handler(err, data);
+    res.json(result);
+  });
+}
+
+exports.update_category = function(req, res){
+  mongodb_handler.update_docsCategory(req.body, function(err, data){
+    var result = dbResult_handler(err, data);
+    res.json(result);
+  });
+}
+
+exports.remove_category = function(req, res){
+  mongodb_handler.remove_docsCategory(req.body, function(err, data){
+    var result = dbResult_handler(err, data);
+    res.json(result);
+  });
+}
