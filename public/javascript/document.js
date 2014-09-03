@@ -35,7 +35,7 @@ var DocumentAppMainContentView = Class.extend({
 	},
 	
 	requestData : {
-		documentURL : "http://127.0.0.1:8020/SomaEditor/requestData/document/document.json",
+		documentGetListURL : "http://localhost:4000/ajax/document/get_list",
 		documentList : null
 	},
 	
