@@ -26,7 +26,7 @@ var EditorAppController = Class.extend({
 var EditorAppMainContentView = Class.extend({
 	_cacheElement : {
 		writingDocumentTitle 		: $('#writing_title'),
-		writingDocumentCategory : $('#writing_category'),
+		writingDocumentCategory 	: $('#writing_category'),
 		titleOfToggleModal 			: '#modal-title',
 		categoryOfToggleModal		: $('#modal-category'),
         editorDiv 					: $('#editor'),
@@ -84,7 +84,7 @@ var EditorAppMainContentView = Class.extend({
 				bookmarks: [],
 				content : null
 			}
-		}
+		};
 
 		$('#save_writing_button').on('click', function(){
 			var editorIframe = $('#cke_1_contents iframe')[0];
@@ -130,7 +130,7 @@ var EditorAppMainContentView = Class.extend({
 				docsInfo: {
 					filename: self._cacheElement.editorDiv.data('filename')
 				}
-			}
+			};
 
 			$.post("/ajax/document/get_content", postData, function(result){
 				if(result.status){
