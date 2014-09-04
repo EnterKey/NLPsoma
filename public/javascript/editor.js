@@ -29,12 +29,12 @@ var EditorAppMainContentView = Class.extend({
 		writingDocumentCategory : $('#writing_category'),
 		titleOfToggleModal 			: $('#modal-title'),
 		categoryOfToggleModal		: $('#modal-category'),
-        editorDiv 					: $('#editor'),
-        prevviewDiv 				: $('#preview'),
-        modalForChangeDocumentTitle : $('#modal-edit-writing'),
-        previewNewTab 				: 'div.previewTabs ul li',
-        addPreviewBtn 				: $('button#add-preview-btn'),
-        previewTabHeight 			: '550px'
+    editorDiv 							: $('#editor'),
+    prevviewDiv 						: $('#preview'),
+    modalForChangeDocumentTitle : $('#modal-edit-writing'),
+    previewNewTab 				: 'div.previewTabs ul li',
+    addPreviewBtn 				: $('button#add-preview-btn'),
+    previewTabHeight 			: '550px'
 	},
 
 	init : function() {
@@ -84,7 +84,7 @@ var EditorAppMainContentView = Class.extend({
 				bookmarks: [],
 				content : null
 			}
-		}
+		};
 
 		$('#save_writing_button').on('click', function(){
 			var editorIframe = $('#cke_1_contents iframe')[0];
@@ -130,7 +130,7 @@ var EditorAppMainContentView = Class.extend({
 				docsInfo: {
 					filename: self._cacheElement.editorDiv.data('filename')
 				}
-			}
+			};
 
 			$.post("/ajax/document/get_content", postData, function(result){
 				if(result.status){
