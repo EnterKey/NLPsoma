@@ -14,6 +14,6 @@ var Common = Class.extend({
 });
 
 $(document).ready(function() {
-    var documentAppController = new DocumentAppController();
-    var editorAppController = new EditorAppController();
+    // var documentAppController = new DocumentAppController();
+    // var editorAppController = new EditorAppController();
 });

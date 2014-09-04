@@ -7,23 +7,23 @@
 		<meta name="description" content="">
 		<meta name="author" content="">
 
-		<title>Note Hub</title>
+		<title>NoteHub</title>
 
 		<!-- Bootstrap core CSS -->
 		<link href="/library/bootstrap-3.2.0/css/bootstrap.css" rel="stylesheet">
 		<!--[if lt IE 9]><script src="/library/bootstrap-3.2.0/assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
 		<script src="/library/bootstrap-3.2.0/assets/js/ie-emulation-modes-warning.js"></script>
 		<script src="/library/bootstrap-3.2.0/assets/js/ie10-viewport-bug-workaround.js"></script>
-		
+
 		<!-- Global CSS -->
 		<link rel="stylesheet" href="/stylesheets/common.css">
-		
+
 		<!-- editor page css -->
 		<link rel="stylesheet" href="/stylesheets/editor.css" />
-		
+
 		<!-- jstree -->
 		<link rel="stylesheet" href="/library/jstree/dist/themes/default/style.min.css" />
-		
+
 		<link href="/library/jquery.ui.smoothness/jquery-ui.css" rel="stylesheet">
 	</head>
 
@@ -94,7 +94,7 @@
 						<button id="add-preview-btn" class="btn btn-default btn-sm">View Bookmark</button>
 					</div>
 				</div>
-				
+
 				<ul>
 					<li>
 						Document List
@@ -105,7 +105,7 @@
 					<li>
 						Document Preview
 					</li>
-					
+
 					<li class="sep">
 						Profile
 					</li>
@@ -120,6 +120,7 @@
 				<div class='header row'>
 					<div class='col-sm-6'>
 						<h1 class='current_writing_title text-ellipsis display_inline' id='writing_title'>Untitled Document</h1>
+						<h4 class='current_writing_category text-ellipsis display_inline' id='writing_category'>Category</h4>
 					</div>
 				</div>
 				<div class='menu row'>
@@ -140,7 +141,7 @@
 				</div>
 
 				<div class='contents row'>
-					<div class='col-sm-6' id='editor'>
+					<div class='col-sm-6' id='editor' data-state="<%=editorState%>" data-filename="<%=documentName%>">
 						<textarea class="ckeditor1 source box" cols="80" id="editor1" name="editor1" rows="10"></textarea>
 					</div>
 					<div class='col-sm-6' id='preview'>
@@ -185,8 +186,12 @@
 									<div class='form-group'>
 										<label class="control-label col-sm-2" for="category_id">Category</label>
 										<div class='col-sm-8'>
-											<select class="form-control" id="category_id" name="category_id">
+											<select class="form-control" id="modal-category" name="category_id">
 												<option value="">Choose Category</option>
+												<option value="report">report</option>
+												<option value="homework">homework</option>
+												<option value="lecture">lecture</option>
+												<option value="diary">diary</option>
 											</select>
 										</div>
 									</div>
@@ -203,7 +208,7 @@
 						</div>
 					</div>
 				</div> <!-- end of modal -->
-				
+
 			</div> <!-- end of main content -->
 		</div>
 
@@ -212,15 +217,14 @@
 		<script src="/library/bootstrap-3.2.0/js/bootstrap.min.js"></script>
 		<script src="/library/jquery.ui.smoothness/jquery-ui.js"></script>
 		<script src="/library/Class/class.js"></script>
-		
-		<!-- Global Script -->
-		<script src="/javascript/common.js"></script>
-		<script src="/javascript/editor.js"></script>
-        <script src="/javascript/document.js"></script>
 
 		<!-- ckEditor -->
 		<script src="/library/CKEditor4/ckeditor.js"></script>
-		
+
+		<!-- Global Script -->
+		<script src="/javascript/common.js"></script>
+		<script src="/javascript/editor.js"></script>
+
 		<!-- jstree -->
 		<script src="/library/jstree/dist/jstree.min.js"></script>
 		<script src="/javascript/jstree.js"></script>

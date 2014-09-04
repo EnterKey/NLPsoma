@@ -41,9 +41,11 @@ if ('development' == app.get('env')) {
 require('./modules/oauth')(app);
 
 app.get('/', routes.main);
+app.get('/main', checkSession_get, routes.userChecking);
 app.get('/document', checkSession_get, routes.document);
 app.get('/bookmark', checkSession_get, routes.bookmark);
 app.get('/editor', checkSession_get, routes.editor);
+app.get('/editor/:documentName', checkSession_get, routes.documentEdit);
 app.get('/snapshot/:hashurl', checkSession_get, routes.snapshot);
 
 app.post('/ajax/insert_user', checkSession_post, routes.insert_user);

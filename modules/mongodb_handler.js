@@ -514,12 +514,12 @@ module.exports = {
 				return;
 			}
 
-			data[0].docsData.forEach(function(item){
+			data[0].docsData.forEach(function(item, index, array){
 				if(item.filename == docsData.filename)
-					item = docsData;
+					array[index] = docsData;
 			})
 
-			userDataModel.update(searchQuery, {docsData: data[0].docsData}, function(err, data){
+			userDataModel.update({userEmail:userEmail}, {docsData: data[0].docsData}, function(err, data){
 				callback(err, data);
 			});
 		});

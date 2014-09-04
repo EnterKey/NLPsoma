@@ -5,7 +5,11 @@ var path = require('path');
 var fs = require('fs');
 var childProcess = require('child_process')
 
-
+var editorRenderInfo = {
+  userInfo : {},
+  documentName : null,
+  editorState : null
+}
 
 
 /*
@@ -75,10 +79,7 @@ exports.main = function(req, res){
 }
 
 exports.bookmark = function(req, res){
-  var renderInfo = {
-    pageDir: [],
-    pageEntry: []
-  }
+
   renderInfo.userInfo = req.body.userInfo;
   res.render('bookmark', renderInfo);
 }
@@ -90,11 +91,9 @@ exports.document = function(req, res){
 }
 
 exports.editor = function(req, res){
-  var renderInfo = {
-    pageDir: [],
-    pageEntry: []
-  }
+  var renderInfo = editorRenderInfo;
   renderInfo.userInfo = req.body.userInfo;
+  renderInfo.editorState = 'new';
 
   res.render('editor', renderInfo);
 }
@@ -262,5 +261,31 @@ exports.remove_category = function(req, res){
   mongodb_handler.remove_docsCategory(req.body, function(err, data){
     var result = dbResult_handler(err, data);
     res.json(result);
+  });
+}
+
+exports.documentEdit = function(req, res){
+  var renderInfo = editorRenderInfo;
+
+  renderInfo.userInfo = req.body.userInfo;
+  renderInfo.documentName = req.params.documentName;
+  renderInfo.editorState = 'edit';
+
+  res.render('editor', renderInfo);
+}
+
+exports.userChecking = function(req, res){
+  var userInfo = req.body.userInfo;
+
+  mongodb_handler.isUserExist(userInfo.email, function(isExist){
+    if(isExist){
+      res.redirect('/document');
+    }else{
+      mongodb_handler.insert_user(userInfo, function(err, data){
+        if(err)
+          console.log(err);
+        res.redirect('/document');
+      })
+    }
   });
 }
