@@ -27,13 +27,13 @@ var EditorAppMainContentView = Class.extend({
 	_cacheElement : {
 		writingDocumentTitle 		: $('#writing_title'),
 		writingDocumentCategory : $('#writing_category'),
-		titleOfToggleModal 			: '#modal-title',
+		titleOfToggleModal 			: $('#modal-title'),
 		categoryOfToggleModal		: $('#modal-category'),
         editorDiv 					: $('#editor'),
         prevviewDiv 				: $('#preview'),
-        modalForChangeDocumentTitle : '#modal-edit-writing',
+        modalForChangeDocumentTitle : $('#modal-edit-writing'),
         previewNewTab 				: 'div.previewTabs ul li',
-        addPreviewBtn 				: 'button#add-preview-btn',
+        addPreviewBtn 				: $('button#add-preview-btn'),
         previewTabHeight 			: '550px'
 	},
 
@@ -60,15 +60,15 @@ var EditorAppMainContentView = Class.extend({
 		var self = this;
 		$(this._cacheElement.writingDocumentTitle).on('click', function() {
 			var documentTitle = self._cacheElement.writingDocumentTitle.text();
-			$(self._cacheElement.titleOfToggleModal).val(documentTitle);
-			$(self._cacheElement.modalForChangeDocumentTitle).modal('toggle');
+			self._cacheElement.titleOfToggleModal.val(documentTitle);
+			self._cacheElement.modalForChangeDocumentTitle.modal('toggle');
 		});
 	},
 
 	changeDocumentTitle : function() {
 		var self = this;
 		$('#btn-done').on('click', function() {
-			var title = $(self._cacheElement.titleOfToggleModal).val();
+			var title = self._cacheElement.titleOfToggleModal.val();
 			var category = self._cacheElement.categoryOfToggleModal.val();
 			self._cacheElement.writingDocumentTitle.html(title);
 			self._cacheElement.writingDocumentCategory.html(category);
@@ -165,7 +165,7 @@ var EditorAppMainContentView = Class.extend({
 
 	addNewPreviewTab : function() {
 		var self = this;
-		$(self._cacheElement.addPreviewBtn).click(function() {
+		self._cacheElement.addPreviewBtn.click(function() {
 		    var tabsCnt = $(self._cacheElement.previewNewTab).length + 1;
 
 		    $("div.previewTabs ul").append(

@@ -79,7 +79,10 @@ exports.main = function(req, res){
 }
 
 exports.bookmark = function(req, res){
-
+  var renderInfo = {
+    pageDir: [],
+    pageEntry: []
+  }
   renderInfo.userInfo = req.body.userInfo;
   res.render('bookmark', renderInfo);
 }
