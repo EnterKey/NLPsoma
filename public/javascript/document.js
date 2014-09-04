@@ -195,7 +195,7 @@ var DocumentAppCategoryView = Class.extend({
             var categoryName = $(self._cacheElement.titleOfModalForAddCategory).val(),
                 appendItem = '<li style="text-align: right;">' +
 								'<a class="left category-li-menu-hide" href="#" id="category-item-config">' +
-									'<span class="glyphicon glyphicon-cog" id="category-item-config"></span>' +
+									'<span class="glyphicon glyphicon-cog"></span>' +
 								'</a>' +
 								'<a href="#"> ' + categoryName + '</a>' +
 							'</li>';
