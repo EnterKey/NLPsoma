@@ -247,21 +247,28 @@ exports.get_document_content = function(req, res){
 }
 
 exports.insert_category = function(req, res){
-  mongodb_handler.insert_docsCategory(req.body, function(err, data){
+  mongodb_handler.insert_categoryList(req.body, function(err, data){
     var result = dbResult_handler(err, data);
     res.json(result);
   });
 }
 
 exports.update_category = function(req, res){
-  mongodb_handler.update_docsCategory(req.body, function(err, data){
+  mongodb_handler.update_categoryList(req.body, function(err, data){
     var result = dbResult_handler(err, data);
     res.json(result);
   });
 }
 
 exports.remove_category = function(req, res){
-  mongodb_handler.remove_docsCategory(req.body, function(err, data){
+  mongodb_handler.remove_categoryList(req.body, function(err, data){
+    var result = dbResult_handler(err, data);
+    res.json(result);
+  });
+}
+
+exports.get_category_list = function(req, res){
+  mongodb_handler.get_category_list(req.body, function(err, data){
     var result = dbResult_handler(err, data);
     res.json(result);
   });

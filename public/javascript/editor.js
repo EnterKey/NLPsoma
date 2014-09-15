@@ -24,6 +24,20 @@ var EditorAppController = Class.extend({
 * @description Page의 Editor와 Preview Division을 제어하기 위한 클래스
 */
 var EditorAppMainContentView = Class.extend({
+	editorData : {
+		ajaxURL : {
+			document : {
+				get_content : "/ajax/document/get_content",
+				insert : "/ajax/document/insert",
+				update : "/ajax/document/update",
+			},
+			category : {
+				getCatagory : "/ajax/category/get_list"
+			}
+		},
+		categoryList : null
+	},
+
 	_cacheElement : {
 		writingDocumentTitle 		: $('#writing_title'),
 		writingDocumentCategory : $('#writing_category'),
@@ -34,6 +48,7 @@ var EditorAppMainContentView = Class.extend({
     modalForChangeDocumentTitle : $('#modal-edit-writing'),
     previewNewTab 				: 'div.previewTabs ul li',
     addPreviewBtn 				: $('button#add-preview-btn'),
+    modalCategory 				: $('#modal-category')[0],
     previewTabHeight 			: '550px'
 	},
 
@@ -41,6 +56,7 @@ var EditorAppMainContentView = Class.extend({
 		this.setEventListener();
 		this.setEditor();
 		this.initReviewTab();
+		this.initModal();
 		this.loadDocument();
 	},
 
@@ -96,9 +112,9 @@ var EditorAppMainContentView = Class.extend({
 				postData.docsInfo.content = editorContent;
 
 				if(self._cacheElement.editorDiv.data('state')=='edit'){
-					$.post("/ajax/document/update", postData, self.ajaxSaveHandler);
+					$.post(self.editorData.ajaxURL.document.update, postData, self.ajaxSaveHandler);
 				}else{
-					$.post("/ajax/document/insert", postData, self.ajaxSaveHandler);
+					$.post(self.editorData.ajaxURL.document.insert, postData, self.ajaxSaveHandler);
 				}
 			}
 		});
@@ -108,6 +124,8 @@ var EditorAppMainContentView = Class.extend({
 		console.log(result);
 		if(result.status){
 			alert("Success");
+			if(self._cacheElement.editorDiv.data('state')=='new')
+				self._cacheElement.editorDiv.data('state', 'edit');
 		}else{
 			alert(result.errorMsg);
 		}
@@ -122,6 +140,28 @@ var EditorAppMainContentView = Class.extend({
 
 	},
 
+	initModal : function(){
+		var self = this;
+		$.post(self.editorData.ajaxURL.category.getCatagory, function(result){
+			if(result.status){
+				self.editorData.categoryList = result.data.categoryList;
+				self.setCategoryList(result.data.categoryList);
+			}else{
+				alert(result.errorMsg);
+			}
+		});
+	},
+
+	setCategoryList : function(categoryList){
+		var DOM = "";
+		var options = "<option value='{{category}}'>{{category}}</option>";
+		var i;
+		for(i=0;i<categoryList.length;i++){
+			DOM+=options.replace(/{{category}}/g, categoryList[i]);
+		}
+		this._cacheElement.modalCategory.innerHTML = DOM;
+	},
+
 	loadDocument : function(){
 		var self = this;
 
@@ -132,7 +172,7 @@ var EditorAppMainContentView = Class.extend({
 				}
 			};
 
-			$.post("/ajax/document/get_content", postData, function(result){
+			$.post(self.editorData.ajaxURL.document.get_content, postData, function(result){
 				if(result.status){
 					self.setLoadData(result.data);
 				}else{

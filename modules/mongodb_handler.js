@@ -38,7 +38,7 @@ var userDataSchema = new Schema({
 			content : String
 		}
 	],
-	docsCategory : [
+	categoryList : [
 	]
 });
 
@@ -182,6 +182,7 @@ module.exports = {
 		userData.picture = userInfo.picture;
 		userData.fingerprint = userInfo.fingerprint;
 		userData.date = new Date();
+		userData.categoryList = ['All'];
 
 		userData.save(function(err, data){
 			callback(err, data);
@@ -554,8 +555,7 @@ module.exports = {
 
     var userEmail = postData.userInfo.email;
 		var result = {
-			docsList : [],
-			category : []
+			docsList : []
 		}
 
 		userDataModel.find({userEmail:userEmail}, function(err, data){
@@ -571,7 +571,6 @@ module.exports = {
 			}
 
 			result.docsList = data[0].docsData;
-			result.category = data[0].docsCategory;
 
 			callback(err, result);
 		});
@@ -609,7 +608,7 @@ module.exports = {
 
   },
 
-  insert_docsCategory: function(postData, callback){
+  insert_categoryList: function(postData, callback){
     if(typeof(callback) != "function") callback = function(){};
 
     var userEmail = postData.userInfo.email;
@@ -627,19 +626,19 @@ module.exports = {
 				return;
 			}
 
-			if(data[0].docsCategory.indexOf(newCategory)>=0){
+			if(data[0].categoryList.indexOf(newCategory)>=0){
 				callback("Category already Exist", null);
 				return;
 			}
 
-			userDataModel.update({userEmail: userEmail}, {'$push': { 'docsCategory': newCategory}}, function(err, data){
+			userDataModel.update({userEmail: userEmail}, {'$push': { 'categoryList': newCategory}}, function(err, data){
 				callback(err, data);
 			});
 		});
 
   },
 
-  update_docsCategory: function(postData, callback){
+  update_categoryList: function(postData, callback){
     if(typeof(callback) != "function") callback = function(){};
 
     var userEmail = postData.userInfo.email;
@@ -658,18 +657,23 @@ module.exports = {
 				return;
 			}
 
-			var index = data[0].docsCategory.indexOf(oldCategory);
-			if(index>=0){
-				data[0].docsCategory[index] = newCategory;
+			if(oldCategory == 'All'){
+				callback("Cannot update this category", null);
+				null;
 			}
 
-			userDataModel.update({userEmail: userEmail}, {docsCategory: data[0].docsCategory}, function(err, data){
+			var index = data[0].categoryList.indexOf(oldCategory);
+			if(index>=0){
+				data[0].categoryList[index] = newCategory;
+			}
+
+			userDataModel.update({userEmail: userEmail}, {categoryList: data[0].categoryList}, function(err, data){
 				callback(err, data);
 			});
 		});
   },
 
-  remove_docsCategory: function(postData, callback){
+  remove_categoryList: function(postData, callback){
     if(typeof(callback) != "function") callback = function(){};
 
     var userEmail = postData.userInfo.email;
@@ -687,14 +691,47 @@ module.exports = {
 				return;
 			}
 
-			if(data[0].docsCategory.indexOf(newCategory)==-1){
+			if(data[0].categoryList.indexOf(deleteCategory)==-1){
 				callback("Category doesn't Exist", null);
 				return;
 			}
-			userDataModel.update({userEmail:userEmail},{"$pull":{"docsData": deleteCategory}}, function(err, data){
+
+			if(deleteCategory == 'All'){
+				callback("Cannot remove this category", null);
+				null;
+			}
+
+			userDataModel.update({userEmail:userEmail},{"$pull":{"categoryList": deleteCategory}}, function(err, data){
 				callback(err, data);
 			});
 		});
+  },
+
+  get_category_list : function(postData, callback){
+    if(typeof(callback) != "function") callback = function(){};
+
+    var userEmail = postData.userInfo.email;
+		var result = {
+			categoryList : []
+		}
+
+		userDataModel.find({userEmail:userEmail}, function(err, data){
+			if(err){
+				callback(err, result);
+				return;
+			}
+
+			if(data.length == 0){
+				console.log('none user');
+				callback("None user data", result);
+				return;
+			}
+
+			result.categoryList = data[0].categoryList;
+
+			callback(err, result);
+		});
+
   }
 }
 
