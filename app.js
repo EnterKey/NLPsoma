@@ -68,6 +68,7 @@ app.post('/ajax/document/remove', checkSession_post, routes.remove_document);
 app.post('/ajax/document/get_list', checkSession_post, routes.get_document_list);
 app.post('/ajax/document/get_content', checkSession_post, routes.get_document_content);
 
+app.post('/ajax/category/get_list', checkSession_post, routes.get_category_list);
 app.post('/ajax/category/insert', checkSession_post, routes.insert_category);
 app.post('/ajax/category/update', checkSession_post, routes.update_category);
 app.post('/ajax/category/remove', checkSession_post, routes.remove_category);

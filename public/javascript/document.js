@@ -118,9 +118,9 @@ var DocumentAppMainContentView = Class.extend({
 			var documentTitle = documentList[i].filename,
 				documentDate = documentList[i].updateDate.slice(0,10),
 				documentImg = '/images/document/document.png';
-
+				documentCategory =  documentList[i].category;
 				documentItem +=
-					'<li class="list-item col-xs-12 col-sm-6 col-md-3">' +
+					'<li class="list-item col-xs-12 col-sm-6 col-md-3 docs-category docs-category-'+documentCategory+'">' +
 						'<a href="/editor/'+documentTitle+'">' +
 							'<div class="thum-div"  data-toggle="tooltip" title data-original-title="tooltip" data-placement="top">' +
 								'<img class="thum" src= ' + documentImg + ' style="vertical-align: middle;"/>' +
@@ -158,7 +158,10 @@ var DocumentAppCategoryView = Class.extend({
 	},
 
 	requestData : {
-		CategoryURL : "http://127.0.0.1:8020/SomaEditor/requestData/document/category.json",
+		getCategory : "/ajax/category/get_list",
+		addCategory : "/ajax/category/insert",
+		updateCategory : "/ajax/category/update",
+		removeCategory :"/ajax/category/remove",
 		categoryList : null
 	},
 
@@ -173,6 +176,11 @@ var DocumentAppCategoryView = Class.extend({
 		this.toggleModalForChangeCategoryItemInfo();
 	},
 
+	setCategoryListData : function(data){
+		this.requestData.categoryList = data.categoryList;
+		this.bulidCategoryListForSideMenu();
+	},
+
 	setClickedCategoryAddActiveClass : function() {
 		var self = this;
 		$(self._cacheElement.sideMenu).on('click', 'li', function(e) {
@@ -184,7 +192,7 @@ var DocumentAppCategoryView = Class.extend({
 	},
 
 	addCategory : function() {
-        var self = this;
+    var self = this;
 		$(this._cacheElement.addCategoryBtn).on('click', function(e) {
 			e.preventDefault();
 			$(self._cacheElement.modalForAddCategory).modal('toggle');
@@ -192,25 +200,42 @@ var DocumentAppCategoryView = Class.extend({
 		});
 
 		$(this._cacheElement.addCategoryDoneBtn).on('click', function(e) {
-            var categoryName = $(self._cacheElement.titleOfModalForAddCategory).val(),
-                appendItem = '<li style="text-align: right;">' +
-								'<a class="left category-li-menu-hide" href="#" id="category-item-config">' +
-									'<span class="glyphicon glyphicon-cog"></span>' +
-								'</a>' +
-								'<a href="#"> ' + categoryName + '</a>' +
-							'</li>';
-
-			$(self._cacheElement.sideMenu).append(appendItem);
+      var categoryName = $(self._cacheElement.titleOfModalForAddCategory).val();
+      var postData = {
+      	newCategory : categoryName
+      }
+			$.post(self.requestData.addCategory, postData, function(result){
+				console.log(result);
+				if(result.status){
+					self.updateCategoryListDOM(categoryName);
+				}else{
+					alert(result.errorMsg);
+				}
+			})
 		});
 	},
 
-	getCategoryList : function() {
-		// $.post(this.requestData.CategoryURL, userInfo ,function(result) {
-			// console.dir(result);
-		// });
-		this.requestData.categoryList =	["All", "IT", "Culture", "Game", "ETC"];
+	updateCategoryListDOM : function(categoryName) {
+            var appendItem = '<li style="text-align: right;">' +
+							'<a class="left category-li-menu-hide" href="#" id="category-item-config">' +
+								'<span class="glyphicon glyphicon-cog"></span>' +
+							'</a>' +
+							'<a href="#"> ' + categoryName + '</a>' +
+						'</li>';
 
-		this.bulidCategoryListForSideMenu();
+		$(this._cacheElement.sideMenu).append(appendItem);
+	},
+
+	getCategoryList : function() {
+
+		var self = this;
+		$.post(this.requestData.getCategory ,function(result) {
+			if(result.status){
+				self.setCategoryListData(result.data);
+			}else{
+				alert(result.errorMsg);
+			}
+		});
 	},
 
 	bulidCategoryListForSideMenu : function() {
