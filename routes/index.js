@@ -125,6 +125,30 @@ exports.snapshot=function(req, res){
     }
   })
 }
+exports.snaptext=function(req, res){
+  var useremail= req.body.userInfo.email;
+  var hashurl=req.params.hashurl;
+  var htmlPath =  path.join(__dirname,'../..','snapshot', useremail,hashurl+'.html')
+  var childArgs = [
+    path.join(__dirname, 'crawltext.py'),
+    htmlPath
+  ]
+  console.log(childArgs)
+  childProcess.execFile(binPath, childArgs, function(err, stdout, stderr) {
+    if(err||stderr) {
+      console.log(err, stderr)
+      res.writeHead(501);
+      res.end();
+    }else{
+      res.writeHead(200, {
+        'Content-Type': 'text/plain',
+        'Content-Length': stdout.length
+      });
+      res.end(data);
+    }
+  })
+}
+
 
 exports.insert_pageEntry = function(req, res){
     mongodb_handler.insert_pageEntry(req.body, function(err, data){
