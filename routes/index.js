@@ -41,7 +41,7 @@ var phantom_snapshot = function(url,email,callback){
   var childArgs = [
     path.join(__dirname, 'phantom.js'),
     url,
-    path.join(__dirname,'../..','snapshot', email,new Buffer(url).toString('base64')+'.png')
+    path.join(__dirname,'../..','snapshot', email,new Buffer(url).toString('base64').replace(/\//g,'$_$').substring(0,20)+'.png')
   ]
   console.log(childArgs)
   childProcess.execFile(binPath, childArgs, function(err, stdout, stderr) {
@@ -49,7 +49,7 @@ var phantom_snapshot = function(url,email,callback){
   })
 }
 var save_htmldata = function(url,email,htmldata,callback){
-  var filename=path.join(__dirname,'../..','snapshot', email,new Buffer(url).toString('base64')+'.html')
+  var filename=path.join(__dirname,'../..','snapshot', email,new Buffer(url).toString('base64').replace(/\//g,'$_$').substring(0,20)+'.html')
   console.log(filename)
   fs.writeFile(filename,htmldata,function(err){
     if(!err){
