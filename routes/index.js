@@ -48,6 +48,17 @@ var phantom_snapshot = function(url,email,callback){
     callback();
   })
 }
+var save_htmldata = function(url,email,htmldata,callback){
+  var filename=path.join(__dirname,'../..','snapshot', email,new Buffer(url).toString('base64')+'.html')
+  console.log(filename)
+  fs.writeFile(filename,htmldata,function(err){
+    if(!err){
+      callback(true)
+    }else{
+      callback(false)
+    }
+  })
+}
 
 var insertEntry_handler = function(err, data){
   var result = {
@@ -134,17 +145,19 @@ exports.snaptext=function(req, res){
     htmlPath
   ]
   console.log(childArgs)
-  childProcess.execFile(binPath, childArgs, function(err, stdout, stderr) {
+  childProcess.execFile("python", childArgs, function(err, stdout, stderr) {
+    console.log()
     if(err||stderr) {
       console.log(err, stderr)
       res.writeHead(501);
       res.end();
     }else{
+      console.log(stdout)
       res.writeHead(200, {
-        'Content-Type': 'text/plain',
+        'Content-Type': 'text/plain;charset=utf-8',
         'Content-Length': stdout.length
       });
-      res.end(data);
+      res.end(stdout);
     }
   })
 }
@@ -154,9 +167,11 @@ exports.insert_pageEntry = function(req, res){
     mongodb_handler.insert_pageEntry(req.body, function(err, data){
       var result = insertEntry_handler(err, data);
       if(!err){
-        phantom_snapshot(req.body.pageInfo.url,req.body.userInfo.email,function(){
-          res.json(result);
-        })
+       // phantom_snapshot(req.body.pageInfo.url,req.body.userInfo.email,function(){
+          save_htmldata(req.body.pageInfo.url,req.body.userInfo.email,req.body.pageInfo.htmldata,function(){
+            res.json(result);
+          })
+        //})
       }
       else{
         res.json(result);
