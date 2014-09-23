@@ -1,10 +1,8 @@
 var mongodb_handler = require('../modules/mongodb_handler');
-var phantomjs = require('phantomjs')
-var binPath = phantomjs.path
 var path = require('path');
 var fs = require('fs');
 var crypto = require('crypto');
-var childProcess = require('child_process')
+var spawn = require('child_process').spawn
 var settings = require('../setting');
 
 var editorRenderInfo = {
@@ -139,20 +137,27 @@ exports.snaptext=function(req, res){
   var childArgs = [
     path.join(__dirname, 'crawltext.py'),
     htmlPath
-  ]
-  childProcess.execFile("python", childArgs, function(err, stdout, stderr) {
-    if(err||stderr) {
-      console.log(err, stderr)
+  ];
+
+  var ps = spawn("python", childArgs);
+  var snaptext = "";
+  ps.stdout.on("data", function(data){
+    snaptext+=data;
+  });
+
+  ps.stdout.on("end", function(err){
+    if(err) {
+      console.log("snaptext err : ", err);
       res.writeHead(501);
       res.end();
     }else{
       res.writeHead(200, {
-        'Content-Type': 'text/plain;charset=utf-8',
-        'Content-Length': stdout.length
+        'Content-Type': 'text/plain;charset=utf-8'
       });
-      res.end(stdout);
+      res.end(snaptext);
     }
-  })
+  });
+
 }
 
 
