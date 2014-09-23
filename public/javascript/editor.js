@@ -42,6 +42,10 @@ var EditorAppMainContentView = Class.extend({
 		ajaxURL : {
 			get_tree : "/ajax/bookmark/get_tree"
 		},
+		templete : {
+			previewTabHeader : '<li><a href="{{tabID}}">{{tabTitle}}</a></li>',
+			previewTabContent : '<div class="preview-content" id="{{tabID}}"><iframe class="preview-iframe" src="{{contentURL}}"></iframe></div>'
+		},
 		treeData : null
 	},
 
@@ -57,11 +61,14 @@ var EditorAppMainContentView = Class.extend({
 		titleOfToggleModal 			: $('#modal-title'),
 		categoryOfToggleModal		: $('#modal-category'),
     editorDiv 							: $('#editor'),
-    prevviewDiv 						: $('#preview'),
+    previewDiv 						: $('#preview'),
     modalForChangeDocumentTitle : $('#modal-edit-writing'),
     previewNewTab 				: 'div.previewTabs ul li',
     addPreviewBtn 				: $('button#add-preview-btn'),
     modalCategory 				: $('#modal-category')[0],
+    previewTab 						: $('div.previewTabs')[0],
+    previewTabHeader			: $('#previewTab-header')[0],
+    previewTabContent			: $('#previewTab-content')[0],
     previewTabHeight 			: '550px'
 	},
 
@@ -153,6 +160,31 @@ var EditorAppMainContentView = Class.extend({
 
 	},
 
+	setPreviewData : function(previewList){
+		var headerDOM = "";
+		var contentDOM = "";
+
+		var headerTemplete = this.bookmarkData.templete.previewTabHeader;
+		var contentTemplete = this.bookmarkData.templete.previewTabContent;
+
+		var i = 0;
+		for(i=0;i<previewList.length;i++){
+			var tabID = 'preview-content-'+(i+1);
+			var contentURL = "/snaptext/" + previewList[i].hashurl;
+			headerDOM += headerTemplete.replace('{{tabID}}', '#'+tabID).replace('{{tabTitle}}', previewList[i].title);
+			contentDOM += contentTemplete.replace('{{tabID}}', tabID).replace('{{contentURL}}', contentURL);
+		}
+
+		this._cacheElement.previewTabHeader.innerHTML = headerDOM;
+		this._cacheElement.previewTabContent.innerHTML = contentDOM;
+
+		$("div.previewTabs").tabs("refresh");
+		var previewHeight = this._cacheElement.previewTabHeader.parent().height() - this._cacheElement.previewTabHeader.height();
+
+		this._cacheElement.previewTabContent.height(previewHeight);
+
+	},
+
 	initModal : function(){
 		var self = this;
 		$.post(self.editorData.ajaxURL.category.getCatagory, function(result){
@@ -219,6 +251,8 @@ var EditorAppMainContentView = Class.extend({
 			console.log(result);
 			self.bookmarkData.treeData = result;
 			self.makeBookmarkTreeView(result.data);
+			// show mock Data
+			self.setPreviewData(result.data.pageEntry);
 		})
 	},
 
@@ -233,12 +267,12 @@ var EditorAppMainContentView = Class.extend({
 			var isReviewActive = $("input:checkbox[id='toggle_preview']").is(":checked");
 			if(isReviewActive) {
 				self._cacheElement.editorDiv.removeClass('col-sm-6').addClass('col-sm-12');
-				self._cacheElement.prevviewDiv.removeClass('col-sm-6').addClass('col-sm-12');
-				self._cacheElement.prevviewDiv.hide();
+				self._cacheElement.previewDiv.removeClass('col-sm-6').addClass('col-sm-12');
+				self._cacheElement.previewDiv.hide();
 			} else {
 				self._cacheElement.editorDiv.removeClass('col-sm-12').addClass('col-sm-6');
-				self._cacheElement.prevviewDiv.removeClass('col-sm-12').addClass('col-sm-6');
-				self._cacheElement.prevviewDiv.show();
+				self._cacheElement.previewDiv.removeClass('col-sm-12').addClass('col-sm-6');
+				self._cacheElement.previewDiv.show();
 			}
 		});
 	},

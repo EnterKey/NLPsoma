@@ -140,14 +140,12 @@ exports.snaptext=function(req, res){
     path.join(__dirname, 'crawltext.py'),
     htmlPath
   ]
-  console.log(childArgs)
   childProcess.execFile("python", childArgs, function(err, stdout, stderr) {
     if(err||stderr) {
       console.log(err, stderr)
       res.writeHead(501);
       res.end();
     }else{
-      console.log(stdout)
       res.writeHead(200, {
         'Content-Type': 'text/plain;charset=utf-8',
         'Content-Length': stdout.length
