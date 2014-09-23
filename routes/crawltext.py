@@ -8,7 +8,7 @@ html=open(sys.argv[1]).read()
 soup = BeautifulSoup(html)
 
 # kill all script and style elements
-for script in soup(["script", "style"]):
+for script in soup(["script", "style","head"]):
     script.extract()    # rip it out
 
 # get text

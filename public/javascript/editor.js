@@ -202,12 +202,23 @@ var EditorAppMainContentView = Class.extend({
 		}
 	},
 
+	makeBookmarkTreeView: function(data){
+		/*
+		data.pageData[]
+		data.pageDir[]
+		path
+
+		*/
+
+	},
+
 	loadBookmarkData : function(){
 		var self = this;
 
 		$.post(self.bookmarkData.ajaxURL.get_tree, function(result){
 			console.log(result);
 			self.bookmarkData.treeData = result;
+			self.makeBookmarkTreeView(result.data);
 		})
 	},
 
