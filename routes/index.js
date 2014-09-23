@@ -1,6 +1,4 @@
 var mongodb_handler = require('../modules/mongodb_handler');
-var phantomjs = require('phantomjs')
-var binPath = phantomjs.path
 var path = require('path');
 var fs = require('fs');
 var crypto = require('crypto');
