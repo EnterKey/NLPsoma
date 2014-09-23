@@ -114,7 +114,16 @@ var push_pageEntry = function(userEmail, pageInfo, callback){
 		if(err){
 			callback(err, null);
 		}else if(isExist){
-			callback("PageExist", null);
+			var updateEntry = {
+				"pageEntry.$.title" : pageEntry.title,
+				"pageEntry.$.url" : pageEntry.url,
+				"pageEntry.$.content" : pageEntry.content,
+				"pageEntry.$.path" : parsePath("/"),
+				"pageEntry.$.status" : false
+			}
+	    userDataModel.update({userEmail:userEmail, "pageEntry.url":pageInfo.url}, {"$set": updateEntry}, function(err, data){
+	      callback(err, data);
+	    });
 		}else{
 			if(pageInfo.path == undefined){
 				pageEntry.path = parsePath("/");
@@ -304,6 +313,7 @@ module.exports = {
 			callback(err, result);
 		})
 	},
+
 
 	remove_pageDir: function(postData, callback){
 		if(typeof(callback) != "function") callback = function(){};
@@ -731,7 +741,34 @@ module.exports = {
 
 			callback(err, result);
 		});
+  },
 
+  get_bookmark_tree : function(postData, callback){
+    if(typeof(callback) != "function") callback = function(){};
+
+    var userEmail = postData.userInfo.email;
+    var result = {
+    	pageDir : [],
+    	pageEntry : []
+    }
+
+		userDataModel.find({userEmail:userEmail}, function(err, data){
+			if(err){
+				callback(err, result);
+				return;
+			}
+
+			if(data.length == 0){
+				console.log('none user');
+				callback("None user data", result);
+				return;
+			}
+
+			result.pageDir = data[0].pageDir;
+			result.pageEntry = data[0].pageEntry;
+
+			callback(err, result);
+		});
   }
 }
 

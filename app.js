@@ -74,7 +74,7 @@ app.post('/ajax/category/get_list', checkSession_post, routes.get_category_list)
 app.post('/ajax/category/insert', checkSession_post, routes.insert_category);
 app.post('/ajax/category/update', checkSession_post, routes.update_category);
 app.post('/ajax/category/remove', checkSession_post, routes.remove_category);
-
+app.post('/ajax/bookmark/get_tree', checkSession_post, routes.get_bookmark_tree);
 
 http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));

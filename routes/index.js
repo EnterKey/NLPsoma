@@ -3,7 +3,9 @@ var phantomjs = require('phantomjs')
 var binPath = phantomjs.path
 var path = require('path');
 var fs = require('fs');
+var crypto = require('crypto');
 var childProcess = require('child_process')
+var settings = require('../setting');
 
 var editorRenderInfo = {
   userInfo : {},
@@ -37,21 +39,14 @@ var dbResult_handler = function(err, data){
   // console.log(result);
   return result;
 };
-var phantom_snapshot = function(url,email,callback){
-  var childArgs = [
-    path.join(__dirname, 'phantom.js'),
-    url,
-    path.join(__dirname,'../..','snapshot', email,new Buffer(url).toString('base64').replace(/\//g,'$_$').substring(0,20)+'.png')
-  ]
-  console.log(childArgs)
-  childProcess.execFile(binPath, childArgs, function(err, stdout, stderr) {
-    callback();
-  })
-}
-var save_htmldata = function(url,email,htmldata,callback){
-  var filename=path.join(__dirname,'../..','snapshot', email,new Buffer(url).toString('base64').replace(/\//g,'$_$').substring(0,20)+'.html')
-  console.log(filename)
-  fs.writeFile(filename,htmldata,function(err){
+
+var save_htmldata = function(pageInfo, email, callback){
+  if(pageInfo == null || !pageInfo.url || !pageInfo.htmldata)
+    callback(false);
+  var hashurl = crypto.createHmac('md5', settings.data.hashkey).update(pageInfo.url).digest('hex');
+  var filename=path.join(__dirname,'../..','snapshot', email, hashurl + '.html');
+  console.log(filename);
+  fs.writeFile(filename, pageInfo.htmldata, function(err){
     if(!err){
       callback(true)
     }else{
@@ -136,6 +131,7 @@ exports.snapshot=function(req, res){
     }
   })
 }
+
 exports.snaptext=function(req, res){
   var useremail= req.body.userInfo.email;
   var hashurl=req.params.hashurl;
@@ -146,7 +142,6 @@ exports.snaptext=function(req, res){
   ]
   console.log(childArgs)
   childProcess.execFile("python", childArgs, function(err, stdout, stderr) {
-    console.log()
     if(err||stderr) {
       console.log(err, stderr)
       res.writeHead(501);
@@ -167,11 +162,9 @@ exports.insert_pageEntry = function(req, res){
     mongodb_handler.insert_pageEntry(req.body, function(err, data){
       var result = insertEntry_handler(err, data);
       if(!err){
-       // phantom_snapshot(req.body.pageInfo.url,req.body.userInfo.email,function(){
-          save_htmldata(req.body.pageInfo.url,req.body.userInfo.email,req.body.pageInfo.htmldata,function(){
-            res.json(result);
-          })
-        //})
+        save_htmldata(req.body.pageInfo,req.body.userInfo.email, function(){
+          res.json(result);
+        })
       }
       else{
         res.json(result);
@@ -337,4 +330,11 @@ exports.userChecking = function(req, res){
       })
     }
   });
+}
+
+exports.get_bookmark_tree= function(req, res){
+  mongodb_handler.get_bookmark_tree(req.body, function(err, data){
+    var result = dbResult_handler(err, data);
+    res.json(result);
+  })
 }

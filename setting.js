@@ -6,6 +6,10 @@ var oauth = {
   }
 }
 
+var data = {
+  hashkey : "2YV33p2HKhirqYWb" // Random String length : 16
+}
+
 switch(process.env.NODE_ENV){
   case "dev":
     console.log("Node mode : dev");
@@ -34,3 +38,4 @@ switch(process.env.NODE_ENV){
 }
 
 exports.oauth = oauth;
+exports.data = data;

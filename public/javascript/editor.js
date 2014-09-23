@@ -38,6 +38,19 @@ var EditorAppMainContentView = Class.extend({
 		categoryList : null
 	},
 
+	bookmarkData : {
+		ajaxURL : {
+			get_tree : "/ajax/bookmark/get_tree"
+		},
+		treeData : null
+	},
+
+	pageData : {
+		ajaxURL : {
+
+		}
+	},
+
 	_cacheElement : {
 		writingDocumentTitle 		: $('#writing_title'),
 		writingDocumentCategory : $('#writing_category'),
@@ -131,7 +144,7 @@ var EditorAppMainContentView = Class.extend({
 		}
 	},
 
-	setLoadData : function(data){
+	setEditorData : function(data){
 		var self = this;
 
 		self._cacheElement.writingDocumentTitle.html(data.filename);
@@ -163,8 +176,15 @@ var EditorAppMainContentView = Class.extend({
 	},
 
 	loadDocument : function(){
-		var self = this;
 
+		this.loadEditorData();
+		this.loadBookmarkData();
+		this.loadPageData();
+
+	},
+
+	loadEditorData : function(){
+		var self = this;
 		if(self._cacheElement.editorDiv.data('state') == 'edit'){
 			var postData = {
 				docsInfo: {
@@ -174,13 +194,27 @@ var EditorAppMainContentView = Class.extend({
 
 			$.post(self.editorData.ajaxURL.document.get_content, postData, function(result){
 				if(result.status){
-					self.setLoadData(result.data);
+					self.setEditorData(result.data);
 				}else{
 					alert(result.errorMsg);
 				}
 			});
 		}
 	},
+
+	loadBookmarkData : function(){
+		var self = this;
+
+		$.post(self.bookmarkData.ajaxURL.get_tree, function(result){
+			console.log(result);
+			self.bookmarkData.treeData = result;
+		})
+	},
+
+	loadPageData : function(){
+		var self = this;
+	},
+
 
 	toggleReviewDivision : function() {
     var self = this;
