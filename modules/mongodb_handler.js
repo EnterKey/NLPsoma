@@ -1,5 +1,7 @@
 var mongoose = require('mongoose');
 var Schema=mongoose.Schema;
+var crypto = require('crypto');
+var settings = require('../setting');
 
 mongoose.connect('mongodb://localhost/chrome_extension');
 
@@ -20,6 +22,7 @@ var userDataSchema = new Schema({
 		{
 			path : String,
 			url : String,
+			hashurl : String,
 			title : String,
 			content: String,
 			status: Boolean
@@ -108,6 +111,7 @@ var push_pageEntry = function(userEmail, pageInfo, callback){
 	var pageEntry = {};
 	pageEntry.title = pageInfo.title;
 	pageEntry.url = pageInfo.url;
+	pageEntry.hashurl = crypto.createHmac('md5', settings.data.hashkey).update(pageInfo.url).digest('hex');
 	pageEntry.content = pageInfo.content;
 
 	isPageExist(userEmail, pageEntry.url, function(err, isExist){
