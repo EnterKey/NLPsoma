@@ -93,7 +93,7 @@ function get_name_by_user(callback){
         if(e.keyCode == 13){
         	var data=$('.user_name_input_text').val()
         	$('.user_name_input_div').remove()
-        	var alphaExp = /^[a-zA-Z_-]+$/;
+        	var alphaExp = /^[a-zA-Z0-9_-]+$/;
         	if(data.match(alphaExp))
           		callback(data);
           	else

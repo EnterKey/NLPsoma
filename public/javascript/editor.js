@@ -161,7 +161,7 @@ var EditorAppMainContentView = Class.extend({
 	},
 
 	setPreviewData : function(previewList){
-		var headerDOM = "";
+/*		var headerDOM = "";
 		var contentDOM = "";
 
 		var headerTemplete = this.bookmarkData.templete.previewTabHeader;
@@ -181,7 +181,7 @@ var EditorAppMainContentView = Class.extend({
 		$("div.previewTabs").tabs("refresh");
 		var previewHeight = this._cacheElement.previewTabHeader.parent().height() - this._cacheElement.previewTabHeader.height();
 
-		this._cacheElement.previewTabContent.height(previewHeight);
+		this._cacheElement.previewTabContent.height(previewHeight);*/
 
 	},
 
@@ -235,13 +235,93 @@ var EditorAppMainContentView = Class.extend({
 	},
 
 	makeBookmarkTreeView: function(data){
+		
+		var pageEntry= data.pageEntry;
+		var pageDir=data.pageDir;
+		var ul_template="<ul>{{ul_content/}}</ul>"
+		var li_template_file="<li data-jstree='{\"icon\":\"glyphicon glyphicon-leaf\"}' data-hashurl='{{li_hashurl}}'>{{li_content}}</li>"
+		var li_template_dir="<li data-path='{{li_path}}'>{{li_content}}</li>"
+		var treeview_string;
+		var is_dir_exist=function(name,check_string){
+			return check_string.indexOf(name)>=0?true:false;
+		}
+		/*var add_sibling_ul=function(ul_data,original_string){
+			var new_string=original_string.replace(/{{ul_content}}/g,ul_template+"{{ul_content}}")
+		    new_string=new_string.replace(/{{li_hashurl}}/g,li_data.hashurl)
+		    new_string=new_string.replace(/{{li_content}}/g,li_data.title)
+	
+		}
+		var add_child_ul=function(ul_data,original_string){
+			var new_string=original_string.replace(/{{ul_content}}/g,ul_template+"{{ul_content}}")
+		    new_string=new_string.replace(/{{li_hashurl}}/g,li_data.hashurl)
+		    new_string=new_string.replace(/{{li_content}}/g,li_data.title)
+	
+		}*/
+
+		var add_li_file=function(file_data,original_string){
+		    var new_string=original_string.replace("{{ul_content"+file_data.path+"}}",li_template_file+"{{ul_content"+file_data.path+"}}")
+		    new_string=new_string.replace(/{{li_hashurl}}/g,file_data.hashurl)
+		    new_string=new_string.replace(/{{li_content}}/g,file_data.title)
+		    return new_string
+		}
+		var add_li_dir=function(dir_data,original_string){
+		    var new_string=original_string.replace("{{ul_content"+dir_data.path+"}}",li_template_dir+"{{ul_content"+dir_data.path+"}}")
+		    new_string=new_string.replace(/{{li_path}}/g,dir_data.path)
+		    new_string=new_string.replace(/{{li_content}}/g,dir_data.name+ul_template.replace("{{ul_content/}}","{{ul_content"+dir_data.path+dir_data.name+"/"+"}}"));
+		    return new_string
+		}
+/*		var add_li_dir_single=function(dir_data,original_string){
+		    var new_string=original_string.replace("{{ul_content"+dir_data.path+"}}",li_template_dir+"{{ul_content"+dir_data.path+"}}")
+		    new_string=new_string.replace(/{{li_path}}/g,dir_data.path)
+		    new_string=new_string.replace(/{{li_content}}/g,dir_data.name);
+		    return new_string
+		}*/
+
 		/*
-		data.pageData[]
-		data.pageDir[]
-		path
+		var add_child_li=function(li_data,original_string){
+		    var new_string=original_string.replace(/{{ul_content}}/g,li_template+"{{ul_content}}")
+		    new_string=new_string.replace(/{{li_hashurl}}/g,li_data.hashurl)
+		    new_string=new_string.replace(/{{li_content}}/g,li_data.title)
+		}*/
+		treeview_string=ul_template;
 
-		*/
-
+		pageDir.forEach(function(page_dir_element){
+			var split_data= page_dir_element.path.split("/")
+			if(split_data>1){
+				var concat_data="/"
+				split_data.forEach(function(split_elem){
+					if(split_elem!=""){
+					   concat_data+=split_elem+"/"
+					   if(!is_dir_exist(concat_data,treeview_string)){
+					   		treeview_string=add_li_dir(page_dir_element,concat_data,treeview_string)
+					   }
+					}
+				})
+			}else{
+				treeview_string=add_li_dir(page_dir_element,treeview_string)
+			}
+		})
+		pageEntry.forEach(function(page_entry_element){
+			treeview_string=add_li_file(page_entry_element,treeview_string)
+		})
+		treeview_string=treeview_string.replace(/"<ul><\/ul>"/g,"")
+		treeview_string=treeview_string.replace(/{{ul_content[a-zA-Z0-9\/\_\-]*}}/g,"")
+		console.log("after : "+treeview_string)
+		$("#jstree").append(treeview_string);
+		$('#jstree').jstree({
+			"core" : {
+				// so that create works
+				"check_callback" : true
+			},
+			"checkbox" : {
+				"keep_selected_style" : false
+			},
+			"plugins" : ["checkbox", "contextmenu", "dnd"]
+		});
+	
+		$('#jstree').on("changed.jstree", function(e, data) {
+			console.log(data.selected);
+		});
 	},
 
 	loadBookmarkData : function(){
