@@ -166,8 +166,21 @@ body.menu-active div#content .menu-trigger {
 }
 
 #jstree {
-	overflow-y: scroll;
+	overflow-y: hidden;
+	overflow-x: hidden;
 }
+
+/*.jstree-default .jstree-anchor{
+  white-space:nowrap;
+  overflow:auto;
+  text-overflow:clip;
+}
+
+.jstree-default .jstree-anchor::-webkit-scrollbar {
+    display: none;
+}
+
+*/
 
 .slide-menu-bookmarkList {
 	width: 250px;
@@ -209,4 +222,13 @@ body.menu-active div#content .menu-trigger {
 	overflow:hidden;
 	white-space:nowrap;
 	text-overflow:ellipsis;
+}
+
+.long_name_overflow{
+  white-space:nowrap;
+  overflow:auto;
+  text-overflow:clip;
+}
+.long_name_overflow::-webkit-scrollbar {
+    display: none;
 }

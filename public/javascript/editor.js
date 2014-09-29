@@ -328,9 +328,9 @@ var EditorAppMainContentView = Class.extend({
   setPreviewList : function(data){
     var i;
     var checkedList = [];
+    console.log(data);
     for(i=0; i<data.length; i++){
       var index = $('#'+data[i]).data('index');
-      console.log(index);
       if(index != undefined)
         checkedList.push(index);
     }
