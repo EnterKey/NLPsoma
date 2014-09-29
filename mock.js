@@ -6,7 +6,7 @@ var insertTestData = function(){
         picture: 'https://lh3.googleusercontent.com/-XdUIqdMkCWA/AAAAAAAAAAI/AAAAAAAAAAA/4252rscbv5M/photo.jpg'
       };
 
-  var testDirData = [
+  var pageDir = [
     {
       userInfo: {
         email: "widianpear@gmail.com",
