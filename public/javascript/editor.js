@@ -70,7 +70,7 @@ var EditorAppMainContentView = Class.extend({
     previewNewTab         : 'div.previewTabs ul li',
     addPreviewBtn         : $('button#add-preview-btn'),
     modalCategory         : $('#modal-category')[0],
-    previewTab            : $('div.previewTabs')[0],
+    previewTab            : $('#tabs'),
     previewTabHeader      : $('#previewTab-header')[0],
     previewTabContent     : $('#previewTab-content')[0],
     previewTabHeight      : '550px',
@@ -321,16 +321,16 @@ var EditorAppMainContentView = Class.extend({
     });
 
     this._cacheElement.jstree.on("changed.jstree", function(e, data) {
-      self.setPreviewList(data.selected);
+      self.setPreviewList($('#jstree').jstree("get_checked",function(data){console.log(data)}));
     });
   },
 
   setPreviewList : function(data){
+
     var i;
     var checkedList = [];
-    console.log(data);
     for(i=0; i<data.length; i++){
-      var index = $('#'+data[i]).data('index');
+      var index = data[i].data.index;
       if(index != undefined)
         checkedList.push(index);
     }
@@ -355,8 +355,9 @@ var EditorAppMainContentView = Class.extend({
   },
 
   initReviewTab : function() {
-    $("#tabs").tabs();
-    $('#tabs').height(this._cacheElement.previewTabHeight);
+    this._cacheElement.previewTab.tabs();
+    this._cacheElement.previewTab.height(this._cacheElement.previewTabHeight);
+    this._cacheElement.previewTab.hide();
   },
 
   addNewPreviewTab : function() {
@@ -364,6 +365,8 @@ var EditorAppMainContentView = Class.extend({
     var self = this;
 
     self._cacheElement.addPreviewBtn.on('click', function(){
+      self._cacheElement.previewTab.show();
+
       var previewList = [];
       var checkedList = self.bookmarkData.checkedList;
       var pageEntry = self.bookmarkData.treeData.pageEntry;

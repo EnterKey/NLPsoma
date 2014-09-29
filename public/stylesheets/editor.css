@@ -232,3 +232,111 @@ body.menu-active div#content .menu-trigger {
 .long_name_overflow::-webkit-scrollbar {
     display: none;
 }
+
+
+#tabs {
+    padding: 0px;
+    background: none;
+    border-width: 0px;
+}
+#tabs .ui-tabs-nav {
+    padding-left: 0px;
+    background: transparent;
+    border-width: 0px 0px 1px 0px;
+    -moz-border-radius: 0px;
+    -webkit-border-radius: 0px;
+    border-radius: 0px;
+}
+#tabs .ui-tabs-panel {
+    background: #f5f3e5 url(http://code.jquery.com/ui/1.8.23/themes/south-street/images/ui-bg_highlight-hard_100_f5f3e5_1x100.png) repeat-x scroll 50% top;
+    border-width: 0px 1px 1px 1px;
+}
+
+
+.ui-tabs .ui-tabs-nav li.ui-tabs-selected {
+	margin-bottom: 0;
+	padding-bottom: 1px;
+}
+.ui-tabs .ui-tabs-nav li {
+	list-style: none;
+	float: left;
+	position: relative;
+	top: 1px;
+	margin: 0 .2em 1px 0;
+	border-bottom: 0 !important;
+	padding: 0;
+	white-space: nowrap;
+}
+
+.ui-tabs .ui-tabs-panel {
+	padding: 1em;
+    background: #f5f3e5 url(http://code.jquery.com/ui/1.8.23/themes/south-street/images/ui-bg_highlight-hard_100_f5f3e5_1x100.png) repeat-x scroll 50% top;
+    border-width: 0px 1px 1px 1px;
+}
+
+.ui-tabs .ui-tabs-nav {
+	padding-left: 0.2em;
+	background: url(http://code.jquery.com/ui/1.8.23/themes/south-street/images/ui-bg_gloss-wave_100_ece8da_500x100.png) repeat-x scroll 50% 50% #ECE8DA;
+	border: 1px solid #D4CCB0;
+	-moz-border-radius: 6px;
+	-webkit-border-radius: 6px;
+	border-radius: 6px;
+}
+
+.ui-tabs .ui-tabs-nav {
+	padding-left: 0px;
+	background: transparent;
+	border-width: 0px 0px 1px 0px;
+	border-color: #3c8243;
+	-moz-border-radius: 0px;
+	-webkit-border-radius: 0px;
+	border-radius: 0px;
+}
+.ui-tabs .ui-tabs-nav {
+	margin: 0;
+	padding: .2em .2em 0;
+}
+
+.ui-state-default, .ui-widget-content .ui-state-default, .ui-widget-header .ui-state-default {
+border: 1px solid #327e04;
+background: #459e00 url(images/ui-bg_highlight-hard_15_459e00_1x100.png) 50% 50% repeat-x;
+font-weight: bold;
+color: #ffffff;
+}
+
+.ui-tabs .ui-tabs-nav li a, .ui-tabs.ui-tabs-collapsible .ui-tabs-nav li.ui-tabs-selected a {
+cursor: pointer;
+}
+.ui-tabs .ui-tabs-nav li a {
+float: left;
+padding: .5em 1em;
+text-decoration: none;
+}
+.ui-state-active a, .ui-state-active a:link, .ui-state-active a:visited {
+color: #459e00;
+text-decoration: none;
+}
+.ui-state-default a, .ui-state-default a:link, .ui-state-default a:visited {
+color: #ffffff;
+text-decoration: none;
+}
+.ui-state-active a, .ui-state-active a:link, .ui-state-active a:visited {
+color: #459e00;
+text-decoration: none;
+}
+
+.ui-widget-header a {
+color: #433f38;
+}
+
+.ui-tabs-nav .ui-state-active {
+	border-color: #D4CCB0;
+}
+
+
+.ui-state-active, .ui-widget-content .ui-state-active, .ui-widget-header .ui-state-active {
+border: 1px solid #d4ccb0;
+background: #fafaf4 url(images/ui-bg_highlight-hard_100_fafaf4_1x100.png) 50% 50% repeat-x;
+font-weight: bold;
+color: #459e00;
+}
