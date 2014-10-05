@@ -45,7 +45,7 @@ var EditorAppMainContentView = Class.extend({
     templete : {
       previewList : '<li><a href="{{tabID}}"><div class="preview-list">{{header}}{{content}}</div></a></li>',
       previewHeader : '<div class="preview-content-title" data-index="{{index}}">{{title}}</div>',
-      previewContent : '<div class="preview-content" id="{{tabID}}"><textarea>{{content}}</textarea></div>',
+      previewContent : '<div class="preview-content" id="{{tabID}}"><div class="editor_paste" style="position: relative;left: 90%;background-image:url(\'/images/editor-copy-icon.png\');background-size: contain;height: 20px;width: 20px;display: inline-block;"></div><textarea>{{content}}</textarea></div>',
       previewPage : '<div class="panel-heading">{{title}}<a class="preview-page-close glyphicon glyphicon-remove" style="float:right"></a></div><div class="panel-body preview-page"><iframe src={{hashurl}} class="preview-iframe"></iframe></div>'
     },
     treeData : {
@@ -166,6 +166,14 @@ var EditorAppMainContentView = Class.extend({
     CKEDITOR.instances.editor1.setData(data.content);
 
   },
+  addEditorData : function(data){
+    var self = this;
+
+    var original=CKEDITOR.instances.editor1.getData();
+	var original=CKEDITOR.instances.editor1.setData(original+data);
+
+
+  },
 
   setPreviewData : function(previewList){
     var self = this;
@@ -209,6 +217,10 @@ var EditorAppMainContentView = Class.extend({
     $('.preview-content-title').on('dblclick', function(){
       self.setPreviewPage();
     });
+    $(".editor_paste").on('click',function(e){
+     	self.addEditorData($(this).parent().find("textarea").text())
+
+    })
 
     // this._cacheElement.previewTabHeader.innerHTML = headerDOM;
     // this._cacheElement.previewTabContent.innerHTML = contentDOM;
@@ -308,7 +320,7 @@ var EditorAppMainContentView = Class.extend({
     var pageEntry= data.pageEntry;
     var pageDir=data.pageDir;
     var ul_template="<ul>{{ul_content/}}</ul>"
-    var li_template_file="<li data-jstree='{\"icon\":\"glyphicon glyphicon-leaf\"}' data-index='{{li_index}}' data-hashurl='{{li_hashurl}}'>{{li_content}}</li>"
+    var li_template_file="<li data-jstree='{\"icon\":\"/images/bookmark.png\"}' data-index='{{li_index}}' data-hashurl='{{li_hashurl}}'>{{li_content}}</li>"
     var li_template_dir="<li data-path='{{li_path}}'>{{li_content}}</li>"
     var treeview_string;
 
@@ -368,11 +380,15 @@ var EditorAppMainContentView = Class.extend({
       },
       "plugins" : ["checkbox", "contextmenu", "dnd"]
     });
-
+    
+	$(".jstree-icon.jstree-themeicon.jstree-themeicon-custom").css("background-size","contain")
     this._cacheElement.jstree.on("changed.jstree", function(e, data) {
+	  $(".jstree-icon.jstree-themeicon.jstree-themeicon-custom").css("background-size","contain")
       self.setPreviewList($('#jstree').jstree("get_checked",function(data){console.log(data)}));
+
     });
   },
+
 
   setPreviewList : function(data){
 
@@ -385,6 +401,7 @@ var EditorAppMainContentView = Class.extend({
     }
 
     this.bookmarkData.checkedList = checkedList;
+
   },
 
   toggleReviewDivision : function() {
@@ -437,6 +454,7 @@ var EditorAppMainContentView = Class.extend({
         $("#wrapper").addClass("toggled");
       }
     })
+
   }
 });
 
