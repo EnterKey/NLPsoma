@@ -43,14 +43,17 @@ var EditorAppMainContentView = Class.extend({
       get_tree : "/ajax/bookmark/get_tree"
     },
     templete : {
-      previewTabHeader : '<li><a href="{{tabID}}">{{tabTitle}}</a></li>',
-      previewTabContent : '<div class="preview-content" id="{{tabID}}"><iframe class="preview-iframe" src="{{contentURL}}"></iframe></div>'
+      previewList : '<li><a href="{{tabID}}"><div class="preview-list">{{header}}{{content}}</div></a></li>',
+      previewHeader : '<div class="preview-content-title" data-index="{{index}}">{{title}}</div>',
+      previewContent : '<div class="preview-content" id="{{tabID}}"><textarea>{{content}}</textarea></div>',
+      previewPage : '<div class="panel-heading">{{title}}<a class="preview-page-close glyphicon glyphicon-remove" style="float:right"></a></div><div class="panel-body preview-page"><iframe src={{hashurl}} class="preview-iframe"></iframe></div>'
     },
     treeData : {
       pageDir : [],
       pageEntry : []
     },
-    checkedList : []
+    checkedList : [],
+    previewList : []
   },
 
   pageData : {
@@ -68,7 +71,7 @@ var EditorAppMainContentView = Class.extend({
     previewDiv            : $('#preview'),
     modalForChangeDocumentTitle : $('#modal-edit-writing'),
     previewNewTab         : 'div.previewTabs ul li',
-    addPreviewBtn         : $('button#add-preview-btn'),
+    viewPreviewBtn         : $('#view-preview'),
     modalCategory         : $('#modal-category')[0],
     previewTab            : $('#tabs'),
     previewTabHeader      : $('#previewTab-header')[0],
@@ -146,7 +149,6 @@ var EditorAppMainContentView = Class.extend({
   },
 
   ajaxSaveHandler : function(result) {
-    console.log(result);
     if(result.status){
       alert("Success");
       if(self._cacheElement.editorDiv.data('state')=='new')
@@ -166,28 +168,75 @@ var EditorAppMainContentView = Class.extend({
   },
 
   setPreviewData : function(previewList){
+    var self = this;
+    var listDOM = "";
     var headerDOM = "";
-    var contentDOM = "";
+    var contentDOM
 
-    var headerTemplete = this.bookmarkData.templete.previewTabHeader;
-    var contentTemplete = this.bookmarkData.templete.previewTabContent;
+    var ListTemplete = this.bookmarkData.templete.previewList ;
+    var headerTemplete = this.bookmarkData.templete.previewHeader ;
+    var contentTemplete = this.bookmarkData.templete.previewContent ;
 
     var i = 0;
     for(i=0;i<previewList.length;i++){
       var tabID = 'preview-content-'+(i+1);
-      var contentURL = "/snaptext/" + previewList[i].hashurl;
-      headerDOM += headerTemplete.replace('{{tabID}}', '#'+tabID).replace('{{tabTitle}}', previewList[i].title);
-      contentDOM += contentTemplete.replace('{{tabID}}', tabID).replace('{{contentURL}}', contentURL);
+      var contentURL = "/snaptext/" + previewList[i].pageEntry.hashurl;
+      headerDOM = headerTemplete.replace('{{title}}', previewList[i].pageEntry.title).replace('{{index}}',previewList[i].index);
+      contentDOM = contentTemplete.replace('{{content}}', previewList[i].pageEntry.content).replace('{{tabID}}', '#'+tabID);
+      console.log(tabID);
+      listDOM += ListTemplete.replace('{{tabID}}', '#'+tabID).replace('{{header}}',headerDOM).replace("{{content}}",contentDOM)
     }
 
-    this._cacheElement.previewTabHeader.innerHTML = headerDOM;
-    this._cacheElement.previewTabContent.innerHTML = contentDOM;
+    $('.slidebar-previewList')[0].innerHTML = listDOM;
 
-    $("div.previewTabs").tabs("refresh");
-    var previewHeight = this._cacheElement.previewTabHeader.parent().height() - this._cacheElement.previewTabHeader.height();
+    $('.preview-content-title').on('click', function(){
+      var target = $(this);
+      var index = target.data('index');
+      if(target.parent().hasClass('checked')){
+        target.parent().removeClass('checked');
+        var isInArray = self.bookmarkData.previewList.indexOf(index);
+        if(isInArray>-1){
+          self.bookmarkData.previewList.splice(isInArray,1);
+        }
+      }else{
+        if(self.bookmarkData.previewList.length<2){
+          target.parent().addClass('checked');
+          self.bookmarkData.previewList.push(target.data('index'));
+        }
+      }
+    });
 
-    this._cacheElement.previewTabContent.height(previewHeight);
+    $('.preview-content-title').on('dblclick', function(){
+      self.setPreviewPage();
+    });
 
+    // this._cacheElement.previewTabHeader.innerHTML = headerDOM;
+    // this._cacheElement.previewTabContent.innerHTML = contentDOM;
+
+    // $("div.previewTabs").tabs("refresh");
+    // var previewHeight = this._cacheElement.previewTabHeader.parent().height() - this._cacheElement.previewTabHeader.height();
+
+    // this._cacheElement.previewTabContent.height(previewHeight);
+
+  },
+
+  setPreviewPage : function(){
+
+    var pageEntry = this.bookmarkData.treeData.pageEntry;
+    var previewList = this.bookmarkData.previewList;
+    var i=0;
+    var previewPageDOM = "";
+    for(i;i<previewList.length;i++){
+      var contentURL = "/snaptext/" + pageEntry[previewList[i]].hashurl;
+      previewPageDOM = this.bookmarkData.templete.previewPage.replace('{{title}}', pageEntry[previewList[i]].title).replace('{{hashurl}}', contentURL);
+    }
+
+    $('#previewPage')[0].innerHTML = previewPageDOM;
+    $('#preview-container').css('display', 'block');
+
+    $('.preview-page-close').on('click', function(){
+      $('#preview-container').css('display', 'none');
+    })
   },
 
   initModal : function(){
@@ -364,19 +413,30 @@ var EditorAppMainContentView = Class.extend({
 
     var self = this;
 
-    self._cacheElement.addPreviewBtn.on('click', function(){
-      self._cacheElement.previewTab.show();
+    self._cacheElement.viewPreviewBtn.on('click', function(e){
+
+      e.preventDefault();
 
       var previewList = [];
       var checkedList = self.bookmarkData.checkedList;
       var pageEntry = self.bookmarkData.treeData.pageEntry;
 
       for(i=0;i<checkedList.length;i++){
-        previewList.push(pageEntry[checkedList[i]]);
+        previewList.push({
+          pageEntry : pageEntry[checkedList[i]],
+          index : checkedList[i]
+          });
       }
 
       self.setPreviewData(previewList);
+      $("#wrapper").removeClass("toggled");
     });
+
+    $('#page-content-wrapper').on('click', function(){
+      if($('#preview-container').css('display')=='none'){
+        $("#wrapper").addClass("toggled");
+      }
+    })
   }
 });
 

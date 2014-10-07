@@ -11,7 +11,6 @@
 	-webkit-touch-callout: none;
 	-webkit-overflow-scrolling: touch;
 	-webkit-tap-highlight-color: rgba(0, 0, 0, 0);
-	font-family: "Nanum Gothic"
 }
 
 html, body, div, ul, li, h1, input, label, img {
@@ -31,7 +30,7 @@ html, body, div, ul, li, h1, input, label, img {
 }
 
 .document-sidebar-category > a.active {
-	background-color : #C0C0C0 ! important; 
+	background-color : #C0C0C0 ! important;
 	border-color : #C0C0C0 ! important;
 }
 
@@ -82,7 +81,7 @@ a, a:hover, a:visited, .btn-link:hover { text-decoration: none; }
 }
 
 .list-title > span {
-	padding: 4px 8px 4px 8px; 
+	padding: 4px 8px 4px 8px;
 	/*background: RGBA(252, 235, 182, 0.2);*/
 	/*box-shadow: 0 1px 0px #FF760E;*/
 	border-top-right-radius: 30px 20px;
@@ -204,7 +203,7 @@ a, a:hover, a:visited, .btn-link:hover { text-decoration: none; }
 	    width: 23%; /* non-css3 fallback */
 	    width: calc( 25% - 2.4% ); /* css3 calculation */
 	}
-	
+
 	.col-md-6 {
 	    margin: 0 1.5%;
 	    margin-bottom: 28px;

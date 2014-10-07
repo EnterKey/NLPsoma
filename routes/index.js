@@ -102,7 +102,7 @@ exports.editor = function(req, res){
   renderInfo.userInfo = req.body.userInfo;
   renderInfo.editorState = 'new';
 
-  res.render('editor', renderInfo);
+  res.render('editortest', renderInfo);
 }
 
 exports.insert_user = function(req, res){
