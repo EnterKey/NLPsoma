@@ -298,35 +298,35 @@ body.menu-active div#content .menu-trigger {
 }
 
 .ui-state-default, .ui-widget-content .ui-state-default, .ui-widget-header .ui-state-default {
-border: 1px solid #327e04;
-background: #459e00 url(images/ui-bg_highlight-hard_15_459e00_1x100.png) 50% 50% repeat-x;
-font-weight: bold;
-color: #ffffff;
+    border: 1px solid #327e04;
+    background: #459e00 url(images/ui-bg_highlight-hard_15_459e00_1x100.png) 50% 50% repeat-x;
+    font-weight: bold;
+    color: #ffffff;
 }
 
 .ui-tabs .ui-tabs-nav li a, .ui-tabs.ui-tabs-collapsible .ui-tabs-nav li.ui-tabs-selected a {
-cursor: pointer;
+    cursor: pointer;
 }
 .ui-tabs .ui-tabs-nav li a {
-float: left;
-padding: .5em 1em;
-text-decoration: none;
+    float: left;
+    padding: .5em 1em;
+    text-decoration: none;
 }
 .ui-state-active a, .ui-state-active a:link, .ui-state-active a:visited {
-color: #459e00;
-text-decoration: none;
+    color: #459e00;
+    text-decoration: none;
 }
 .ui-state-default a, .ui-state-default a:link, .ui-state-default a:visited {
-color: #ffffff;
-text-decoration: none;
+    color: #ffffff;
+    text-decoration: none;
 }
 .ui-state-active a, .ui-state-active a:link, .ui-state-active a:visited {
-color: #459e00;
-text-decoration: none;
+    color: #459e00;
+    text-decoration: none;
 }
 
 .ui-widget-header a {
-color: #433f38;
+    color: #433f38;
 }
 
 .ui-tabs-nav .ui-state-active {
@@ -335,8 +335,44 @@ color: #433f38;
 
 
 .ui-state-active, .ui-widget-content .ui-state-active, .ui-widget-header .ui-state-active {
-border: 1px solid #d4ccb0;
-background: #fafaf4 url(images/ui-bg_highlight-hard_100_fafaf4_1x100.png) 50% 50% repeat-x;
-font-weight: bold;
-color: #459e00;
+    border: 1px solid #d4ccb0;
+    background: #fafaf4 url(images/ui-bg_highlight-hard_100_fafaf4_1x100.png) 50% 50% repeat-x;
+    font-weight: bold;
+    color: #459e00;
+}
+
+.addPreviewBtn-wrapper {
+    text-align: right;
+}
+
+.translate-btn-group-wrapper {
+    text-align: center;
+}
+
+.translate-btn-group {
+    margin : 5px 5px !important;
+    position :  absolute;
+    bottom : 0px;
+}
+
+.ui-tabs-panel {
+    height : 520px;
+    overflow : auto;
+}
+
+.translateResultWrapper {
+    display: none;
+}
+
+.translateResult {
+    height: 230px;
+    overflow:auto;
+    margin : 5px;
+    padding: 0px 21px !important;
+    border-width: 0;
+    background: none;
+}
+
+.shortly-for-translate {
+    heigth : 225px !important;
 }

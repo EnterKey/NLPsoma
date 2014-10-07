@@ -3,430 +3,551 @@
  */
 
 /** @class editor.html Page의 Controller
-* @auther EnterKey
-* @version 1
-* @constructor 뷰 import후 생성
-* @description View를 import하고 init 하기 위한 클래스
-*/
+ * @auther EnterKey
+ * @version 1
+ * @constructor 뷰 import후 생성
+ * @description View를 import하고 init 하기 위한 클래스
+ */
 var EditorAppController = Class.extend({
-  editorAppMainContentView: null,
-  editorAppSideContentView : null,
+    editorAppMainContentView: null,
+    editorAppSideContentView: null,
 
-  init: function() {
-    this.editorAppMainContentView = new EditorAppMainContentView();
-    this.editorAppSideContentView = new EditorAppSideContentView();
-  }
+    init: function () {
+        this.editorAppMainContentView = new EditorAppMainContentView();
+        this.editorAppSideContentView = new EditorAppSideContentView();
+    }
 });
 
 /** @class editor.html Page의 Editor와 Preview 관련 뷰 클래스
-* @auther EnterKey
-* @version 1
-* @description Page의 Editor와 Preview Division을 제어하기 위한 클래스
-*/
+ * @auther EnterKey
+ * @version 1
+ * @description Page의 Editor와 Preview Division을 제어하기 위한 클래스
+ */
 var EditorAppMainContentView = Class.extend({
-  editorData : {
-    ajaxURL : {
-      document : {
-        get_content : "/ajax/document/get_content",
-        insert : "/ajax/document/insert",
-        update : "/ajax/document/update",
-      },
-      category : {
-        getCatagory : "/ajax/category/get_list"
-      }
+    editorData: {
+        ajaxURL: {
+            document: {
+                get_content: "/ajax/document/get_content",
+                insert: "/ajax/document/insert",
+                update: "/ajax/document/update",
+            },
+            category: {
+                getCatagory: "/ajax/category/get_list"
+            }
+        },
+        categoryList: null
     },
-    categoryList : null
-  },
 
-  bookmarkData : {
-    ajaxURL : {
-      get_tree : "/ajax/bookmark/get_tree"
+    bookmarkData: {
+        ajaxURL: {
+            get_tree: "/ajax/bookmark/get_tree"
+        },
+        templete: {
+            previewTabHeader: '<li><a href="{{tabID}}">{{tabTitle}}</a></li>',
+            previewTabContent: '<div class="preview-content" id="{{tabID}}"><iframe class="preview-iframe" src="{{contentURL}}"></iframe></div>'
+        },
+        treeData: {
+            pageDir: [],
+            pageEntry: []
+        },
+        checkedList: []
     },
-    templete : {
-      previewTabHeader : '<li><a href="{{tabID}}">{{tabTitle}}</a></li>',
-      previewTabContent : '<div class="preview-content" id="{{tabID}}"><iframe class="preview-iframe" src="{{contentURL}}"></iframe></div>'
-    },
-    treeData : {
-      pageDir : [],
-      pageEntry : []
-    },
-    checkedList : []
-  },
 
-  pageData : {
-    ajaxURL : {
+    pageData: {
+        ajaxURL: {
 
-    }
-  },
-
-  _cacheElement : {
-    writingDocumentTitle    : $('#writing_title'),
-    writingDocumentCategory : $('#writing_category'),
-    titleOfToggleModal      : $('#modal-title'),
-    categoryOfToggleModal   : $('#modal-category'),
-    editorDiv               : $('#editor'),
-    previewDiv            : $('#preview'),
-    modalForChangeDocumentTitle : $('#modal-edit-writing'),
-    previewNewTab         : 'div.previewTabs ul li',
-    addPreviewBtn         : $('button#add-preview-btn'),
-    modalCategory         : $('#modal-category')[0],
-    previewTab            : $('#tabs'),
-    previewTabHeader      : $('#previewTab-header')[0],
-    previewTabContent     : $('#previewTab-content')[0],
-    previewTabHeight      : '550px',
-    jstree                : $('#jstree')
-  },
-
-  init : function() {
-    this.setEventListener();
-    this.setEditor();
-    this.initReviewTab();
-    this.initModal();
-    this.loadDocument();
-  },
-
-  setEditor : function() {
-    var editor = new Editor();
-  },
-
-  setEventListener : function() {
-    this.toggleModalForChangeDocumentTitle();
-    this.changeDocumentTitle();
-    this.saveDocumentContent();
-    this.toggleReviewDivision();
-    this.addNewPreviewTab();
-  },
-
-  toggleModalForChangeDocumentTitle : function() {
-    var self = this;
-    $(this._cacheElement.writingDocumentTitle).on('click', function() {
-      var documentTitle = self._cacheElement.writingDocumentTitle.text();
-      self._cacheElement.titleOfToggleModal.val(documentTitle);
-      self._cacheElement.modalForChangeDocumentTitle.modal('toggle');
-    });
-  },
-
-  changeDocumentTitle : function() {
-    var self = this;
-    $('#btn-done').on('click', function() {
-      var title = self._cacheElement.titleOfToggleModal.val();
-      var category = self._cacheElement.categoryOfToggleModal.val();
-      self._cacheElement.writingDocumentTitle.html(title);
-      self._cacheElement.writingDocumentCategory.html(category);
-    });
-  },
-
-  saveDocumentContent : function() {
-    var self = this;
-    var postData = {
-      docsInfo: {
-        filename: null,
-        category: null,
-        bookmarks: [],
-        content : null
-      }
-    };
-
-    $('#save_writing_button').on('click', function(){
-      var editorIframe = $('#cke_1_contents iframe')[0];
-
-      if(editorIframe){
-        var editorContent = editorIframe.contentWindow.document.body.innerHTML;
-        postData.docsInfo.filename = self._cacheElement.writingDocumentTitle.html();
-        postData.docsInfo.category = self._cacheElement.writingDocumentCategory.html();
-        postData.docsInfo.content = editorContent;
-
-        if(self._cacheElement.editorDiv.data('state')=='edit'){
-          $.post(self.editorData.ajaxURL.document.update, postData, self.ajaxSaveHandler);
-        }else{
-          $.post(self.editorData.ajaxURL.document.insert, postData, self.ajaxSaveHandler);
         }
-      }
-    });
-  },
+    },
 
-  ajaxSaveHandler : function(result) {
-    console.log(result);
-    if(result.status){
-      alert("Success");
-      if(self._cacheElement.editorDiv.data('state')=='new')
-        self._cacheElement.editorDiv.data('state', 'edit');
-    }else{
-      alert(result.errorMsg);
-    }
-  },
+    _cacheElement: {
+        writingDocumentTitle: $('#writing_title'),
+        writingDocumentCategory: $('#writing_category'),
+        titleOfToggleModal: $('#modal-title'),
+        categoryOfToggleModal: $('#modal-category'),
+        editorDiv: $('#editor'),
+        previewDiv: $('#preview'),
+        modalForChangeDocumentTitle: $('#modal-edit-writing'),
+        previewNewTab: 'div.previewTabs ul li',
+        addPreviewBtn: $('button#add-preview-btn'),
+        modalCategory: $('#modal-category')[0],
+        previewTab: $('#tabs'),
+        previewTabHeader: $('#previewTab-header')[0],
+        previewTabContent: $('#previewTab-content')[0],
+        previewTabHeight: '550px',
+        jstree: $('#jstree')
+    },
 
-  setEditorData : function(data){
-    var self = this;
+    init: function () {
+        this.setEventListener();
+        this.setEditor();
+        this.initReviewTab();
+        this.initModal();
+        this.loadDocument();
+    },
 
-    self._cacheElement.writingDocumentTitle.html(data.filename);
-    self._cacheElement.writingDocumentCategory.html(data.category);
-    CKEDITOR.instances.editor1.setData(data.content);
+    setEditor: function () {
+        var editor = new Editor();
+    },
 
-  },
+    setTranslator: function () {
+        var translate = new Translate();
+    },
 
-  setPreviewData : function(previewList){
-    var headerDOM = "";
-    var contentDOM = "";
+    setEventListener: function () {
+        this.toggleModalForChangeDocumentTitle();
+        this.changeDocumentTitle();
+        this.saveDocumentContent();
+        this.toggleReviewDivision();
+        this.addNewPreviewTab();
+        this.setTranslator();
+    },
 
-    var headerTemplete = this.bookmarkData.templete.previewTabHeader;
-    var contentTemplete = this.bookmarkData.templete.previewTabContent;
+    toggleModalForChangeDocumentTitle: function () {
+        var self = this;
+        $(this._cacheElement.writingDocumentTitle).on('click', function () {
+            var documentTitle = self._cacheElement.writingDocumentTitle.text();
+            self._cacheElement.titleOfToggleModal.val(documentTitle);
+            self._cacheElement.modalForChangeDocumentTitle.modal('toggle');
+        });
+    },
 
-    var i = 0;
-    for(i=0;i<previewList.length;i++){
-      var tabID = 'preview-content-'+(i+1);
-      var contentURL = "/snaptext/" + previewList[i].hashurl;
-      headerDOM += headerTemplete.replace('{{tabID}}', '#'+tabID).replace('{{tabTitle}}', previewList[i].title);
-      contentDOM += contentTemplete.replace('{{tabID}}', tabID).replace('{{contentURL}}', contentURL);
-    }
+    changeDocumentTitle: function () {
+        var self = this;
+        $('#btn-done').on('click', function () {
+            var title = self._cacheElement.titleOfToggleModal.val();
+            var category = self._cacheElement.categoryOfToggleModal.val();
+            self._cacheElement.writingDocumentTitle.html(title);
+            self._cacheElement.writingDocumentCategory.html(category);
+        });
+    },
 
-    this._cacheElement.previewTabHeader.innerHTML = headerDOM;
-    this._cacheElement.previewTabContent.innerHTML = contentDOM;
+    saveDocumentContent: function () {
+        var self = this;
+        var postData = {
+            docsInfo: {
+                filename: null,
+                category: null,
+                bookmarks: [],
+                content: null
+            }
+        };
 
-    $("div.previewTabs").tabs("refresh");
-    var previewHeight = this._cacheElement.previewTabHeader.parent().height() - this._cacheElement.previewTabHeader.height();
+        $('#save_writing_button').on('click', function () {
+            var editorIframe = $('#cke_1_contents iframe')[0];
 
-    this._cacheElement.previewTabContent.height(previewHeight);
+            if (editorIframe) {
+                var editorContent = editorIframe.contentWindow.document.body.innerHTML;
+                postData.docsInfo.filename = self._cacheElement.writingDocumentTitle.html();
+                postData.docsInfo.category = self._cacheElement.writingDocumentCategory.html();
+                postData.docsInfo.content = editorContent;
 
-  },
+                if (self._cacheElement.editorDiv.data('state') == 'edit') {
+                    $.post(self.editorData.ajaxURL.document.update, postData, self.ajaxSaveHandler);
+                } else {
+                    $.post(self.editorData.ajaxURL.document.insert, postData, self.ajaxSaveHandler);
+                }
+            }
+        });
+    },
 
-  initModal : function(){
-    var self = this;
-    $.post(self.editorData.ajaxURL.category.getCatagory, function(result){
-      if(result.status){
-        self.editorData.categoryList = result.data.categoryList;
-        self.setCategoryList(result.data.categoryList);
-      }else{
-        alert(result.errorMsg);
-      }
-    });
-  },
-
-  setCategoryList : function(categoryList){
-    var DOM = "";
-    var options = "<option value='{{category}}'>{{category}}</option>";
-    var i;
-    for(i=0;i<categoryList.length;i++){
-      DOM+=options.replace(/{{category}}/g, categoryList[i]);
-    }
-    this._cacheElement.modalCategory.innerHTML = DOM;
-  },
-
-  loadDocument : function(){
-
-    this.loadEditorData();
-    this.loadBookmarkData();
-    this.loadPageData();
-
-  },
-
-  loadEditorData : function(){
-    var self = this;
-    if(self._cacheElement.editorDiv.data('state') == 'edit'){
-      var postData = {
-        docsInfo: {
-          filename: self._cacheElement.editorDiv.data('filename')
+    ajaxSaveHandler: function (result) {
+        console.log(result);
+        if (result.status) {
+            alert("Success");
+            if (self._cacheElement.editorDiv.data('state') == 'new')
+                self._cacheElement.editorDiv.data('state', 'edit');
+        } else {
+            alert(result.errorMsg);
         }
-      };
+    },
 
-      $.post(self.editorData.ajaxURL.document.get_content, postData, function(result){
-        if(result.status){
-          self.setEditorData(result.data);
-        }else{
-          alert(result.errorMsg);
+    setEditorData: function (data) {
+        var self = this;
+
+        self._cacheElement.writingDocumentTitle.html(data.filename);
+        self._cacheElement.writingDocumentCategory.html(data.category);
+        CKEDITOR.instances.editor1.setData(data.content);
+
+    },
+
+    setPreviewData: function (previewList) {
+        var headerDOM = "";
+        var contentDOM = "";
+
+        var headerTemplete = this.bookmarkData.templete.previewTabHeader;
+        var contentTemplete = this.bookmarkData.templete.previewTabContent;
+
+        var i = 0;
+        for (i = 0; i < previewList.length; i++) {
+            var tabID = 'preview-content-' + (i + 1);
+            var contentURL = "/snaptext/" + previewList[i].hashurl;
+            headerDOM += headerTemplete.replace('{{tabID}}', '#' + tabID).replace('{{tabTitle}}', previewList[i].title);
+            contentDOM += contentTemplete.replace('{{tabID}}', tabID).replace('{{contentURL}}', contentURL);
         }
-      });
-    }
-  },
 
-  loadBookmarkData : function(){
-    var self = this;
+        this._cacheElement.previewTabHeader.innerHTML = headerDOM;
+        this._cacheElement.previewTabContent.innerHTML = contentDOM;
 
-    $.post(self.bookmarkData.ajaxURL.get_tree, function(result){
-      console.log(result);
-      self.bookmarkData.treeData = result.data;
-      self.makeBookmarkTreeView(result.data);
-    })
-  },
+        $("div.previewTabs").tabs("refresh");
+        var previewHeight = this._cacheElement.previewTabHeader.parent().height() - this._cacheElement.previewTabHeader.height();
 
-  loadPageData : function(){
-    var self = this;
-  },
+        this._cacheElement.previewTabContent.height(previewHeight);
 
+    },
 
-  makeBookmarkTreeView: function(data){
-    var self = this;
-    var pageEntry= data.pageEntry;
-    var pageDir=data.pageDir;
-    var ul_template="<ul>{{ul_content/}}</ul>"
-    var li_template_file="<li data-jstree='{\"icon\":\"glyphicon glyphicon-leaf\"}' data-index='{{li_index}}' data-hashurl='{{li_hashurl}}'>{{li_content}}</li>"
-    var li_template_dir="<li data-path='{{li_path}}'>{{li_content}}</li>"
-    var treeview_string;
+    initModal: function () {
+        var self = this;
+        $.post(self.editorData.ajaxURL.category.getCatagory, function (result) {
+            if (result.status) {
+                self.editorData.categoryList = result.data.categoryList;
+                self.setCategoryList(result.data.categoryList);
+            } else {
+                alert(result.errorMsg);
+            }
+        });
+    },
 
-    var is_dir_exist=function(name,check_string){
-      return check_string.indexOf(name)>=0?true:false;
-    }
+    setCategoryList: function (categoryList) {
+        var DOM = "";
+        var options = "<option value='{{category}}'>{{category}}</option>";
+        var i;
+        for (i = 0; i < categoryList.length; i++) {
+            DOM += options.replace(/{{category}}/g, categoryList[i]);
+        }
+        this._cacheElement.modalCategory.innerHTML = DOM;
+    },
 
-    var add_li_file=function(file_data,original_string, index){
-      var new_string=original_string.replace("{{ul_content"+file_data.path+"}}",li_template_file+"{{ul_content"+file_data.path+"}}")
-      new_string=new_string.replace(/{{li_hashurl}}/g,file_data.hashurl);
-      new_string=new_string.replace(/{{li_index}}/g, index);
-      new_string=new_string.replace(/{{li_content}}/g,file_data.title);
-      return new_string
-    }
+    loadDocument: function () {
 
-    var add_li_dir=function(dir_data,original_string){
-      var new_string=original_string.replace("{{ul_content"+dir_data.path+"}}",li_template_dir+"{{ul_content"+dir_data.path+"}}")
-      new_string=new_string.replace(/{{li_path}}/g,dir_data.path)
-      new_string=new_string.replace(/{{li_content}}/g,dir_data.name+ul_template.replace("{{ul_content/}}","{{ul_content"+dir_data.path+dir_data.name+"/"+"}}"));
-      return new_string
-    }
+        this.loadEditorData();
+        this.loadBookmarkData();
+        this.loadPageData();
 
-    treeview_string=ul_template;
+    },
 
-    pageDir.forEach(function(page_dir_element){
-      var split_data= page_dir_element.path.split("/")
-      if(split_data>1){
-        var concat_data="/"
-        split_data.forEach(function(split_elem){
-          if(split_elem!=""){
-             concat_data+=split_elem+"/"
-             if(!is_dir_exist(concat_data,treeview_string)){
-                treeview_string=add_li_dir(page_dir_element,concat_data,treeview_string)
-             }
-          }
+    loadEditorData: function () {
+        var self = this;
+        if (self._cacheElement.editorDiv.data('state') == 'edit') {
+            var postData = {
+                docsInfo: {
+                    filename: self._cacheElement.editorDiv.data('filename')
+                }
+            };
+
+            $.post(self.editorData.ajaxURL.document.get_content, postData, function (result) {
+                if (result.status) {
+                    self.setEditorData(result.data);
+                } else {
+                    alert(result.errorMsg);
+                }
+            });
+        }
+    },
+
+    loadBookmarkData: function () {
+        var self = this;
+
+        $.post(self.bookmarkData.ajaxURL.get_tree, function (result) {
+            console.log(result);
+            self.bookmarkData.treeData = result.data;
+            self.makeBookmarkTreeView(result.data);
         })
-      }else{
-        treeview_string=add_li_dir(page_dir_element,treeview_string)
-      }
-    })
+    },
 
-    pageEntry.forEach(function(page_entry_element, index){
-      treeview_string=add_li_file(page_entry_element,treeview_string, index)
-    });
+    loadPageData: function () {
+        var self = this;
+    },
 
-    treeview_string=treeview_string.replace(/"<ul><\/ul>"/g,"")
-    treeview_string=treeview_string.replace(/{{ul_content[a-zA-Z0-9\/\_\-]*}}/g,"")
 
-    this._cacheElement.jstree.append(treeview_string);
-    this._cacheElement.jstree.jstree({
-      "core" : {
-        // so that create works
-        "check_callback" : true
-      },
-      "checkbox" : {
-        "keep_selected_style" : false
-      },
-      "plugins" : ["checkbox", "contextmenu", "dnd"]
-    });
+    makeBookmarkTreeView: function (data) {
+        var self = this;
+        var pageEntry = data.pageEntry;
+        var pageDir = data.pageDir;
+        var ul_template = "<ul>{{ul_content/}}</ul>"
+        var li_template_file = "<li data-jstree='{\"icon\":\"glyphicon glyphicon-leaf\"}' data-index='{{li_index}}' data-hashurl='{{li_hashurl}}'>{{li_content}}</li>"
+        var li_template_dir = "<li data-path='{{li_path}}'>{{li_content}}</li>"
+        var treeview_string;
 
-    this._cacheElement.jstree.on("changed.jstree", function(e, data) {
-      self.setPreviewList($('#jstree').jstree("get_checked",function(data){console.log(data)}));
-    });
-  },
+        var is_dir_exist = function (name, check_string) {
+            return check_string.indexOf(name) >= 0 ? true : false;
+        }
 
-  setPreviewList : function(data){
+        var add_li_file = function (file_data, original_string, index) {
+            var new_string = original_string.replace("{{ul_content" + file_data.path + "}}", li_template_file + "{{ul_content" + file_data.path + "}}")
+            new_string = new_string.replace(/{{li_hashurl}}/g, file_data.hashurl);
+            new_string = new_string.replace(/{{li_index}}/g, index);
+            new_string = new_string.replace(/{{li_content}}/g, file_data.title);
+            return new_string
+        }
 
-    var i;
-    var checkedList = [];
-    for(i=0; i<data.length; i++){
-      var index = data[i].data.index;
-      if(index != undefined)
-        checkedList.push(index);
+        var add_li_dir = function (dir_data, original_string) {
+            var new_string = original_string.replace("{{ul_content" + dir_data.path + "}}", li_template_dir + "{{ul_content" + dir_data.path + "}}")
+            new_string = new_string.replace(/{{li_path}}/g, dir_data.path)
+            new_string = new_string.replace(/{{li_content}}/g, dir_data.name + ul_template.replace("{{ul_content/}}", "{{ul_content" + dir_data.path + dir_data.name + "/" + "}}"));
+            return new_string
+        }
+
+        treeview_string = ul_template;
+
+        pageDir.forEach(function (page_dir_element) {
+            var split_data = page_dir_element.path.split("/")
+            if (split_data > 1) {
+                var concat_data = "/"
+                split_data.forEach(function (split_elem) {
+                    if (split_elem != "") {
+                        concat_data += split_elem + "/"
+                        if (!is_dir_exist(concat_data, treeview_string)) {
+                            treeview_string = add_li_dir(page_dir_element, concat_data, treeview_string)
+                        }
+                    }
+                })
+            } else {
+                treeview_string = add_li_dir(page_dir_element, treeview_string)
+            }
+        })
+
+        pageEntry.forEach(function (page_entry_element, index) {
+            treeview_string = add_li_file(page_entry_element, treeview_string, index)
+        });
+
+        treeview_string = treeview_string.replace(/"<ul><\/ul>"/g, "")
+        treeview_string = treeview_string.replace(/{{ul_content[a-zA-Z0-9\/\_\-]*}}/g, "")
+
+        this._cacheElement.jstree.append(treeview_string);
+        this._cacheElement.jstree.jstree({
+            "core": {
+                // so that create works
+                "check_callback": true
+            },
+            "checkbox": {
+                "keep_selected_style": false
+            },
+            "plugins": ["checkbox", "contextmenu", "dnd"]
+        });
+
+        this._cacheElement.jstree.on("changed.jstree", function (e, data) {
+            self.setPreviewList($('#jstree').jstree("get_checked", function (data) {
+                console.log(data)
+            }));
+        });
+    },
+
+    setPreviewList: function (data) {
+
+        var i;
+        var checkedList = [];
+        for (i = 0; i < data.length; i++) {
+            var index = data[i].data.index;
+            if (index != undefined)
+                checkedList.push(index);
+        }
+
+        this.bookmarkData.checkedList = checkedList;
+    },
+
+    toggleReviewDivision: function () {
+        var self = this;
+        $('#toggle_preview_btn').on('click', function () {
+            var isReviewActive = $("input:checkbox[id='toggle_preview']").is(":checked");
+            if (isReviewActive) {
+                self._cacheElement.editorDiv.removeClass('col-sm-6').addClass('col-sm-12');
+                self._cacheElement.previewDiv.removeClass('col-sm-6').addClass('col-sm-12');
+                self._cacheElement.previewDiv.hide();
+            } else {
+                self._cacheElement.editorDiv.removeClass('col-sm-12').addClass('col-sm-6');
+                self._cacheElement.previewDiv.removeClass('col-sm-12').addClass('col-sm-6');
+                self._cacheElement.previewDiv.show();
+            }
+        });
+    },
+
+    initReviewTab: function () {
+        this._cacheElement.previewTab.tabs();
+        this._cacheElement.previewTab.height(this._cacheElement.previewTabHeight);
+        this._cacheElement.previewTab.hide();
+    },
+
+    addNewPreviewTab: function () {
+
+        var self = this;
+
+        self._cacheElement.addPreviewBtn.on('click', function () {
+            self._cacheElement.previewTab.show();
+
+            var previewList = [];
+            var checkedList = self.bookmarkData.checkedList;
+            var pageEntry = self.bookmarkData.treeData.pageEntry;
+
+            for (i = 0; i < checkedList.length; i++) {
+                previewList.push(pageEntry[checkedList[i]]);
+            }
+
+            self.setPreviewData(previewList);
+        });
     }
-
-    this.bookmarkData.checkedList = checkedList;
-  },
-
-  toggleReviewDivision : function() {
-    var self = this;
-    $('#toggle_preview_btn').on('click', function() {
-      var isReviewActive = $("input:checkbox[id='toggle_preview']").is(":checked");
-      if(isReviewActive) {
-        self._cacheElement.editorDiv.removeClass('col-sm-6').addClass('col-sm-12');
-        self._cacheElement.previewDiv.removeClass('col-sm-6').addClass('col-sm-12');
-        self._cacheElement.previewDiv.hide();
-      } else {
-        self._cacheElement.editorDiv.removeClass('col-sm-12').addClass('col-sm-6');
-        self._cacheElement.previewDiv.removeClass('col-sm-12').addClass('col-sm-6');
-        self._cacheElement.previewDiv.show();
-      }
-    });
-  },
-
-  initReviewTab : function() {
-    this._cacheElement.previewTab.tabs();
-    this._cacheElement.previewTab.height(this._cacheElement.previewTabHeight);
-    this._cacheElement.previewTab.hide();
-  },
-
-  addNewPreviewTab : function() {
-
-    var self = this;
-
-    self._cacheElement.addPreviewBtn.on('click', function(){
-      self._cacheElement.previewTab.show();
-
-      var previewList = [];
-      var checkedList = self.bookmarkData.checkedList;
-      var pageEntry = self.bookmarkData.treeData.pageEntry;
-
-      for(i=0;i<checkedList.length;i++){
-        previewList.push(pageEntry[checkedList[i]]);
-      }
-
-      self.setPreviewData(previewList);
-    });
-  }
 });
 
 /** @class editor.html Page의 좌측 side menu 관련 뷰 클래스
-* @auther EnterKey
-* @version 1
-* @description Page의 side menu를 제어하기 위한 클래스
-*/
+ * @auther EnterKey
+ * @version 1
+ * @description Page의 side menu를 제어하기 위한 클래스
+ */
 var EditorAppSideContentView = Class.extend({
-  init : function() {
-    this.setEventListener();
-  },
+    init: function () {
+        this.setEventListener();
+    },
 
-  setEventListener : function() {
-    this.toggleSideMenu();
-  },
+    setEventListener: function () {
+        this.toggleSideMenu();
+    },
 
-  toggleSideMenu : function() {
-    var $body = $('body')[0],
-      $menu_trigger = $('.menu-trigger'),
-      common = new Common();
+    toggleSideMenu: function () {
+        var $body = $('body')[0],
+            $menu_trigger = $('.menu-trigger'),
+            common = new Common();
 
-    if (common.isUsableElement($menu_trigger)) {
-      $menu_trigger.on('click', function() {
-        $body.className = ( $body.className == 'menu-active' )? '' : 'menu-active';
-      });
+        if (common.isUsableElement($menu_trigger)) {
+            $menu_trigger.on('click', function () {
+                $body.className = ( $body.className == 'menu-active' ) ? '' : 'menu-active';
+            });
+        }
     }
-  }
 });
 
 /** @class editor.html editor 클래스
-* @auther EnterKey
-* @version 1
-* @description 글 쓰기 Editor 클래스
-*/
+ * @auther EnterKey
+ * @version 1
+ * @description 글 쓰기 Editor 클래스
+ */
 var Editor = Class.extend({
-  init : function() {
-    CKEDITOR.replace('editor1', {
-      height : '500px'
-    });
-  }
+    init: function () {
+        CKEDITOR.replace('editor1', {
+            height: '500px'
+        });
+    }
 });
 
-/** @class editor.html Preview Division에 보여지는 Bookmark의 info 클래스
-* @auther EnterKey
-* @version 1
-* @description Preview Division에 보여지는 Bookmark의 info 클래스
-*/
-var BookmarkInfo = Class.extend({
-  init : function() { }
+/** @class editor.html Preview Division에 보여지는 번역기 클래스
+ * @auther EnterKey
+ * @version 1
+ * @description Preview Division에 보여지는 번역기 클래스
+ */
+var Translate = Class.extend({
+    data: {
+        isCORSSupport: 'withCredentials' in new XMLHttpRequest(),
+        isIE: typeof XDomainRequest !== "undefined",
+        xdr: null,
+        interBuffer: [],
+        finalBuffer: [],
+        bufCnt: 0,
+        message: {
+            text: null,
+            originalLang: null,
+            targetlang: null
+        }
+    },
+
+    _cachedElement: {
+        translateViewHeight: '225',
+        bookmarkPreviewHeight: '520'
+    },
+
+    init: function () {
+        this.setEventListener();
+    },
+
+    setEventListener: function () {
+        this.toggleTranslateWindow();
+        this.action();
+    },
+
+    dataInit: function () {
+        for (var obj in this.data) {
+            obj = null;
+        }
+    },
+
+    toggleTranslateWindow: function () {
+        var self = this;
+        $('.previewTabs').on('click', 'li', function () {
+            $(".translateResult").text("");
+            $('.ui-tabs-panel').css('height', self._cachedElement.bookmarkPreviewHeight);
+            $('.translateResultWrapper').css('display', 'none');
+        });
+    },
+
+    action: function () {
+        var self = this;
+
+        $('#translate-btn').on('click', function (e) {
+            e.preventDefault();
+            var $activeTabName = $('.ui-state-active').find('a');
+            var translateForContent = $($activeTabName[0].hash).text().trim();
+
+            self.dataInit();
+
+            $('.ui-tabs-panel').css('height', self._cachedElement.translateViewHeight);
+            $('.translateResultWrapper').css('display', 'block');
+
+            self.data.message = {
+                text: translateForContent,
+                originalLang: $("#originalLang").val(),
+                targetlang: $("#targetLang").val()
+            };
+
+            self.getJSON(self.setQueryString(self.data.message), self.translateDirectLang);
+        });
+    },
+
+    getJSON: function (query, callback) {
+        if (this.data.isCORSSupport) {
+            $.getJSON(query, callback);
+        } else if (this.data.isIE) {
+            this.data.xdr = new XDomainRequest();
+            if (this.data.xdr) {
+                this.data.xdr.onload = callback;
+                this.data.xdr.open("get", query);
+                this.data.xdr.send();
+            }
+        } else {
+            $.ajax({
+                type: "GET",
+                dataType: "jsonp",
+                jsonp: "callback",
+                url: query,
+                success: callback
+            });
+        }
+    },
+
+    setQueryString: function (message) {
+        var result = "http://goxcors.appspot.com/cors?method=GET" +
+            "&url=" + encodeURIComponent("http://translate.google.com/translate_a/t?client=x" +
+            "&sl=" + message.originalLang + "&tl=" + message.targetlang +
+            "&text=" + encodeURIComponent(message.text));
+        return result;
+    },
+
+    extractResult: function (data) {
+        if (!this.data.isCORSSupport && this.data.isIE) {
+            data = $.parseJSON(data.responseText);
+        }
+        return data && data.sentences && $.map(data.sentences, (function (v) {
+            return v.trans
+        }));
+    },
+
+    translateDirectLang: function (data) {
+        var self = Translate.prototype;
+        var post = self.extractResult(data).join('');
+
+        $('.translateResult').text("");
+        $(".translateResult").text(post);
+    }
+});
+
+$().ready(function () {
+    $("#targetLang").val(navigator.userLanguage || navigator.language || "ko");
 });
 
 var editorAppController = new EditorAppController();
