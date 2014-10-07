@@ -207,6 +207,10 @@ var EditorAppMainContentView = Class.extend({
     });
 
     $('.preview-content-title').on('dblclick', function(){
+      var target = $(this);
+      if(self.bookmarkData.previewList.length<2 && self.bookmarkData.previewList.indexOf(target.data('index')) <0){
+        self.bookmarkData.previewList.push(target.data('index'));
+      }
       self.setPreviewPage();
     });
 
