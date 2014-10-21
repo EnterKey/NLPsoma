@@ -133,7 +133,7 @@ exports.snapshot=function(req, res){
 exports.snaptext=function(req, res){
   var useremail= req.body.userInfo.email;
   var hashurl=req.params.hashurl;
-  var htmlPath =  path.join(__dirname,'../..','snapshot', useremail,hashurl+'.html')
+  var htmlPath =  path.join(__dirname,'..','snapshot', useremail,hashurl+'.html')
   var childArgs = [
     path.join(__dirname, 'crawltext.py'),
     htmlPath
