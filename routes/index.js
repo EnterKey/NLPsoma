@@ -42,7 +42,7 @@ var save_htmldata = function(pageInfo, email, callback){
   if(pageInfo == null || !pageInfo.url || !pageInfo.htmldata)
     callback(false);
   var hashurl = crypto.createHmac('md5', settings.data.hashkey).update(pageInfo.url).digest('hex');
-  var filename=path.join(__dirname,'../..','snapshot', email, hashurl + '.html');
+  var filename=path.join(__dirname,'..','snapshot', email, hashurl + '.html');
   console.log(filename);
   fs.writeFile(filename, pageInfo.htmldata, function(err){
     if(!err){
@@ -114,7 +114,7 @@ exports.insert_user = function(req, res){
 exports.snapshot=function(req, res){
   var useremail= req.body.userInfo.email;
   var hashurl=req.params.hashurl;
-  var imagePath =  path.join(__dirname,'../..','snapshot', useremail,hashurl+'.png')
+  var imagePath =  path.join(__dirname,'..','snapshot', useremail,hashurl+'.png')
   fs.readFile(imagePath, function(err, data){
     if(err) {
       res.writeHead(501);
