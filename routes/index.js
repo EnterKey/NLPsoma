@@ -4,6 +4,8 @@ var fs = require('fs');
 var crypto = require('crypto');
 var spawn = require('child_process').spawn
 var settings = require('../setting');
+var mkdirp = require("mkdirp")
+var getDirName = require("path").dirname
 
 var editorRenderInfo = {
   userInfo : {},
@@ -44,7 +46,13 @@ var save_htmldata = function(pageInfo, email, callback){
   var hashurl = crypto.createHmac('md5', settings.data.hashkey).update(pageInfo.url).digest('hex');
   var filename=path.join(__dirname,'..','snapshot', email, hashurl + '.html');
   console.log(filename);
-  fs.writeFile(filename, pageInfo.htmldata, function(err){
+  function writeFile (path, contents, cb) {
+    mkdirp(getDirName(path), function (err) {
+      if (err) return cb(err)
+      fs.writeFile(path, contents, cb)
+    })
+  }
+  writeFile(filename, pageInfo.htmldata, function(err){
     if(!err){
       callback(true)
     }else{
