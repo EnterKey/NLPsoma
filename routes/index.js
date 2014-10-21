@@ -44,7 +44,7 @@ var save_htmldata = function(pageInfo, email, callback){
   if(pageInfo == null || !pageInfo.url || !pageInfo.htmldata)
     callback(false);
   var hashurl = crypto.createHmac('md5', settings.data.hashkey).update(pageInfo.url).digest('hex');
-  var filename=path.join(__dirname,'..','snapshot', email, hashurl + '.html');
+  var filename=path.join(__dirname,'../..','snapshot', email, hashurl + '.html');
   console.log(filename);
   function writeFile (path, contents, cb) {
     mkdirp(getDirName(path), function (err) {
@@ -122,7 +122,7 @@ exports.insert_user = function(req, res){
 exports.snapshot=function(req, res){
   var useremail= req.body.userInfo.email;
   var hashurl=req.params.hashurl;
-  var imagePath =  path.join(__dirname,'..','snapshot', useremail,hashurl+'.png')
+  var imagePath =  path.join(__dirname,'../..','snapshot', useremail,hashurl+'.png')
   fs.readFile(imagePath, function(err, data){
     if(err) {
       res.writeHead(501);
@@ -141,7 +141,7 @@ exports.snapshot=function(req, res){
 exports.snaptext=function(req, res){
   var useremail= req.body.userInfo.email;
   var hashurl=req.params.hashurl;
-  var htmlPath =  path.join(__dirname,'..','snapshot', useremail,hashurl+'.html')
+  var htmlPath =  path.join(__dirname,'../..','snapshot', useremail,hashurl+'.html')
   var childArgs = [
     path.join(__dirname, 'crawltext.py'),
     htmlPath
