@@ -491,10 +491,12 @@ var EditorAppSideContentView = Class.extend({
  * @version 1
  * @description 글 쓰기 Editor 클래스
  */
+// cf. http://www.autoboy.pe.kr/130
 var Editor = Class.extend({
 	init : function() {
 		CKEDITOR.replace('editor1', {
-			height : '500px'
+			height : '500px', 
+			filebrowserImageUploadUrl: "abc"
 		});
 	}
 });
