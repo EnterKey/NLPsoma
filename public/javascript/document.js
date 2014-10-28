@@ -103,8 +103,11 @@ var DocumentAppCategoryView = Class.extend({
 	_cacheElement : {
 		addCategoryBtn 				: '#add-category',
 		addCategoryDoneBtn 			: '#add-categoty-btn-done',
-        modalForAddCategory 		: '#modal-edit-category',
+		editCategoryDoneBtn 			: '#edit-categoty-btn-done',
+        modalForAddCategory 		: '#modal-add-category',
+				modalForEditCategory 		: '#modal-edit-category',
         titleOfModalForAddCategory 	: '#add-category-modal-title',
+        titleOfModalForEditCategory : '#edit-category-modal-title',
         sideMenu 					: '.document-sidebar-category',
         categoryItemConfigBtn 		: '#category-item-config',
     	modalForModifyCategoryItem 	: '#modalForModifyCategoryItem'
@@ -117,11 +120,11 @@ var DocumentAppCategoryView = Class.extend({
 			    '<span class="glyphicon glyphicon-cog"></span>' +
 				'</a>' +
 	      '<ul class="dropdown-menu" role="menu">' +
-	        '<li><a href="#">Action</a></li>' +
-	        '<li><a href="#">Another action</a></li>' +
+	        '<li data-name={{category}}><a href="#" class="category-item-rename">Rename</a></li>' +
+	        '<li data-name={{category}}><a href="#" class="category-item-delete">Delete</a></li>' +
 	      '</ul>' +
       '</div>' +
-			'<a href="#"> {{category}} </a>' +
+			'<a href="#" class="category-name"> {{category}} </a>' +
 		'</li>'
 	},
 
@@ -141,6 +144,8 @@ var DocumentAppCategoryView = Class.extend({
 	setEventListener : function() {
 		this.setClickedCategoryAddActiveClass();
 		this.addCategory();
+		this.renameCategory();
+		this.deleteCategory();
 		this.toggleModalForChangeCategoryItemInfo();
 	},
 
@@ -152,7 +157,6 @@ var DocumentAppCategoryView = Class.extend({
 	setClickedCategoryAddActiveClass : function() {
 		var self = this;
 		$(self._cacheElement.sideMenu).on('click', '.category-item', function(e) {
-			console.log('hehe');
 			$(self._cacheElement.sideMenu).children().removeClass('document-active');
 			$('.category-li-menu-show').removeClass('category-li-menu-show').addClass('category-li-menu-hide');
 			$(this).addClass('document-active');
@@ -174,9 +178,8 @@ var DocumentAppCategoryView = Class.extend({
       	newCategory : categoryName
       }
 			$.post(self.requestData.addCategory, postData, function(result){
-				console.log(result);
 				if(result.status){
-					self.updateCategoryListDOM(categoryName);
+					self.addCategoryListDOM(categoryName);
 				}else{
 					alert(result.errorMsg);
 				}
@@ -184,8 +187,56 @@ var DocumentAppCategoryView = Class.extend({
 		});
 	},
 
-	updateCategoryListDOM : function(categoryName) {
-    var appendItem = this._template.category.replace("{{category}}", categoryName);
+	renameCategory : function() {
+		var self = this;
+		var originName = "";
+
+		$(self._cacheElement.sideMenu).on('click', '.category-item-rename', function(e) {
+			e.preventDefault();
+			var name = $(this).parent().data('name');
+			originName = name
+			$(self._cacheElement.modalForEditCategory).modal('toggle');
+			$(self._cacheElement.titleOfModalForEditCategory).val(name);
+			$(self._cacheElement.titleOfModalForEditCategory).text(name);
+		});
+
+		$(this._cacheElement.editCategoryDoneBtn).on('click', function(e) {
+      var categoryName = $(self._cacheElement.titleOfModalForEditCategory).val();
+      var postData = {
+      	oldCategory : originName,
+      	newCategory : categoryName
+      }
+      console.log(postData);
+			$.post(self.requestData.updateCategory, postData, function(result){
+				if(result.status){
+					self.getCategoryList();
+				}else{
+					alert(result.errorMsg);
+				}
+			})
+		});
+	},
+
+	deleteCategory : function() {
+		var self = this;
+		$(self._cacheElement.sideMenu).on('click', '.category-item-delete', function(e) {
+			e.preventDefault();
+			var categoryName = $(this).parent().data('name');
+      var postData = {
+      	deleteCategory : categoryName
+      }
+			$.post(self.requestData.removeCategory, postData, function(result){
+				if(result.status){
+					self.getCategoryList();
+				}else{
+					alert(result.errorMsg);
+				}
+			})
+		});
+	},
+
+	addCategoryListDOM : function(categoryName) {
+    var appendItem = this._template.category.replace(/{{category}}/g, categoryName);
 
 		$(this._cacheElement.sideMenu).append(appendItem);
 	},
@@ -210,19 +261,16 @@ var DocumentAppCategoryView = Class.extend({
 
 		for(var i = 0 ; i < categoryListLength ; i++ ) {
 			category = categoryList[i];
-			categoryItem += this._template.category.replace("{{category}}", category);
+			categoryItem += this._template.category.replace(/{{category}}/g, category);
 		}
 
-		$(this._cacheElement.sideMenu).append(categoryItem);
+		$(this._cacheElement.sideMenu)[0].innerHTML = categoryItem;
 		$(this._cacheElement.sideMenu).find('.category-item').eq(0).addClass('document-active');
 		$('.document-active').find('a').eq(0).removeClass('category-li-menu-hide').addClass('category-li-menu-show');
 	},
 
 	toggleModalForChangeCategoryItemInfo : function() {
 		var self = this;
-		$(self._cacheElement.sideMenu).on('click', '#category-item-config', function(e) {
-			e.preventDefault();
-		});
 	}
 
 });

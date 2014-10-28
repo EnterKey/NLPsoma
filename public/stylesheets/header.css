@@ -19,7 +19,7 @@ body {
 .dropdown-menu > li > a > .ion {
   margin-right: 10px;
 }
-.dropdown-menu > li > a:hover {
+.notehub-header-class .dropdown-menu > li > a:hover {
   background-color: #3c8dbc;
   color: #f9f9f9;
 }
