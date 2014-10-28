@@ -235,3 +235,14 @@ a, a:hover, a:visited, .btn-link:hover { text-decoration: none; }
 	display: block ! important;
 	z-index:1000;
 }
+
+.category-item-config{
+	z-index:1000;
+	padding: 10px;
+}
+
+.category-item-config a {
+	color : black;
+	background-color: white !important;
+}
+

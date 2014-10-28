@@ -60,53 +60,6 @@ var DocumentAppMainContentView = Class.extend({
 				alert(result.errorMsg);
 			}
 		});
-
-		// this.requestData.documentList =	[
-		// 	{
-		// 		id: 1,
-		// 		title : 'NodeJs',
-		// 		date : '2014/8/28',
-		// 		img : '/images/document/document.png'
-		// 	},
-		// 	{
-		// 		id: 2,
-		// 		title : 'MongoDB',
-		// 		date : '2014/8/28',
-		// 		img : '/images/document/document.png'
-		// 	},
-		// 	{
-		// 		id: 3,
-		// 		title : 'MySQL',
-		// 		date : '2014/8/28',
-		// 		img : '/images/document/document.png'
-		// 	},
-		// 	{
-		// 		id: 4,
-		// 		title : 'Javascript',
-		// 		date : '2014/8/28',
-		// 		img : '/images/document/document.png'
-		// 	},
-		// 	{
-		// 		id: 5,
-		// 		title : 'Test',
-		// 		date : '2014/8/28',
-		// 		img : '/images/document/document.png'
-		// 	},
-		// 	{
-		// 		id: 6,
-		// 		title : 'Example',
-		// 		date : '2014/8/28',
-		// 		img : '/images/document/document.png'
-		// 	},
-		// 	{
-		// 		id: 7,
-		// 		title : 'Blabla',
-		// 		date : '2014/8/28',
-		// 		img : '/images/document/document.png'
-		// 	}
-		// ];
-
-		// this.bulidDocumentListForMainContent();
 	},
 
 	bulidDocumentListForMainContent : function() {
@@ -156,6 +109,21 @@ var DocumentAppCategoryView = Class.extend({
         categoryItemConfigBtn 		: '#category-item-config',
     	modalForModifyCategoryItem 	: '#modalForModifyCategoryItem'
 	},
+	_template : {
+		category :
+		'<li class="category-item" style="text-align: left;">' +
+			'<div class="btn-group right category-item-config">' +
+				'<a class="right category-li-menu-hide dropdown-toggle" data-toggle="dropdown" href="#">' +
+			    '<span class="glyphicon glyphicon-cog"></span>' +
+				'</a>' +
+	      '<ul class="dropdown-menu" role="menu">' +
+	        '<li><a href="#">Action</a></li>' +
+	        '<li><a href="#">Another action</a></li>' +
+	      '</ul>' +
+      '</div>' +
+			'<a href="#"> {{category}} </a>' +
+		'</li>'
+	},
 
 	requestData : {
 		getCategory : "/ajax/category/get_list",
@@ -183,9 +151,10 @@ var DocumentAppCategoryView = Class.extend({
 
 	setClickedCategoryAddActiveClass : function() {
 		var self = this;
-		$(self._cacheElement.sideMenu).on('click', 'li', function(e) {
+		$(self._cacheElement.sideMenu).on('click', '.category-item', function(e) {
+			console.log('hehe');
 			$(self._cacheElement.sideMenu).children().removeClass('document-active');
-			$('.category-li-menu-show').addClass('category-li-menu-hide').removeClass('category-li-menu-show');
+			$('.category-li-menu-show').removeClass('category-li-menu-show').addClass('category-li-menu-hide');
 			$(this).addClass('document-active');
 			$(this).find('a').eq(0).removeClass('category-li-menu-hide').addClass('category-li-menu-show');
 		});
@@ -216,12 +185,7 @@ var DocumentAppCategoryView = Class.extend({
 	},
 
 	updateCategoryListDOM : function(categoryName) {
-            var appendItem = '<li style="text-align: right;">' +
-							'<a class="left category-li-menu-hide" href="#" id="category-item-config">' +
-								'<span class="glyphicon glyphicon-cog"></span>' +
-							'</a>' +
-							'<a href="#"> ' + categoryName + '</a>' +
-						'</li>';
+    var appendItem = this._template.category.replace("{{category}}", categoryName);
 
 		$(this._cacheElement.sideMenu).append(appendItem);
 	},
@@ -246,16 +210,11 @@ var DocumentAppCategoryView = Class.extend({
 
 		for(var i = 0 ; i < categoryListLength ; i++ ) {
 			category = categoryList[i];
-			categoryItem += '<li style="text-align: right;">' +
-								'<a class="left category-li-menu-hide" href="#" id="category-item-config">' +
-									'<span class="glyphicon glyphicon-cog" id="category-item-config"></span>' +
-								'</a>' +
-								'<a href="#"> ' + category + '</a>' +
-							'</li>';
+			categoryItem += this._template.category.replace("{{category}}", category);
 		}
 
 		$(this._cacheElement.sideMenu).append(categoryItem);
-		$(this._cacheElement.sideMenu).find('li').eq(0).addClass('document-active');
+		$(this._cacheElement.sideMenu).find('.category-item').eq(0).addClass('document-active');
 		$('.document-active').find('a').eq(0).removeClass('category-li-menu-hide').addClass('category-li-menu-show');
 	},
 
@@ -263,7 +222,6 @@ var DocumentAppCategoryView = Class.extend({
 		var self = this;
 		$(self._cacheElement.sideMenu).on('click', '#category-item-config', function(e) {
 			e.preventDefault();
-			$(self._cacheElement.modalForModifyCategoryItem).modal('toggle');
 		});
 	}
 

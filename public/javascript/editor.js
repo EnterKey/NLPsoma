@@ -247,6 +247,7 @@ var EditorAppMainContentView = Class.extend({
       previewPageDOM = this.bookmarkData.templete.previewPage.replace('{{title}}', pageEntry[previewList[i]].title).replace('{{hashurl}}', contentURL);
     }
 
+    console.log(previewPageDOM);
     $('#previewPage')[0].innerHTML = previewPageDOM;
     $('#preview-container').css('display', 'block');
 
@@ -384,7 +385,7 @@ var EditorAppMainContentView = Class.extend({
       },
       "plugins" : ["checkbox", "contextmenu", "dnd"]
     });
-    
+
 	$(".jstree-icon.jstree-themeicon.jstree-themeicon-custom").css("background-size","contain")
     this._cacheElement.jstree.on("changed.jstree", function(e, data) {
 	  $(".jstree-icon.jstree-themeicon.jstree-themeicon-custom").css("background-size","contain")
