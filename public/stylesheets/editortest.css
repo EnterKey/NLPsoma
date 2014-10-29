@@ -585,3 +585,35 @@ color: #459e00;
 #jstree .jstree-hovered {
     color: black;
 }
+
+.translate-btn-group-wrapper {
+    text-align: center;
+}
+
+.translate-btn-group {
+    margin : 5px 5px !important;
+    position :  absolute;
+    bottom : 0px;
+}
+
+.ui-tabs-panel {
+    height : 520px;
+    overflow : auto;
+}
+
+.translateResultWrapper {
+    display: none;
+}
+
+.translateResult {
+    height: 230px;
+    overflow:auto;
+    margin : 5px;
+    padding: 0px 21px !important;
+    border-width: 0;
+    background: none;
+}
+
+.shortly-for-translate {
+    heigth : 225px !important;
+}

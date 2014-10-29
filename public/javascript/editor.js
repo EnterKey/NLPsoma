@@ -46,7 +46,36 @@ var EditorAppMainContentView = Class.extend({
 			previewList : '<li><a href="{{tabID}}"><div class="preview-list">{{header}}{{content}}</div></a></li>',
 			previewHeader : '<div class="preview-content-title" data-index="{{index}}">{{title}}</div>',
 			previewContent : '<div class="preview-content" id="{{tabID}}"><div class="editor_paste" style="position: relative;left: 90%;background-image:url(\'/images/editor-copy-icon.png\');background-size: contain;height: 20px;width: 20px;display: inline-block;"></div><textarea>{{content}}</textarea></div>',
-			previewPage : '<div class="panel-heading">{{title}}<a class="preview-page-close glyphicon glyphicon-remove" style="float:right"></a></div><div class="panel-body preview-page"><iframe src={{hashurl}} class="preview-iframe"></iframe></div>'
+			previewPage : '<div class="panel-heading">{{title}}<a class="preview-page-close glyphicon glyphicon-remove" style="float:right"></a></div>' +
+                            '<div class="panel-body preview-page">' +
+                                '<iframe src={{hashurl}} class="preview-iframe"></iframe>' +
+
+                                '<form class="form-inline translate-btn-group-wrapper" role="form">' +
+                                    '<div class="row translate-btn-group">' +
+                                        '<div class="form-group">' +
+                                            '<label class="sr-only" for="originalLang">sourceLang</label>' +
+                                                '<select id="originalLang" class="form-control">' +
+                                                '<option selected value="">자동인식</option><option value="ko">한국어</option><option value="en">English</option><option value="af">Afrikaans</option><option value="sq">Albanian</option><option value="ar">Arabic</option><option value="hy">Armenian</option><option value="az">Azerbaijani</option><option value="eu">Basque</option><option value="be">Belarusian</option><option value="bn">Bengali</option><option value="bs">Bosnian</option><option value="bg">Bulgarian</option><option value="ca">Catalan</option><option value="ceb">Cebuano</option><option value="hr">Croatian</option><option value="cs">Czech</option><option value="da">Danish</option><option value="nl">Dutch</option><option value="eo">Esperanto</option><option value="et">Estonian</option><option value="tl">Filipino</option><option value="fi">Finnish</option><option value="fr">French</option><option value="gl">Galician</option><option value="ka">Georgian</option><option value="de">German</option><option value="el">Greek</option><option value="gu">Gujarati</option><option value="iw">Hebrew</option><option value="hi">Hindi</option><option value="hmn">Hmong</option><option value="hu">Hungarian</option><option value="is">Icelandic</option><option value="id">Indonesian</option><option value="ga">Irish</option><option value="it">Italian</option><option value="ja">Japanese</option><option value="jw">Javanese</option><option value="kn">Kannada</option><option value="km">Khmer</option><option value="lo">Lao</option><option value="la">Latin</option><option value="lv">Latvian</option><option value="lt">Lithuanian</option><option value="mk">Macedonian</option><option value="ms">Malay</option><option value="mt">Maltese</option><option value="mr">Marathi</option><option value="no">Norwegian</option><option value="fa">Persian</option><option value="pl">Polish</option><option value="pt">Portuguese</option><option value="ro">Romanian</option><option value="ru">Russian</option><option value="sr">Serbian</option><option value="sk">Slovak</option><option value="sl">Slovenian</option><option value="es">Spanish</option><option value="sw">Swahili</option><option value="sv">Swedish</option><option value="ta">Tamil</option><option value="te">Telugu</option><option value="th">Thai</option><option value="tr">Turkish</option><option value="uk">Ukrainian</option><option value="ur">Urdu</option><option value="vi">Vietnamese</option></select>' +
+                                        '</div>' +
+                                    '에서' +
+                                        '<div class="form-group">' +
+                                            '<label class="sr-only" for="targetLang">targetLang</label>' +
+                                            '<select id="targetLang" class="form-control">' +
+                                            '<option selected value="ko">한국어</option><option value="en">English</option><option value="af">Afrikaans</option><option value="sq">Albanian</option><option value="ar">Arabic</option><option value="hy">Armenian</option><option value="az">Azerbaijani</option><option value="eu">Basque</option><option value="be">Belarusian</option><option value="bn">Bengali</option><option value="bs">Bosnian</option><option value="bg">Bulgarian</option><option value="ca">Catalan</option><option value="ceb">Cebuano</option><option value="hr">Croatian</option><option value="cs">Czech</option><option value="da">Danish</option><option value="nl">Dutch</option><option value="eo">Esperanto</option><option value="et">Estonian</option><option value="tl">Filipino</option><option value="fi">Finnish</option><option value="fr">French</option><option value="gl">Galician</option><option value="ka">Georgian</option><option value="de">German</option><option value="el">Greek</option><option value="gu">Gujarati</option><option value="iw">Hebrew</option><option value="hi">Hindi</option><option value="hmn">Hmong</option><option value="hu">Hungarian</option><option value="is">Icelandic</option><option value="id">Indonesian</option><option value="ga">Irish</option><option value="it">Italian</option><option value="ja">Japanese</option><option value="jw">Javanese</option><option value="kn">Kannada</option><option value="km">Khmer</option><option value="lo">Lao</option><option value="la">Latin</option><option value="lv">Latvian</option><option value="lt">Lithuanian</option><option value="mk">Macedonian</option><option value="ms">Malay</option><option value="mt">Maltese</option><option value="mr">Marathi</option><option value="no">Norwegian</option><option value="fa">Persian</option><option value="pl">Polish</option><option value="pt">Portuguese</option><option value="ro">Romanian</option><option value="ru">Russian</option><option value="sr">Serbian</option><option value="sk">Slovak</option><option value="sl">Slovenian</option><option value="es">Spanish</option><option value="sw">Swahili</option><option value="sv">Swedish</option><option value="ta">Tamil</option><option value="te">Telugu</option><option value="th">Thai</option><option value="tr">Turkish</option><option value="uk">Ukrainian</option><option value="ur">Urdu</option><option value="vi">Vietnamese</option></select>' +
+                                            '</select>' +
+                                        '</div>' +
+                                    '로' +
+                                        '<div class="form-group">' +
+                                            '<button class="btn btn-primary" id="translate-btn">번역</button>' +
+                                        '</div>' +
+                                    '</div>' +
+                                '</form>' +
+
+                                '<div class="translateResultWrapper">' +
+                                    '<h3>번역 결과</h3>' +
+                                    '<pre class="translateResult" ></pre>' +
+                                '</div>' +
+                            '</div>'
 		},
 		treeData : {
 			pageDir : [],
@@ -86,7 +115,7 @@ var EditorAppMainContentView = Class.extend({
 		this.initReviewTab();
 		this.initModal();
 		this.loadDocument();
-		// this.setTranslator();
+		this.setTranslator();
 	},
 
 	setEditor : function() {
@@ -565,12 +594,11 @@ var Translate = Class.extend({
 
         $('#translate-btn').on('click', function(e){
             e.preventDefault();
-            var $activeTabName = $('.ui-state-active').find('a');
-            var translateForContent = $($activeTabName[0].hash).text().trim();
+            var translateForContent = $('.preview-page').text().trim();
 
             self.dataInit();
 
-            $('.ui-tabs-panel').css('height', self._cachedElement.translateViewHeight);
+            $('.preview-page').css('height', self._cachedElement.translateViewHeight);
             $('.translateResultWrapper').css('display', 'block');
 
             self.data.message = {
@@ -630,8 +658,8 @@ var Translate = Class.extend({
 
 
 // 작업이 안되서 묶어 놓음
-// $().ready(function() {
-    // $("#targetLang").val(navigator.userLanguage || navigator.language || "ko");
-// });
+$().ready(function() {
+    $("#targetLang").val(navigator.userLanguage || navigator.language || "ko");
+});
 
 var editorAppController = new EditorAppController();
