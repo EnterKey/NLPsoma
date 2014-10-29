@@ -37,13 +37,13 @@
 				</div><!--/span-->
 
 				<div class="col-xs-12 col-sm-9 document-container-tableWrapper">
-					<ul class="list-thum list clear document-container-tableWrapper-ul">
-						<li class="list-item col-xs-12 col-sm-6 col-md-3">
+					<ul class="list-thum list clear">
+						<li class="list-item col-xs-12 no-margin">
 							<a href="/editor">
-								<div class="thum-div"  data-toggle="tooltip" title data-original-title="tooltip" data-placement="top">
-									<img class="thum" src="/images/document/document.png" style="vertical-align: middle;"/>
+								<div class="thum-div left"  data-toggle="tooltip" title data-original-title="tooltip" data-placement="top">
+									<img class="thum" src="/images/document/new-file.png" style="vertical-align: middle;"/>
 								</div>
-								<div class="info-div">
+								<div class="info-div left">
 									<div class="title" data-toggle="tooltip" title data-original-title="타이틀" data-placement="top" style="color:blue;" >
 										새 문서
 									</div>
@@ -53,9 +53,14 @@
 								</div>
 							</a>
 						</li>
-
+						<li class="list-item col-xs-12 no-padding no-margin"><hr class="divider"></li>
+						<ul class="document-container-tableWrapper-ul"></ul>
 					</ul>
-
+					<div class="row" id="show-more-group">
+						<div class="col-sm-12">
+							<button type="button" class="btn btn-info docs-show-more">Show More</button>
+						</div>
+					</div>
 <!-- 					<div class='row pagination-wrapper'>
 						<div class='col-sm-12'>
 							<ul class="pagination">

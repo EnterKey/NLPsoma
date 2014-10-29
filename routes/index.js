@@ -268,7 +268,7 @@ exports.remove_document = function(req, res){
 }
 
 exports.get_document_list = function(req, res){
-  mongodb_handler.get_all_docsData(req.body, function(err, data){
+  mongodb_handler.get_docsData_with_index(req.body, function(err, data){
     var result = dbResult_handler(err, data);
     res.json(result);
   });
@@ -316,7 +316,7 @@ exports.documentEdit = function(req, res){
   renderInfo.documentName = req.params.documentName;
   renderInfo.editorState = 'edit';
 
-  res.render('editor', renderInfo);
+  res.render('editortest', renderInfo);
 }
 
 exports.userChecking = function(req, res){

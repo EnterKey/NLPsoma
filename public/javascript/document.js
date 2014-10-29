@@ -22,6 +22,9 @@ var DocumentAppController = Class.extend({
 	init: function() {
 		this.documentAppMainContentView = new DocumentAppMainContentView();
 		this.documentAppCategoryView = new DocumentAppCategoryView();
+
+		this.documentAppMainContentView._categoryApp = this.documentAppCategoryView;
+		this.documentAppCategoryView._documentApp = this.documentAppMainContentView;
 	}
 });
 
@@ -31,30 +34,67 @@ var DocumentAppController = Class.extend({
 * @description Page의 우측에 작성된 글 목록 관련 뷰를 제어하기 위한 클래스
 * */
 var DocumentAppMainContentView = Class.extend({
+	_categoryApp : null,
+
 	_cacheElement : {
 		documentMainContentTableWrapper : '.document-container-tableWrapper',
 		documentMainContentTableWrapperInList : '.document-container-tableWrapper-ul',
+		documentShowMoreBtn : $('#show-more-group')
 	},
 
-	requestData : {
+	_data : {
+		category : 'All',
+		documentIndex : 0,
 		documentGetListURL : "/ajax/document/get_list",
-		documentList : null
+		documentList : []
 	},
 
 	init : function() {
-		this.getDocumentList();
+		this.setEventListener();
+		this.getDocumentList(this._data.category);
+	},
+
+	setValue : function(target, value){
+		this._data[target] = value;
+	},
+
+	getValue : function(target){
+		return this._data[target];
+	},
+
+	setEventListener : function() {
+		this.showMoreBtn();
+	},
+
+	showMoreBtn : function() {
+		var self = this;
+		this._cacheElement.documentShowMoreBtn.on('click', function(){
+			self.getDocumentList();
+		})
 	},
 
 	setDocumentListData : function(data){
 		var self = this;
-		this.requestData.documentList = data.docsList;
-		this.bulidDocumentListForMainContent();
+		this._data.documentList = this._data.documentList .concat(data.docsList);
+		this.bulidDocumentListForMainContent(data.docsList);
 	},
 
 	getDocumentList : function() {
 		var self = this;
-		$.post(this.requestData.documentGetListURL ,function(result) {
+		var index = this._data.documentIndex;
+		var postData = {
+			category : this._data.category,
+			index : index
+		};
+
+		$.post(this._data.documentGetListURL, postData, function(result) {
 			if(result.status){
+				if(index == 0 && result.data.docsList.length < 24){
+					self._cacheElement.documentShowMoreBtn.css('display', 'none');
+				}else if(result.data.docsList.length < 8){
+					self._cacheElement.documentShowMoreBtn.css('display', 'none');
+				}
+				self._data.documentIndex += result.data.docsList.length;
 				self.setDocumentListData(result.data);
 			}else{
 				alert(result.errorMsg);
@@ -62,8 +102,8 @@ var DocumentAppMainContentView = Class.extend({
 		});
 	},
 
-	bulidDocumentListForMainContent : function() {
-		var documentList = this.requestData.documentList,
+	bulidDocumentListForMainContent : function(docsList) {
+		var documentList = docsList,
 			documentListLength = documentList.length,
 			documentItem = "";
 
@@ -73,7 +113,7 @@ var DocumentAppMainContentView = Class.extend({
 				documentImg = '/images/document/document.png';
 				documentCategory =  documentList[i].category;
 				documentItem +=
-					'<li class="list-item col-xs-12 col-sm-6 col-md-3 docs-category docs-category-'+documentCategory+'">' +
+					'<li class="list-item col-xs-6 col-sm-3 col-md-2 docs-category docs-category-'+documentCategory+'">' +
 						'<a href="/editor/'+documentTitle+'">' +
 							'<div class="thum-div"  data-toggle="tooltip" title data-original-title="tooltip" data-placement="top">' +
 								'<img class="thum" src= ' + documentImg + ' style="vertical-align: middle;"/>' +
@@ -91,6 +131,10 @@ var DocumentAppMainContentView = Class.extend({
 		}
 
 		$(this._cacheElement.documentMainContentTableWrapperInList).append(documentItem);
+	},
+
+	documentListClear : function(){
+		$(this._cacheElement.documentMainContentTableWrapperInList)[0].innerHTML = "";
 	}
 });
 
@@ -100,6 +144,7 @@ var DocumentAppMainContentView = Class.extend({
 * @description Page의 좌측 카테고리 메뉴 관련 뷰를 제어하기 위한 클래스
 * */
 var DocumentAppCategoryView = Class.extend({
+	_documentApp : null,
 	_cacheElement : {
 		addCategoryBtn 				: '#add-category',
 		addCategoryDoneBtn 			: '#add-categoty-btn-done',
@@ -114,7 +159,7 @@ var DocumentAppCategoryView = Class.extend({
 	},
 	_template : {
 		category :
-		'<li class="category-item" style="text-align: left;">' +
+		'<li class="category-item" data-name={{category}} style="text-align: left;">' +
 			'<div class="btn-group right category-item-config">' +
 				'<a class="right category-li-menu-hide dropdown-toggle" data-toggle="dropdown" href="#">' +
 			    '<span class="glyphicon glyphicon-cog"></span>' +
@@ -128,7 +173,7 @@ var DocumentAppCategoryView = Class.extend({
 		'</li>'
 	},
 
-	requestData : {
+	_data : {
 		getCategory : "/ajax/category/get_list",
 		addCategory : "/ajax/category/insert",
 		updateCategory : "/ajax/category/update",
@@ -146,11 +191,10 @@ var DocumentAppCategoryView = Class.extend({
 		this.addCategory();
 		this.renameCategory();
 		this.deleteCategory();
-		this.toggleModalForChangeCategoryItemInfo();
 	},
 
 	setCategoryListData : function(data){
-		this.requestData.categoryList = data.categoryList;
+		this._data.categoryList = data.categoryList;
 		this.bulidCategoryListForSideMenu();
 	},
 
@@ -161,6 +205,8 @@ var DocumentAppCategoryView = Class.extend({
 			$('.category-li-menu-show').removeClass('category-li-menu-show').addClass('category-li-menu-hide');
 			$(this).addClass('document-active');
 			$(this).find('a').eq(0).removeClass('category-li-menu-hide').addClass('category-li-menu-show');
+
+			self.getDocsListwithCategory($(this).data('name'));
 		});
 	},
 
@@ -177,7 +223,7 @@ var DocumentAppCategoryView = Class.extend({
       var postData = {
       	newCategory : categoryName
       }
-			$.post(self.requestData.addCategory, postData, function(result){
+			$.post(self._data.addCategory, postData, function(result){
 				if(result.status){
 					self.addCategoryListDOM(categoryName);
 				}else{
@@ -207,9 +253,9 @@ var DocumentAppCategoryView = Class.extend({
       	newCategory : categoryName
       }
       console.log(postData);
-			$.post(self.requestData.updateCategory, postData, function(result){
+			$.post(self._data.updateCategory, postData, function(result){
 				if(result.status){
-					self.getCategoryList();
+					self.setCategoryListData(result.data);
 				}else{
 					alert(result.errorMsg);
 				}
@@ -225,7 +271,7 @@ var DocumentAppCategoryView = Class.extend({
       var postData = {
       	deleteCategory : categoryName
       }
-			$.post(self.requestData.removeCategory, postData, function(result){
+			$.post(self._data.removeCategory, postData, function(result){
 				if(result.status){
 					self.getCategoryList();
 				}else{
@@ -233,6 +279,13 @@ var DocumentAppCategoryView = Class.extend({
 				}
 			})
 		});
+	},
+
+	getDocsListwithCategory : function(category) {
+		this._documentApp.setValue('category', category);
+		this._documentApp.setValue('documentIndex', 0);
+		this._documentApp.documentListClear();
+		this._documentApp.getDocumentList();
 	},
 
 	addCategoryListDOM : function(categoryName) {
@@ -244,7 +297,7 @@ var DocumentAppCategoryView = Class.extend({
 	getCategoryList : function() {
 
 		var self = this;
-		$.post(this.requestData.getCategory ,function(result) {
+		$.post(this._data.getCategory ,function(result) {
 			if(result.status){
 				self.setCategoryListData(result.data);
 			}else{
@@ -254,7 +307,7 @@ var DocumentAppCategoryView = Class.extend({
 	},
 
 	bulidCategoryListForSideMenu : function() {
-		var categoryList = this.requestData.categoryList,
+		var categoryList = this._data.categoryList,
 			categoryListLength = categoryList.length,
 			category = "",
 			categoryItem = "";
@@ -267,12 +320,7 @@ var DocumentAppCategoryView = Class.extend({
 		$(this._cacheElement.sideMenu)[0].innerHTML = categoryItem;
 		$(this._cacheElement.sideMenu).find('.category-item').eq(0).addClass('document-active');
 		$('.document-active').find('a').eq(0).removeClass('category-li-menu-hide').addClass('category-li-menu-show');
-	},
-
-	toggleModalForChangeCategoryItemInfo : function() {
-		var self = this;
 	}
-
 });
 
 /** @class document.html 작성 글 클래스

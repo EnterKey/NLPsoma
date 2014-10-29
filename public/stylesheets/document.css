@@ -108,15 +108,15 @@ a, a:hover, a:visited, .btn-link:hover { text-decoration: none; }
 	/*padding: 0;*/
 	/*max-width: 500px;*/
 	border-radius: 2px;
-	box-shadow: 1px 1px 1px #999;
-	background-color: RGBA(255, 255, 255, 0.4);
-	background-color: RGBA(182, 182, 182, 0.08);
+	/*box-shadow: 1px 1px 1px #999;*/
+/*	background-color: RGBA(255, 255, 255, 0.4);
+	background-color: RGBA(182, 182, 182, 0.08);*/
 }
 
 .list .thum {
-	outline: 1px solid #ccc;
+	/*outline: 1px solid #ccc;*/
 	/*border: 8px solid #fefefe;*/
-	width: 100%; /*height: 150px;*/
+	width: 70px; /*height: 150px;*/
 }
 
 .list .no-title {
@@ -246,3 +246,14 @@ a, a:hover, a:visited, .btn-link:hover { text-decoration: none; }
 	background-color: white !important;
 }
 
+.docs-show-more {
+	width: 100%;
+}
+
+.no-padding {
+	padding : 0px;
+}
+
+.no-margin {
+	margin : 0px;
+}

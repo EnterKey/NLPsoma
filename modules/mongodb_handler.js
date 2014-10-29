@@ -161,6 +161,16 @@ var push_pageDir = function(userEmail, dirInfo, callback){
 	});
 }
 
+var category_classify = function(category, docsList){
+	var resultArray = [];
+
+	for(i=0;i<docsList.length;i++){
+		if(docsList[i].category == category)
+			resultArray.push(docsList[i]);
+	}
+	return resultArray;
+}
+
 module.exports = {
 
 	isUserExist: function(userEmail, callback){
@@ -590,6 +600,42 @@ module.exports = {
 		});
   },
 
+  get_docsData_with_index: function(postData, callback){
+    if(typeof(callback) != "function") callback = function(){};
+
+    var userEmail = postData.userInfo.email;
+    var index = postData.index;
+    var category = postData.category;
+		var result = {
+			docsList : []
+		}
+		userDataModel.find({userEmail:userEmail}, function(err, data){
+			if(err){
+				callback(err, result);
+				return;
+			}
+
+			if(data.length == 0){
+				console.log('none user');
+				callback("None user data", result);
+				return;
+			}
+
+			if(category != null && category != 'All'){
+				data[0].docsData = category_classify(category, data[0].docsData);
+			}
+
+			if(index == 0){
+				result.docsList = data[0].docsData.splice(0,24);
+			}else if(data[0].docsData < index + 8){
+				result.docsList = data[0].docsData.slice(index);
+			}else {
+				result.docsList = data[0].docsData.splice(index, 8);
+			}
+			callback(err, result);
+		});
+  },
+
   get_document_content: function(postData, callback){
     if(typeof(callback) != "function") callback = function(){};
     var userEmail = postData.userInfo.email;
@@ -682,7 +728,7 @@ module.exports = {
 			}
 
 			userDataModel.update({userEmail: userEmail}, {categoryList: data[0].categoryList}, function(err, data){
-				callback(err, data);
+				callback(err, data[0].categoryList);
 			});
 		});
   },
