@@ -592,13 +592,13 @@ var Translate = Class.extend({
     action : function() {
         var self = this;
 
-        $('#translate-btn').on('click', function(e){
+        $('body').on('click', '#translate-btn' ,function(e){
             e.preventDefault();
-            var translateForContent = $('.preview-page').text().trim();
+            var translateForContent = $('.preview-iframe > body > pre');
 
             self.dataInit();
 
-            $('.preview-page').css('height', self._cachedElement.translateViewHeight);
+            $('.preview-iframe').css('height', self._cachedElement.translateViewHeight);
             $('.translateResultWrapper').css('display', 'block');
 
             self.data.message = {
