@@ -89,9 +89,13 @@ var DocumentAppMainContentView = Class.extend({
 
 		$.post(this._data.documentGetListURL, postData, function(result) {
 			if(result.status){
-				if(index == 0 && result.data.docsList.length < 24){
+				if(result.data.docsList.length == 0){
 					self._cacheElement.documentShowMoreBtn.css('display', 'none');
-				}else if(result.data.docsList.length < 8){
+				}else if(index == 0 && result.data.docsList.length >= 24){
+					self._cacheElement.documentShowMoreBtn.css('display', 'block');
+				}else if(index != 0 && result.data.docsList.length >= 8){
+					self._cacheElement.documentShowMoreBtn.css('display', 'block');
+				}else{
 					self._cacheElement.documentShowMoreBtn.css('display', 'none');
 				}
 				self._data.documentIndex += result.data.docsList.length;
