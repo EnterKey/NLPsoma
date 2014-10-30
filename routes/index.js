@@ -12,6 +12,7 @@ var editorRenderInfo = {
   documentName : null,
   editorState : null
 }
+var childProcess = require('child_process')
 
 
 /*
@@ -136,6 +137,49 @@ exports.imageupload=function(req, res){
     })
   })
   
+}
+exports.html_to_pdf=function(req,res){
+  var email= req.body.userInfo.email;
+  var content= req.body.editorContent;
+  var filename=path.join('/tmp/' +email+'.html');
+  var pdfpathname=path.join('/tmp/' +email+'.pdf');
+  console.log(filename);
+  function writeFile (path, contents, cb) {
+    mkdirp(getDirName(path), function (err) {
+      if (err) return cb(err)
+      fs.writeFile(path, contents, cb)
+    })
+  }
+  var childArgs = [
+  filename,
+  pdfpathname
+  ]
+  writeFile(filename, content, function(err){
+    if(!err){
+      childProcess.execFile("wkhtmltopdf", childArgs, function(err, stdout, stderr) {
+        res.send("success")
+      })
+    }else{
+      res.send("fail")
+    }
+  })
+}
+exports.html_to_pdf_view=function(req,res){
+  var email= req.body.userInfo.email;
+  var pdfpathname=path.join('/tmp/' +email+'.pdf');
+  fs.readFile(pdfpathname, function(err, data){
+    if(err) {
+      res.writeHead(501);
+      res.end();
+    }else{
+      res.writeHead(200, {
+        'Content-Type': 'application/pdf',
+        'Content-Disposition': 'attachment',
+        'filename':'notehub'
+      });
+      res.end(data, 'binary');
+    }
+  })
 }
 exports.main = function(req, res){
 

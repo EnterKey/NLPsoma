@@ -118,6 +118,7 @@ var EditorAppMainContentView = Class.extend({
 		this.initModal();
 		this.loadDocument();
 		this.setTranslator();
+		this.htmlToPdf();
 	},
 
 	setEditor : function() {
@@ -154,7 +155,25 @@ var EditorAppMainContentView = Class.extend({
 			self._cacheElement.writingDocumentCategory.html(category);
 		});
 	},
+	htmlToPdf : function() {
+		var self = this;
+		var postData = {
+			
+		};
 
+		$('#html_to_pdf').on('click', function() {
+			var editorIframe = $('#cke_1_contents iframe')[0];
+
+			if (editorIframe) {
+				var editorContent = editorIframe.contentWindow.document.body.innerHTML;
+				postData.editorContent='<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">'+editorContent
+				$.post("/htmltopdf",postData,function(data){
+					alert(data)
+					$("body").append("<iframe src='" + '/htmltopdf'+ "' style='display: none;' ></iframe>");
+				})
+			}
+		});
+	},
 	saveDocumentContent : function() {
 		var self = this;
 		var postData = {
