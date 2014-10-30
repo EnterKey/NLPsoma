@@ -44,9 +44,9 @@ var EditorAppMainContentView = Class.extend({
 		},
 		templete : {
 			previewList : '<li><a href="{{tabID}}"><div class="preview-list">{{header}}{{content}}</div></a></li>',
-			previewHeader : '<div class="preview-content-header"><div class="preview-content-title ellipsis" data-index="{{index}}" data-previewindex="{{previewIndex}}">{{title}}</div><div class="editor_paste"></div></div>',
-			previewContent : '<div class="preview-content" id="{{tabID}}"><textarea>{{content}}</textarea></div>',
-			previewPage : '<div class="panel-heading">{{title}}<a class="preview-page-close glyphicon glyphicon-remove" style="float:right;color:black"></a></div>' +
+			previewHeader : '<div class="preview-content-title" data-index="{{index}}">{{title}}</div>',
+			previewContent : '<div class="preview-content" id="{{tabID}}"><div class="editor_paste" style="position: relative;left: 90%;background-image:url(\'/images/editor-copy-icon.png\');background-size: contain;height: 20px;width: 20px;display: inline-block;"></div><textarea>{{content}}</textarea></div>',
+			previewPage : '<div class="panel-heading">{{title}}<a class="preview-page-close glyphicon glyphicon-remove" style="float:right"></a></div>' +
                             '<div class="panel-body preview-page">' +
                                 '<iframe src={{hashurl}} class="preview-iframe"></iframe>' +
 
@@ -436,12 +436,17 @@ var EditorAppMainContentView = Class.extend({
 		$(".jstree-icon.jstree-themeicon.jstree-themeicon-custom").css("background-size", "contain")
 		this._cacheElement.jstree.on("changed.jstree", function(e, data) {
 			$(".jstree-icon.jstree-themeicon.jstree-themeicon-custom").css("background-size", "contain")
-			self.setPreviewList(self._cacheElement.jstree.jstree("get_checked",true));
+			console.log(self._cacheElement.jstree);
+			self.setPreviewList($('#jstree').jstree("get_checked", function(data) {
+				console.log(data)
+			}));
+
 		});
 	},
 
 	setPreviewList : function(data) {
 
+		console.log('setPreviewList', data);
 		var i;
 		var checkedList = [];
 		for ( i = 0; i < data.length; i++) {
@@ -451,7 +456,7 @@ var EditorAppMainContentView = Class.extend({
 		}
 
 		this.bookmarkData.checkedList = checkedList;
-		console.log(this.bookmarkData.checkedList);
+
 	},
 
 	toggleReviewDivision : function() {
@@ -544,7 +549,7 @@ var EditorAppSideContentView = Class.extend({
 var Editor = Class.extend({
 	init : function() {
 		CKEDITOR.replace('editor1', {
-			height : '500px',
+			height : '500px', 
 			filebrowserImageUploadUrl: "imageUpload"
 		});
 	}
