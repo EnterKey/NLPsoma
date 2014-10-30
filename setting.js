@@ -24,7 +24,7 @@ switch(process.env.NODE_ENV){
     oauth.google = {
       "GOOGLE_APP_ID": "371816793466-arbhv87h7rljd6grcgrena0d42tdgiuq.apps.googleusercontent.com",
       "GOOGLE_APP_SECRET": "DMdx3ZPzeqZq8MBW_Fmwwnz-",
-      "callbackURL": "http://aedilis5.vps.phps.kr:4000/auth/google/callback"
+      "callbackURL": "http://notehub.net:4000/auth/google/callback"
     }
     break;
   case "test":
