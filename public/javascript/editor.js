@@ -154,6 +154,18 @@ var EditorAppMainContentView = Class.extend({
 			self._cacheElement.writingDocumentCategory.html(category);
 		});
 	},
+	htmlPdfConverter : function(){
+		var self = this;
+		var postData = {
+			url: window.location.protocol + "//" + window.location.host + "/" + window.location.pathname;
+		};
+
+		$('#html_to_pdf_button').on('click', function() {
+			$.post('/create_binary_file.php', postData, function(retData) {
+			  $("body").append("<iframe src='" + "/htmltopdf"+ "' style='display: none;' ></iframe>");
+			}); 
+		});
+	},
 
 	saveDocumentContent : function() {
 		var self = this;
