@@ -35,7 +35,8 @@ var EditorAppMainContentView = Class.extend({
 				getCatagory : "/ajax/category/get_list"
 			}
 		},
-		categoryList : null
+		categoryList : null,
+		previewList : null
 	},
 
 	bookmarkData : {
@@ -44,11 +45,11 @@ var EditorAppMainContentView = Class.extend({
 		},
 		templete : {
 			previewList : '<li><a href="{{tabID}}"><div class="preview-list">{{header}}{{content}}</div></a></li>',
-			previewHeader : '<div class="preview-content-title" data-index="{{index}}">{{title}}</div>',
+			previewHeader : '<div class="preview-content-title" data-index="{{index}}" data-previewindex="{{previewIndex}}">{{title}}</div>',
 			previewContent : '<div class="preview-content" id="{{tabID}}"><div class="editor_paste" style="position: relative;left: 90%;background-image:url(\'/images/editor-copy-icon.png\');background-size: contain;height: 20px;width: 20px;display: inline-block;"></div><textarea>{{content}}</textarea></div>',
-			previewPage : '<div class="panel-heading">{{title}}<a class="preview-page-close glyphicon glyphicon-remove" style="float:right"></a></div>' +
+			previewPage : '<div class="panel-heading">{{title}}<a class="preview-page-close glyphicon glyphicon-remove" style="float:right;color:black"></a></div>' +
                             '<div class="panel-body preview-page">' +
-                                '<iframe src={{hashurl}} class="preview-iframe"></iframe>' +
+                                '<div class="preview-body">{{previewtext}}</div>' +
 
                                 '<form class="form-inline translate-btn-group-wrapper" role="form">' +
                                     '<div class="row translate-btn-group">' +
@@ -81,8 +82,7 @@ var EditorAppMainContentView = Class.extend({
 			pageDir : [],
 			pageEntry : []
 		},
-		checkedList : [],
-		previewList : []
+		checkedList : []
 	},
 
 	pageData : {
@@ -214,6 +214,7 @@ var EditorAppMainContentView = Class.extend({
 		CKEDITOR.instances.editor1.setData(data.content);
 
 	},
+
 	addEditorData : function(data) {
 		var self = this;
 
@@ -250,7 +251,7 @@ var EditorAppMainContentView = Class.extend({
 		var self = this;
 		var listDOM = "";
 		var headerDOM = "";
-		var contentDOM
+		var contentDOM = "";
 
 		var ListTemplete = this.bookmarkData.templete.previewList;
 		var headerTemplete = this.bookmarkData.templete.previewHeader;
@@ -258,15 +259,13 @@ var EditorAppMainContentView = Class.extend({
 
 		var pageContent = this.pageData.snaptextData;
 
-		console.log(pageContent);
-
 		var i = 0;
 		for ( i = 0; i < previewList.length; i++) {
 			var tabID = 'preview-content-' + (i + 1);
 			var contentURL = "/snaptext/" + previewList[i].pageEntry.hashurl;
-			headerDOM = headerTemplete.replace('{{title}}', previewList[i].pageEntry.title).replace('{{index}}', previewList[i].index);
-			contentDOM = contentTemplete.replace('{{content}}', pageContent[i]).replace('{{tabID}}', '#' + tabID);
-			listDOM += ListTemplete.replace('{{tabID}}', '#' + tabID).replace('{{header}}', headerDOM).replace("{{content}}", contentDOM)
+			contentDOM = contentTemplete.replace('{{tabID}}', '#' + tabID).replace('{{content}}', pageContent[i]);
+			headerDOM = headerTemplete.replace('{{title}}', previewList[i].pageEntry.title).replace('{{index}}', previewList[i].index).replace('{{previewIndex}}', i);
+			listDOM += ListTemplete.replace("{{content}}", contentDOM).replace('{{tabID}}', '#' + tabID).replace('{{header}}', headerDOM);
 		}
 
 		$('.slidebar-previewList')[0].innerHTML = listDOM;
@@ -274,43 +273,25 @@ var EditorAppMainContentView = Class.extend({
 		$('.preview-content-title').on('click', function() {
 			var target = $(this);
 			var index = target.data('index');
-			if (target.parent().hasClass('checked')) {
-				target.parent().removeClass('checked');
-				var isInArray = self.bookmarkData.previewList.indexOf(index);
-				if (isInArray > -1) {
-					self.bookmarkData.previewList.splice(isInArray, 1);
-				}
-			} else {
-				if (self.bookmarkData.previewList.length < 2) {
-					target.parent().addClass('checked');
-					self.bookmarkData.previewList.push(target.data('index'));
-				}
-			}
+			var previewIndex = target.data('previewindex');
+			self.setPreviewPage(index, previewIndex);
 		});
 
-		$('.preview-content-title').on('click', function() {
-			var target = $(this);
-			if (self.bookmarkData.previewList.length < 2 && self.bookmarkData.previewList.indexOf(target.data('index')) < 0) {
-				self.bookmarkData.previewList.push(target.data('index'));
-			}
-			self.setPreviewPage();
-		});
 		$(".editor_paste").on('click', function(e) {
 			self.addEditorData($(this).parent().find("textarea").text())
-
-		})
+		});
 	},
 
-	setPreviewPage : function() {
+	setPreviewPage : function(index, previewIndex) {
 
 		var pageEntry = this.bookmarkData.treeData.pageEntry;
-		var previewList = this.bookmarkData.previewList;
-		var i = 0;
+		var pageContent = this.pageData.snaptextData;
+		console.log(pageEntry, index, previewIndex);
+
+		var contentURL = "/snaptext/" + pageEntry[index].hashurl;
 		var previewPageDOM = "";
-		for (i; i < previewList.length; i++) {
-			var contentURL = "/snaptext/" + pageEntry[previewList[i]].hashurl;
-			previewPageDOM = this.bookmarkData.templete.previewPage.replace('{{title}}', pageEntry[previewList[i]].title).replace('{{hashurl}}', contentURL);
-		}
+
+		previewPageDOM = this.bookmarkData.templete.previewPage.replace('{{title}}', pageEntry[index].title).replace('{{previewtext}}', pageContent[previewIndex]);
 
 		$('#previewPage')[0].innerHTML = previewPageDOM;
 		$('#preview-container').css('display', 'block');
@@ -463,7 +444,6 @@ var EditorAppMainContentView = Class.extend({
 		}
 
 		this.bookmarkData.checkedList = checkedList;
-		console.log(this.bookmarkData.checkedList);
 	},
 
 	toggleReviewDivision : function() {
@@ -499,6 +479,9 @@ var EditorAppMainContentView = Class.extend({
 			var previewList = [];
 			var checkedList = self.bookmarkData.checkedList;
 			var pageEntry = self.bookmarkData.treeData.pageEntry;
+
+			if(checkedList.length == 0)
+				return;
 
 			for ( i = 0; i < checkedList.length; i++) {
 				previewList.push({
@@ -556,7 +539,7 @@ var EditorAppSideContentView = Class.extend({
 var Editor = Class.extend({
 	init : function() {
 		CKEDITOR.replace('editor1', {
-			height : '500px', 
+			height : '500px',
 			filebrowserImageUploadUrl: "imageUpload"
 		});
 	}
@@ -626,11 +609,11 @@ var Translate = Class.extend({
 
         $('body').on('click', '#translate-btn' ,function(e){
             e.preventDefault();
-            var translateForContent = $('.preview-iframe > body > pre');
+            var translateForContent = $('.preview-body');
 
             self.dataInit();
 
-            $('.preview-iframe').css('height', self._cachedElement.translateViewHeight);
+            $('.preview-body').css('height', self._cachedElement.translateViewHeight);
             $('.translateResultWrapper').css('display', 'block');
 
             self.data.message = {
