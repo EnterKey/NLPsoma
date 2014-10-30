@@ -52,7 +52,7 @@ app.get('/snaptext/:hashurl', checkSession_get, routes.snaptext);
 app.post('/imageUpload', checkSession_post, routes.imageupload);
 // app.post('/htmltopdf', checkSession_post, routes.html_to_pdf);
 // app.get('/htmltopdf', checkSession_get, routes.html_to_pdf_view);
-app.get('/imageUpload/:originalFilename', checkSession_get, routes.imageuploadview);
+app.get('/imageUpload/:email/:originalFilename', routes.imageuploadview);
 
 app.post('/ajax/insert_user', checkSession_post, routes.insert_user);
 app.post('/ajax/insert_pageEntry', checkSession_post, routes.insert_pageEntry);			//extension 에서 page를 추가할 때 쓰는 요청을 받는 부분입니다.

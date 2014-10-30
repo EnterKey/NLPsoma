@@ -6,7 +6,7 @@ var spawn = require('child_process').spawn
 var settings = require('../setting');
 var mkdirp = require("mkdirp")
 var getDirName = require("path").dirname
-
+var setting=require("../setting.js")
 var editorRenderInfo = {
   userInfo : {},
   documentName : null,
@@ -83,8 +83,8 @@ var insertEntry_handler = function(err, data){
   return result;
 }
 exports.imageuploadview=function(req, res){
-  var useremail= req.body.userInfo.email;
   var originalFilename=req.params.originalFilename;
+  var useremail=req.params.email;
   var imagePath =  path.join(__dirname,'../..','imageupload', useremail,originalFilename)
   fs.readFile(imagePath, function(err, data){
     if(err) {
@@ -127,8 +127,8 @@ exports.imageupload=function(req, res){
   fs.readFile(uploadpath,function(err,dataread){
      writeFile(filenewpath, dataread, function(err){
       if(!err){
-        res.send("<script>window.parent.CKEDITOR.tools.callFunction("+CKEditorFuncNum+", '/imageupload/"+filename+"', 'Upload complete');</script>")
-
+        var serverurl= setting.oauth.google.callbackURL
+        res.send("<script>window.parent.CKEDITOR.tools.callFunction("+CKEditorFuncNum+", '"+serverurl.substring(0,serverurl.indexOf("auth/google/callback"))+"imageupload/"+email+"/"+filename+"', 'Upload complete');</script>")
       }else{
         res.send('Upload error')
 
