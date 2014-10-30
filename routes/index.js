@@ -1,8 +1,6 @@
 var mongodb_handler = require('../modules/mongodb_handler');
 var path = require('path');
 var fs = require('fs');
-var phantomjs = require('phantomjs')
-var binPath = phantomjs.path
 var crypto = require('crypto');
 var spawn = require('child_process').spawn
 var settings = require('../setting');
@@ -195,36 +193,7 @@ exports.snapshot=function(req, res){
     }
   })
 }
-exports.html_to_pdf=function(req,res){
-  var useremail= req.body.userInfo.email;
-  var htmlPath =  path.join('/tmp/'+useremail+'.pdf')
-  var url= req.body.url
-  var childArgs = [
-    path.join(__dirname, 'htmltopdf.js'),
-    url,
-    htmlPath
-  ]
-  childProcess.execFile(binPath, childArgs, function(err, stdout, stderr) {
-    res.send()
-  })
-}
-exports.html_to_pdf_view=function(req,res){
-  var useremail= req.body.userInfo.email;
-  var htmlPath =  path.join('/tmp/'+useremail+'.pdf')
-  fs.readFile(htmlPath, function(err, data){
-    if(err) {
-      res.writeHead(501);
-      res.end();
-    }else{
 
-      res.writeHead(200, {
-        'Content-Type': 'application/pdf',
-        'Content-Length': data.length
-      });
-      res.end(data, 'binary');
-    }
-  })
-}
 exports.snaptext=function(req, res){
   var useremail= req.body.userInfo.email;
   var hashurl=req.params.hashurl;
