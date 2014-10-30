@@ -166,7 +166,7 @@ exports.editor = function(req, res){
   renderInfo.userInfo = req.body.userInfo;
   renderInfo.editorState = 'new';
 
-  res.render('editortest', renderInfo);
+  res.render('editor', renderInfo);
 }
 
 exports.insert_user = function(req, res){
@@ -380,7 +380,7 @@ exports.documentEdit = function(req, res){
   renderInfo.documentName = req.params.documentName;
   renderInfo.editorState = 'edit';
 
-  res.render('editortest', renderInfo);
+  res.render('editor', renderInfo);
 }
 
 exports.userChecking = function(req, res){
