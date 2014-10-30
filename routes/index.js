@@ -18,6 +18,8 @@ var editorRenderInfo = {
  * GET home page.
  */
 
+
+
 var dbError_handler = function(err){
   // error handler
   // Have to change.
@@ -80,7 +82,61 @@ var insertEntry_handler = function(err, data){
 
   return result;
 }
+exports.imageuploadview=function(req, res){
+  var useremail= req.body.userInfo.email;
+  var originalFilename=req.params.originalFilename;
+  var imagePath =  path.join(__dirname,'../..','imageupload', useremail,originalFilename)
+  fs.readFile(imagePath, function(err, data){
+    if(err) {
+      res.writeHead(501);
+      res.end();
+    }else{
 
+      res.writeHead(200, {
+        'Content-Type': 'image/png',
+        'Content-Length': data.length
+      });
+      res.end(data, 'binary');
+    }
+  })
+
+}
+exports.imageupload=function(req, res){
+  var upload= req.files.upload;
+  var uploadpath=upload.path
+  var filename=upload.originalFilename;
+  var CKEditor=req.query.CKEditor;
+  var CKEditorFuncNum=req.query.CKEditorFuncNum;
+  var langCode=req.query.langCode;
+  var filetype_tmp=filename.split(".")
+  var filetype=filetype_tmp[filetype_tmp.length-1]
+  var email= req.body.userInfo.email;
+  var filenewpath=path.join(__dirname,'../..','imageupload', email, filename);
+  
+  if ('jpg' != filetype && 'jpeg' != filetype && 'gif' != filetype && 'png' != filetype)
+    {
+       res.send('Not picture')
+    }
+  function writeFile (path, contents, cb) {
+    mkdirp(getDirName(path), function (err) {
+      if (err) return cb(err)
+      fs.writeFile(path, contents, cb)
+    })
+  }
+
+  fs.readFile(uploadpath,function(err,dataread){
+     writeFile(filenewpath, dataread, function(err){
+      if(!err){
+        res.send("<script>window.parent.CKEDITOR.tools.callFunction("+CKEditorFuncNum+", '/imageupload/"+filename+"', 'Upload complete');</script>")
+
+      }else{
+        res.send('Upload error')
+
+      }
+    })
+  })
+  
+}
 exports.main = function(req, res){
 
   if(!req.session || !req.user){

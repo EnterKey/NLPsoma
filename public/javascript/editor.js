@@ -525,7 +525,7 @@ var Editor = Class.extend({
 	init : function() {
 		CKEDITOR.replace('editor1', {
 			height : '500px', 
-			filebrowserImageUploadUrl: "abc"
+			filebrowserImageUploadUrl: "imageUpload"
 		});
 	}
 });
