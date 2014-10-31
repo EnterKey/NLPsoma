@@ -44,8 +44,8 @@ var EditorAppMainContentView = Class.extend({
 			get_tree : "/ajax/bookmark/get_tree"
 		},
 		templete : {
-			previewList : '<li><a href="{{tabID}}"><div class="preview-list">{{header}}{{content}}</div></a></li>',
-			previewHeader : '<div class="preview-content-header"><div class="preview-content-title ellipsis" data-index="{{index}}" data-previewindex="{{previewIndex}}">{{title}}</div><div class="editor_paste" ></div></div>',
+			previewList : '<li><a href="#"><div class="preview-list">{{header}}{{content}}</div></a></li>',
+			previewHeader : '<div class="preview-content-header"><div class="preview-content-title ellipsis" data-index="{{index}}" data-previewindex="{{previewIndex}}">{{title}}</div><div class="editor_paste"><i class="fa fa-files-o"></i></div></div>',
 			previewContent : '<div class="preview-content" id="{{tabID}}"><textarea>{{content}}</textarea></div>',
 			previewPage : '<div class="panel-heading">{{title}}<a class="preview-page-close glyphicon glyphicon-remove" style="float:right;color:black"></a></div>' +
                             '<div class="panel-body preview-page">' +
@@ -248,7 +248,7 @@ var EditorAppMainContentView = Class.extend({
 		$.get(requestURL, function(result){
 			self.pageData.snaptextData[index] = result;
 			self.pageData.flagCount++;
-			if(self.pageData.flagCount = length-1){
+			if(length==1 || (self.pageData.flagCount = length-1)){
 				callback();
 			}
 		})
@@ -270,12 +270,19 @@ var EditorAppMainContentView = Class.extend({
 		for ( i = 0; i < previewList.length; i++) {
 			var tabID = 'preview-content-' + (i + 1);
 			var contentURL = "/snaptext/" + previewList[i].pageEntry.hashurl;
-			contentDOM = contentTemplete.replace('{{tabID}}', '#' + tabID).replace('{{content}}', pageContent[i]);
+			contentDOM = contentTemplete.replace('{{tabID}}', tabID).replace('{{content}}', pageContent[i]);
 			headerDOM = headerTemplete.replace('{{title}}', previewList[i].pageEntry.title).replace('{{index}}', previewList[i].index).replace('{{previewIndex}}', i);
-			listDOM += ListTemplete.replace("{{content}}", contentDOM).replace('{{tabID}}', '#' + tabID).replace('{{header}}', headerDOM);
+			listDOM += ListTemplete.replace("{{content}}", contentDOM).replace('{{header}}', headerDOM);
 		}
 
 		$('.slidebar-previewList')[0].innerHTML = listDOM;
+
+		$('.preview-list').on('click', function(){
+			var target = $(this).find('.preview-content-header').find('.preview-content-title');
+			var index = target.data('index');
+			var previewIndex = target.data('previewindex');
+			self.setPreviewPage(index, previewIndex);
+		});
 
 		$('.preview-content-title').on('click', function() {
 			var target = $(this);
@@ -284,8 +291,18 @@ var EditorAppMainContentView = Class.extend({
 			self.setPreviewPage(index, previewIndex);
 		});
 
+		$('.preview-content textarea').on('click', function(e){
+			e.preventDefault();
+			e.stopPropagation();
+		});
+
 		$(".editor_paste").on('click', function(e) {
-			self.addEditorData($(this).parent().find("textarea").text())
+			e.preventDefault();
+			e.stopPropagation();
+
+			var index = parseInt($(this).siblings().data('previewindex')) + 1;
+			var textObj = $('#preview-content-'+index+' textarea');
+			self.addEditorData(textObj.text());
 		});
 	},
 
@@ -480,12 +497,11 @@ var EditorAppMainContentView = Class.extend({
 
 		self._cacheElement.viewPreviewBtn.on('click', function(e) {
 
-			e.preventDefault();
-
 			var previewList = [];
 			var checkedList = self.bookmarkData.checkedList;
 			var pageEntry = self.bookmarkData.treeData.pageEntry;
 
+			console.log(checkedList);
 			if(checkedList.length == 0)
 				return;
 
