@@ -49,7 +49,9 @@ app.get('/editor/:documentName', checkSession_get, routes.documentEdit);
 app.get('/snapshot/:hashurl', checkSession_get, routes.snapshot);
 app.get('/snaptext/:hashurl', checkSession_get, routes.snaptext);
 /*http://localhost:4000/abc?CKEditor=editor1&CKEditorFuncNum=1&langCode=en*/
-app.post('/imageUpload', checkSession_get, routes.imageupload);
+app.post('/imageUpload', checkSession_post, routes.imageupload);
+app.post('/htmltopdf', checkSession_post, routes.html_to_pdf);
+app.get('/htmltopdf', checkSession_get, routes.html_to_pdf_view);
 app.get('/imageUpload/:originalFilename', checkSession_get, routes.imageuploadview);
 
 app.post('/ajax/insert_user', checkSession_post, routes.insert_user);
