@@ -368,14 +368,15 @@ body.menu-active div#content .menu-trigger {
     border: 4px solid greenyellow;
 }
 
-.preview-iframe {
+.preview-body {
     width: 100%;
     height: 95%;
     border : none !important;
+    overflow-y : auto;
 }
 
 .preview-page {
-    height: 89%;
+    height: 85%;
 }
 
 #previewTab-header li {
