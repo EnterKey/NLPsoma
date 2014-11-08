@@ -86,8 +86,10 @@ var EditorAppMainContentView = Class.extend({
 	},
 
 	pageData : {
+		snaptextData : [],
+		flagCount : 0,
 		ajaxURL : {
-
+			snaptext : "/snaptext/{{hashURL}}"
 		}
 	},
 
@@ -121,7 +123,7 @@ var EditorAppMainContentView = Class.extend({
 	setEditor : function() {
 		var editor = new Editor();
 	},
-	
+
 	setTranslator : function() {
         var translate = new Translate();
     },
@@ -208,6 +210,30 @@ var EditorAppMainContentView = Class.extend({
 
 	},
 
+	getPreviewData : function(previewList, callback){
+		var self = this;
+		var hashURL = this.pageData.ajaxURL.snaptext;
+		this.pageData.snaptextData = [];
+		this.pageData.flagCount = 0;
+
+		for ( i = 0; i < previewList.length; i++) {
+			var requestURL = hashURL.replace("{{hashURL}}", previewList[i].pageEntry.hashurl);
+			this.getSnapText(requestURL, i, previewList.length, callback);
+		}
+	},
+
+	getSnapText : function(requestURL, index, length, callback){
+		var self = this;
+
+		$.get(requestURL, function(result){
+			self.pageData.snaptextData[index] = result;
+			self.pageData.flagCount++;
+			if(self.pageData.flagCount = length-1){
+				callback();
+			}
+		})
+	},
+
 	setPreviewData : function(previewList) {
 		var self = this;
 		var listDOM = "";
@@ -218,13 +244,16 @@ var EditorAppMainContentView = Class.extend({
 		var headerTemplete = this.bookmarkData.templete.previewHeader;
 		var contentTemplete = this.bookmarkData.templete.previewContent;
 
+		var pageContent = this.pageData.snaptextData;
+
+		console.log(pageContent);
+
 		var i = 0;
 		for ( i = 0; i < previewList.length; i++) {
 			var tabID = 'preview-content-' + (i + 1);
 			var contentURL = "/snaptext/" + previewList[i].pageEntry.hashurl;
 			headerDOM = headerTemplete.replace('{{title}}', previewList[i].pageEntry.title).replace('{{index}}', previewList[i].index);
-			contentDOM = contentTemplete.replace('{{content}}', previewList[i].pageEntry.content).replace('{{tabID}}', '#' + tabID);
-			console.log(tabID);
+			contentDOM = contentTemplete.replace('{{content}}', pageContent[i]).replace('{{tabID}}', '#' + tabID);
 			listDOM += ListTemplete.replace('{{tabID}}', '#' + tabID).replace('{{header}}', headerDOM).replace("{{content}}", contentDOM)
 		}
 
@@ -258,14 +287,6 @@ var EditorAppMainContentView = Class.extend({
 			self.addEditorData($(this).parent().find("textarea").text())
 
 		})
-		// this._cacheElement.previewTabHeader.innerHTML = headerDOM;
-		// this._cacheElement.previewTabContent.innerHTML = contentDOM;
-
-		// $("div.previewTabs").tabs("refresh");
-		// var previewHeight = this._cacheElement.previewTabHeader.parent().height() - this._cacheElement.previewTabHeader.height();
-
-		// this._cacheElement.previewTabContent.height(previewHeight);
-
 	},
 
 	setPreviewPage : function() {
@@ -340,7 +361,6 @@ var EditorAppMainContentView = Class.extend({
 		var self = this;
 
 		$.post(self.bookmarkData.ajaxURL.get_tree, function(result) {
-			console.log(result);
 			self.bookmarkData.treeData = result.data;
 			self.makeBookmarkTreeView(result.data);
 		})
@@ -416,6 +436,7 @@ var EditorAppMainContentView = Class.extend({
 		$(".jstree-icon.jstree-themeicon.jstree-themeicon-custom").css("background-size", "contain")
 		this._cacheElement.jstree.on("changed.jstree", function(e, data) {
 			$(".jstree-icon.jstree-themeicon.jstree-themeicon-custom").css("background-size", "contain")
+			console.log(self._cacheElement.jstree);
 			self.setPreviewList($('#jstree').jstree("get_checked", function(data) {
 				console.log(data)
 			}));
@@ -425,6 +446,7 @@ var EditorAppMainContentView = Class.extend({
 
 	setPreviewList : function(data) {
 
+		console.log('setPreviewList', data);
 		var i;
 		var checkedList = [];
 		for ( i = 0; i < data.length; i++) {
@@ -478,7 +500,10 @@ var EditorAppMainContentView = Class.extend({
 				});
 			}
 
-			self.setPreviewData(previewList);
+			self.getPreviewData(previewList, function(){
+				self.setPreviewData(previewList);
+			});
+
 			$("#wrapper").removeClass("toggled");
 		});
 
@@ -524,7 +549,7 @@ var EditorAppSideContentView = Class.extend({
 var Editor = Class.extend({
 	init : function() {
 		CKEDITOR.replace('editor1', {
-			height : '500px', 
+			height : '500px',
 			filebrowserImageUploadUrl: "abc"
 		});
 	}
