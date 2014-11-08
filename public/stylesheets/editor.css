@@ -37,7 +37,7 @@
     height: 100%;
     margin-left: -20%;
     overflow-y: auto;
-    background: #F0F0F0;
+    background: #424A5D;
     -webkit-transition: all 0.5s ease;
     -moz-transition: all 0.5s ease;
     -o-transition: all 0.5s ease;
@@ -292,6 +292,7 @@ body.menu-active div#content .menu-trigger {
 #jstree-wrapper {
     width: 100%;
     height: 100%;
+    padding: 20px 10px;
     overflow-y: auto;
 }
 
@@ -315,6 +316,7 @@ body.menu-active div#content .menu-trigger {
 .left-sidebar-bookmarkList {
     width: 100%;
     height: 380px;
+    color: #ffffff;
 /*    border: 1px solid #6b7b8d;
     border-radius: 5px;*/
 }
@@ -559,7 +561,7 @@ color: #459e00;
     display: block;
     width:20%;
     float: left;
-    background-color: #F4F4F4;
+    background-color: #424A5D;
     overflow-x: hidden;
     overflow-y: auto;
     -webkit-transition: 0.2s;
