@@ -274,7 +274,7 @@ a, a:hover, a:visited, .btn-link:hover { text-decoration: none; }
 
 .category-item-config a {
 	color : black;
-	background-color: white !important;
+	background-color: #68DFF0 !important;
 }
 
 .docs-show-more {
@@ -287,4 +287,8 @@ a, a:hover, a:visited, .btn-link:hover { text-decoration: none; }
 
 .no-margin {
 	margin : 0px;
+}
+
+.document-sidebar-category > li > a:hover {
+    background: #68DFF0 !important;
 }
