@@ -45,8 +45,8 @@ var EditorAppMainContentView = Class.extend({
 		},
 		templete : {
 			previewList : '<li><a href="{{tabID}}"><div class="preview-list">{{header}}{{content}}</div></a></li>',
-			previewHeader : '<div class="preview-content-title" data-index="{{index}}" data-previewindex="{{previewIndex}}">{{title}}</div>',
-			previewContent : '<div class="preview-content" id="{{tabID}}"><div class="editor_paste" style="position: relative;left: 90%;background-image:url(\'/images/editor-copy-icon.png\');background-size: contain;height: 20px;width: 20px;display: inline-block;"></div><textarea>{{content}}</textarea></div>',
+			previewHeader : '<div class="preview-content-header"><div class="preview-content-title ellipsis" data-index="{{index}}" data-previewindex="{{previewIndex}}">{{title}}</div><div class="editor_paste"></div></div>',
+			previewContent : '<div class="preview-content" id="{{tabID}}"><textarea>{{content}}</textarea></div>',
 			previewPage : '<div class="panel-heading">{{title}}<a class="preview-page-close glyphicon glyphicon-remove" style="float:right;color:black"></a></div>' +
                             '<div class="panel-body preview-page">' +
                                 '<div class="preview-body">{{previewtext}}</div>' +
