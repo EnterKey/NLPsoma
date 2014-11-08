@@ -544,8 +544,8 @@ var EditorAppSideContentView = Class.extend({
 var Editor = Class.extend({
 	init : function() {
 		CKEDITOR.replace('editor1', {
-			height : '500px',
-			filebrowserImageUploadUrl: "abc"
+			height : '500px', 
+			filebrowserImageUploadUrl: "imageUpload"
 		});
 	}
 });
