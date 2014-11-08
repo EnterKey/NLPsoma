@@ -21,6 +21,10 @@ html, body, div, ul, li, h1, input, label, img {
 	text-decoration: none;
 }
 
+body {
+	background-color:#f2f2f2;
+}
+
 .document-container {
     /*margin-top : 60px;*/
 }
@@ -31,13 +35,19 @@ html, body, div, ul, li, h1, input, label, img {
 
 #document-wapper {
 	position:relative;
-	width:80%;
-	margin-left:20%;
-    padding-left: 0;
-    -webkit-transition: all 0.5s ease;
-    -moz-transition: all 0.5s ease;
-    -o-transition: all 0.5s ease;
-    transition: all 0.5s ease;
+	width:78%;
+	margin-left:22%;
+  padding-left: 0;
+  padding-right: 20px;
+  float: left;
+  -webkit-transition: all 0.5s ease;
+  -moz-transition: all 0.5s ease;
+  -o-transition: all 0.5s ease;
+  transition: all 0.5s ease;
+}
+
+#document-wapper hr{
+	border-color : darkgray;
 }
 
 #document-left-side-bar {
@@ -291,4 +301,5 @@ a, a:hover, a:visited, .btn-link:hover { text-decoration: none; }
 
 .document-sidebar-category > li > a:hover {
     background: #68DFF0 !important;
+    border-radius: 0px;
 }
