@@ -436,17 +436,12 @@ var EditorAppMainContentView = Class.extend({
 		$(".jstree-icon.jstree-themeicon.jstree-themeicon-custom").css("background-size", "contain")
 		this._cacheElement.jstree.on("changed.jstree", function(e, data) {
 			$(".jstree-icon.jstree-themeicon.jstree-themeicon-custom").css("background-size", "contain")
-			console.log(self._cacheElement.jstree);
-			self.setPreviewList($('#jstree').jstree("get_checked", function(data) {
-				console.log(data)
-			}));
-
+			self.setPreviewList(self._cacheElement.jstree.jstree("get_checked",true));
 		});
 	},
 
 	setPreviewList : function(data) {
 
-		console.log('setPreviewList', data);
 		var i;
 		var checkedList = [];
 		for ( i = 0; i < data.length; i++) {
@@ -456,7 +451,7 @@ var EditorAppMainContentView = Class.extend({
 		}
 
 		this.bookmarkData.checkedList = checkedList;
-
+		console.log(this.bookmarkData.checkedList);
 	},
 
 	toggleReviewDivision : function() {

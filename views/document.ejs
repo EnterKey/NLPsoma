@@ -22,48 +22,45 @@
 
 		<% include ./header.ejs %>
 
-		<div class="document-container container" >
-			<div class="row row-offcanvas row-offcanvas-right">
-				<div class="col-xs-6 col-sm-3 sidebar" id="sidebar" role="navigation" >
-					<h4 style="text-align: center;">&nbsp; Category</h4>
+		<div class="document-container" >
+			<div class="" id="document-left-side-bar" role="navigation" >
+				<h4 style="text-align: center;">&nbsp; Category</h4>
 
-					<ul id="notice-nav" class="nav nav-pills nav-stacked document-sidebar-category" style="margin-bottom: 10px;">
+				<ul id="notice-nav" class="nav nav-pills nav-stacked document-sidebar-category" style="margin-bottom: 10px;">
 
-					</ul>
+				</ul>
 
-					<div style="text-align: center;">
-						<a href="#" class="btn btn-default" id="add-category">Add Category</a>
-					</div>
-				</div><!--/span-->
+				<div style="text-align: center;">
+					<a href="#" class="btn btn-default" id="add-category">Add Category</a>
+				</div>
+			</div><!--/span-->
 
-				<div class="col-xs-12 col-sm-9 document-container-tableWrapper">
-					<ul class="list-thum list clear">
-						<li class="list-item col-xs-12 no-margin">
-							<a href="/editor">
-								<div class="thum-div left"  data-toggle="tooltip" title data-original-title="tooltip" data-placement="top">
-									<img class="thum" src="/images/document/new-file.png" style="vertical-align: middle;"/>
+			<div class="document-container-tableWrapper" id="document-wapper">
+				<ul class="list-thum list clear">
+					<li class="list-item col-xs-12 no-margin">
+						<a href="/editor">
+							<div class="thum-div left"  data-toggle="tooltip" title data-original-title="tooltip" data-placement="top">
+								<img class="thum" src="/images/document/new-file.png" style="vertical-align: middle;"/>
+							</div>
+							<div class="info-div left">
+								<div class="title" data-toggle="tooltip" title data-original-title="타이틀" data-placement="top" style="color:blue;" >
+									새 문서
 								</div>
-								<div class="info-div left">
-									<div class="title" data-toggle="tooltip" title data-original-title="타이틀" data-placement="top" style="color:blue;" >
-										새 문서
-									</div>
-									<div class="info" >
-										<span class="date left">새 문서 작성</span>
-									</div>
+								<div class="info" >
+									<span class="date left">새 문서 작성</span>
 								</div>
-							</a>
-						</li>
-						<li class="list-item col-xs-12 no-padding no-margin"><hr class="divider"></li>
-						<ul class="document-container-tableWrapper-ul"></ul>
-					</ul>
-					<div class="row" id="show-more-group" style="display:none">
-						<div class="col-sm-12">
-							<button type="button" class="btn btn-info docs-show-more">Show More</button>
-						</div>
+							</div>
+						</a>
+					</li>
+					<li class="list-item col-xs-12 no-padding no-margin"><hr class="divider"></li>
+					<ul class="document-container-tableWrapper-ul"></ul>
+				</ul>
+				<div class="row" id="show-more-group" style="display:none">
+					<div class="col-sm-12">
+						<button type="button" class="btn btn-info docs-show-more">Show More</button>
 					</div>
-				</div><!--/span-->
-
-			</div><!--/row-->
+				</div>
+			</div><!--/span-->
 		</div>
 
 		<div class='modal fade' id='modal-add-category'>

@@ -29,6 +29,34 @@ html, body, div, ul, li, h1, input, label, img {
 	margin-top : 30px;
 }
 
+#document-wapper {
+  padding-left: 0;
+  -webkit-transition: all 0.5s ease;
+  -moz-transition: all 0.5s ease;
+  -o-transition: all 0.5s ease;
+  transition: all 0.5s ease;
+}
+
+#document-left-side-bar {
+
+    position: fixed;
+    top: 51px;
+    bottom: 0;
+    left: 0;
+    z-index: 1000;
+    display: block;
+    width:20%;
+    float: left;
+    background-color: #F4F4F4;
+    overflow-x: hidden;
+    overflow-y: auto;
+    -webkit-transition: 0.2s;
+    -moz-transition: 0.2s;
+    -o-transition: 0.2s;
+    transition: 0.2s;
+}
+
+
 .document-sidebar-category > a.active {
 	background-color : #C0C0C0 ! important;
 	border-color : #C0C0C0 ! important;
