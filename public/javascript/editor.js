@@ -504,7 +504,7 @@ var EditorAppMainContentView = Class.extend({
 			if(checkedList.length == 0)
 				return;
 
-			for ( i = 0; i < checkedList.length; i++) {
+			for (var i = 0; i < checkedList.length; i++) {
 				previewList.push({
 					pageEntry : pageEntry[checkedList[i]],
 					index : checkedList[i]
@@ -663,6 +663,8 @@ var Translate = Class.extend({
 
             // 번역할 전체 내용
             var translateForTotalContent = $('.preview-body').text().trim();
+            self.data.translateForTotalContent = translateForTotalContent;
+
             // 요창 할 수 있는 최대 문자 길이 수
             var requestPossibleMaxLength = 120;
             // 가져온 내용의 전체 길이
@@ -674,7 +676,7 @@ var Translate = Class.extend({
                 var translateRequestForCnt = contentLength / requestPossibleMaxLength;
                 translateRequestForCnt = Math.ceil(translateRequestForCnt);
                 self.data.translateRequestForCnt = translateRequestForCnt;
-                self.data.translateForTotalContent = translateForTotalContent;
+//                self.data.translateForTotalContent = translateForTotalContent;
                 self.data.contentLength = contentLength;
 
                 var translateForPartContent = translateForTotalContent.substring(0 * requestPossibleMaxLength, requestPossibleMaxLength);
