@@ -49,7 +49,7 @@ var EditorAppMainContentView = Class.extend({
 			previewContent : '<div class="preview-content" id="{{tabID}}"><textarea>{{content}}</textarea></div>',
 			previewPage : '<div class="panel-heading">{{title}}<a class="preview-page-close glyphicon glyphicon-remove" style="float:right;color:black"></a></div>' +
                             '<div class="panel-body preview-page">' +
-                                '<div class="preview-body">{{previewtext}}</div>' +
+                                '<pre class="preview-body">{{previewtext}}</pre>' +
 
                                 '<form class="form-inline translate-btn-group-wrapper" role="form">' +
                                     '<div class="row translate-btn-group">' +
