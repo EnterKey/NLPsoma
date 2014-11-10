@@ -29,7 +29,7 @@ var EditorAppMainContentView = Class.extend({
 			document : {
 				get_content : "/ajax/document/get_content",
 				insert : "/ajax/document/insert",
-				update : "/ajax/document/update",
+				update : "/ajax/document/update"
 			},
 			category : {
 				getCatagory : "/ajax/category/get_list"
