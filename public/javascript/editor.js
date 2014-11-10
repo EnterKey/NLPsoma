@@ -501,7 +501,6 @@ var EditorAppMainContentView = Class.extend({
 			var checkedList = self.bookmarkData.checkedList;
 			var pageEntry = self.bookmarkData.treeData.pageEntry;
 
-			console.log(checkedList);
 			if(checkedList.length == 0)
 				return;
 
@@ -594,7 +593,12 @@ var Translate = Class.extend({
             text : null,
             originalLang : null,
             targetlang : null
-        }
+        },
+        translateResultData : [],
+        translateRequestForCnt : 0,
+        currnetIdx : 0,
+        translateForTotalContent : null,
+        contentLength : 0
     },
 
     _cachedElement : {
@@ -612,9 +616,28 @@ var Translate = Class.extend({
     },
 
     dataInit : function() {
-        for(var obj in this.data) {
-            obj = null;
-        }
+        var self = Translate.prototype;
+        self.data.isCORSSupport = 'withCredentials' in new XMLHttpRequest();
+        self.data.isIE = typeof XDomainRequest !== "undefined";
+        self.data.xdr = null;
+        self.data.interBuffer = [];
+        self.data.finalBuffer = [];
+        self.data.bufCnt = [];
+    },
+
+    dataInitAll : function() {
+        var self = Translate.prototype;
+        self.data.isCORSSupport = 'withCredentials' in new XMLHttpRequest();
+        self.data.isIE = typeof XDomainRequest !== "undefined";
+        self.data.xdr = null;
+        self.data.interBuffer = [];
+        self.data.finalBuffer = [];
+        self.data.bufCnt = [];
+        self.data.translateResultData = [];
+        self.data.translateRequestForCnt = 0;
+        self.data.currnetIdx = 0;
+        self.data.translateForTotalContent = "",
+        self.data.contentLength = 0;
     },
 
     toggleTranslateWindow : function() {
@@ -633,6 +656,7 @@ var Translate = Class.extend({
             e.preventDefault();
 
             $('.translateResult').text("");
+            self.dataInitAll();
 
             $('.preview-body').css('height', self._cachedElement.translateViewHeight);
             $('.translateResultWrapper').css('display', 'block');
@@ -642,48 +666,29 @@ var Translate = Class.extend({
             // 요창 할 수 있는 최대 문자 길이 수
             var requestPossibleMaxLength = 120;
             // 가져온 내용의 전체 길이
-            var contentLength = $('.preview-body').text().trim().length;
+            var contentLength = translateForTotalContent.length;
 
             // 문장의 길이가 한번에 번역가능한 것인지 판단
             if(contentLength > requestPossibleMaxLength) {
                 //반복 요청할 총 횟수를 계산
-                var saveCnt = translateRequestCnt = contentLength / requestPossibleMaxLength;
-                // 마지막에 짤리는 문자 길이 계산
-                var translateLastRequestWordSize = contentLength % requestPossibleMaxLength;
+                var translateRequestForCnt = contentLength / requestPossibleMaxLength;
+                translateRequestForCnt = Math.ceil(translateRequestForCnt);
+                self.data.translateRequestForCnt = translateRequestForCnt;
+                self.data.translateForTotalContent = translateForTotalContent;
+                self.data.contentLength = contentLength;
 
-                // 반복 요청
-                for(var i = translateRequestCnt, j = 0 ; i > 0 ; i--, j++){
-                    self.dataInit();
-
-                    var translateForPartContent = translateForTotalContent.substring(j * translateLastRequestWordSize, translateLastRequestWordSize);
-                    self.data.message = {
-                        text: translateForPartContent,
-                        originalLang: $("#originalLang").val(),
-                        targetlang: $("#targetLang").val()
-                    };
-
-                    self.getJSON(self.setQueryString(self.data.message), self.translateDirectLang);
-                }
-
-                // 반복 요청 후 마지막에 남은 짜투리 문자 번역 요청
-                self.dataInit();
-
-                var translateForContentLastData = translateForTotalContent.substring(saveCnt * requestPossibleMaxLength, translateLastRequestWordSize);
-
+                var translateForPartContent = translateForTotalContent.substring(0 * requestPossibleMaxLength, requestPossibleMaxLength);
                 self.data.message = {
-                    text: translateForContentLastData,
+                    text: translateForPartContent,
                     originalLang: $("#originalLang").val(),
                     targetlang: $("#targetLang").val()
                 };
-
-                self.getJSON(self.setQueryString(self.data.message), self.translateDirectLang);
+                self.getJSONWithSynchronization(self.setQueryString(self.data.message));
 
             } else {
                 // 한번에 번역 가능하여 한번에 요청하는 부분
-                self.dataInit();
-
                 self.data.message = {
-                    text: translateForTotalContent,
+                    text: self.data.translateForTotalContent,
                     originalLang: $("#originalLang").val(),
                     targetlang: $("#targetLang").val()
                 };
@@ -712,6 +717,49 @@ var Translate = Class.extend({
                 success: callback
             });
         }
+    },
+
+    showTranslateReulstData : function() {
+        var self = Translate.prototype;
+        var result = "";
+        for(var i = 0 ; i < self.data.translateResultData.length ; i++) {
+            result += self.data.translateResultData[i];
+        }
+        $('.translateResult').text(result);
+    },
+
+    getJSONWithSynchronization : function(query) {
+        $.getJSON(query, function(data) {
+            // 요창 할 수 있는 최대 문자 길이 수
+            var requestPossibleMaxLength = 120;
+            var self = Translate.prototype;
+            var post = self.extractResult(data).join('');
+
+            self.data.translateResultData[self.data.currnetIdx++] = post;
+
+            if(self.data.currnetIdx == self.data.translateRequestForCnt) {
+                self.showTranslateReulstData();
+            } else if(self.data.currnetIdx == self.data.translateRequestForCnt - 1) {
+                // 마지막 짜투리
+                var translateForPartContent = self.data.translateForTotalContent.substring(self.data.currnetIdx * requestPossibleMaxLength);
+                self.data.message = {
+                    text: translateForPartContent,
+                    originalLang: $("#originalLang").val(),
+                    targetlang: $("#targetLang").val()
+                };
+                self.getJSONWithSynchronization(self.setQueryString(self.data.message));
+            } else {
+                //돌아가는것
+                var translateForPartContent = self.data.translateForTotalContent.substring(self.data.currnetIdx * requestPossibleMaxLength, requestPossibleMaxLength);
+                self.data.message = {
+                    text: translateForPartContent,
+                    originalLang: $("#originalLang").val(),
+                    targetlang: $("#targetLang").val()
+                };
+                self.getJSONWithSynchronization(self.setQueryString(self.data.message));
+            }
+        });
+
     },
 
     setQueryString : function(message) {
