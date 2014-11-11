@@ -1,7 +1,9 @@
 /**
  * @author dooseong, eom
  */
-
+#document-container {
+	font-family: 'Source Sans Pro', sans-serif !important;
+}
 /* #def defult rules */
 @import url(http://fonts.googleapis.com/earlyaccess/nanumgothic.css);
 

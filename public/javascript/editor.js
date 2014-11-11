@@ -47,36 +47,32 @@ var EditorAppMainContentView = Class.extend({
 			previewList : '<li><a href="#"><div class="preview-list">{{header}}{{content}}</div></a></li>',
 			previewHeader : '<div class="preview-content-header"><div class="preview-content-title ellipsis" data-index="{{index}}" data-previewindex="{{previewIndex}}">{{title}}</div><div class="editor_paste"><i class="fa fa-files-o"></i></div></div>',
 			previewContent : '<div class="preview-content" id="{{tabID}}"><textarea>{{content}}</textarea></div>',
-			previewPage : '<div class="panel-heading">{{title}}<a class="preview-page-close glyphicon glyphicon-remove" style="float:right;color:black"></a></div>' +
-                            '<div class="panel-body preview-page">' +
-                                '<pre class="preview-body">{{previewtext}}</pre>' +
+			previewPage : 	'<pre class="preview-body" data-index="{{previewIndex}}">{{previewtext}}</pre>' +
+                      '<form class="form-inline translate-btn-group-wrapper" role="form">' +
+                          '<div class="row translate-btn-group">' +
+                              '<div class="form-group">' +
+                                  '<label class="sr-only" for="originalLang">sourceLang</label>' +
+                                      '<select id="originalLang" class="form-control">' +
+                                      '<option selected value="">자동인식</option><option value="ko">한국어</option><option value="en">English</option><option value="af">Afrikaans</option><option value="sq">Albanian</option><option value="ar">Arabic</option><option value="hy">Armenian</option><option value="az">Azerbaijani</option><option value="eu">Basque</option><option value="be">Belarusian</option><option value="bn">Bengali</option><option value="bs">Bosnian</option><option value="bg">Bulgarian</option><option value="ca">Catalan</option><option value="ceb">Cebuano</option><option value="hr">Croatian</option><option value="cs">Czech</option><option value="da">Danish</option><option value="nl">Dutch</option><option value="eo">Esperanto</option><option value="et">Estonian</option><option value="tl">Filipino</option><option value="fi">Finnish</option><option value="fr">French</option><option value="gl">Galician</option><option value="ka">Georgian</option><option value="de">German</option><option value="el">Greek</option><option value="gu">Gujarati</option><option value="iw">Hebrew</option><option value="hi">Hindi</option><option value="hmn">Hmong</option><option value="hu">Hungarian</option><option value="is">Icelandic</option><option value="id">Indonesian</option><option value="ga">Irish</option><option value="it">Italian</option><option value="ja">Japanese</option><option value="jw">Javanese</option><option value="kn">Kannada</option><option value="km">Khmer</option><option value="lo">Lao</option><option value="la">Latin</option><option value="lv">Latvian</option><option value="lt">Lithuanian</option><option value="mk">Macedonian</option><option value="ms">Malay</option><option value="mt">Maltese</option><option value="mr">Marathi</option><option value="no">Norwegian</option><option value="fa">Persian</option><option value="pl">Polish</option><option value="pt">Portuguese</option><option value="ro">Romanian</option><option value="ru">Russian</option><option value="sr">Serbian</option><option value="sk">Slovak</option><option value="sl">Slovenian</option><option value="es">Spanish</option><option value="sw">Swahili</option><option value="sv">Swedish</option><option value="ta">Tamil</option><option value="te">Telugu</option><option value="th">Thai</option><option value="tr">Turkish</option><option value="uk">Ukrainian</option><option value="ur">Urdu</option><option value="vi">Vietnamese</option></select>' +
+                              '</div>' +
+                          '에서' +
+                              '<div class="form-group">' +
+                                  '<label class="sr-only" for="targetLang">targetLang</label>' +
+                                  '<select id="targetLang" class="form-control">' +
+                                  '<option selected value="ko">한국어</option><option value="en">English</option><option value="af">Afrikaans</option><option value="sq">Albanian</option><option value="ar">Arabic</option><option value="hy">Armenian</option><option value="az">Azerbaijani</option><option value="eu">Basque</option><option value="be">Belarusian</option><option value="bn">Bengali</option><option value="bs">Bosnian</option><option value="bg">Bulgarian</option><option value="ca">Catalan</option><option value="ceb">Cebuano</option><option value="hr">Croatian</option><option value="cs">Czech</option><option value="da">Danish</option><option value="nl">Dutch</option><option value="eo">Esperanto</option><option value="et">Estonian</option><option value="tl">Filipino</option><option value="fi">Finnish</option><option value="fr">French</option><option value="gl">Galician</option><option value="ka">Georgian</option><option value="de">German</option><option value="el">Greek</option><option value="gu">Gujarati</option><option value="iw">Hebrew</option><option value="hi">Hindi</option><option value="hmn">Hmong</option><option value="hu">Hungarian</option><option value="is">Icelandic</option><option value="id">Indonesian</option><option value="ga">Irish</option><option value="it">Italian</option><option value="ja">Japanese</option><option value="jw">Javanese</option><option value="kn">Kannada</option><option value="km">Khmer</option><option value="lo">Lao</option><option value="la">Latin</option><option value="lv">Latvian</option><option value="lt">Lithuanian</option><option value="mk">Macedonian</option><option value="ms">Malay</option><option value="mt">Maltese</option><option value="mr">Marathi</option><option value="no">Norwegian</option><option value="fa">Persian</option><option value="pl">Polish</option><option value="pt">Portuguese</option><option value="ro">Romanian</option><option value="ru">Russian</option><option value="sr">Serbian</option><option value="sk">Slovak</option><option value="sl">Slovenian</option><option value="es">Spanish</option><option value="sw">Swahili</option><option value="sv">Swedish</option><option value="ta">Tamil</option><option value="te">Telugu</option><option value="th">Thai</option><option value="tr">Turkish</option><option value="uk">Ukrainian</option><option value="ur">Urdu</option><option value="vi">Vietnamese</option></select>' +
+                                  '</select>' +
+                              '</div>' +
+                          '로' +
+                              '<div class="form-group">' +
+                                  '<button class="btn btn-primary" id="translate-btn">번역</button>' +
+                              '</div>' +
+                          '</div>' +
+                      '</form>' +
 
-                                '<form class="form-inline translate-btn-group-wrapper" role="form">' +
-                                    '<div class="row translate-btn-group">' +
-                                        '<div class="form-group">' +
-                                            '<label class="sr-only" for="originalLang">sourceLang</label>' +
-                                                '<select id="originalLang" class="form-control">' +
-                                                '<option selected value="">자동인식</option><option value="ko">한국어</option><option value="en">English</option><option value="af">Afrikaans</option><option value="sq">Albanian</option><option value="ar">Arabic</option><option value="hy">Armenian</option><option value="az">Azerbaijani</option><option value="eu">Basque</option><option value="be">Belarusian</option><option value="bn">Bengali</option><option value="bs">Bosnian</option><option value="bg">Bulgarian</option><option value="ca">Catalan</option><option value="ceb">Cebuano</option><option value="hr">Croatian</option><option value="cs">Czech</option><option value="da">Danish</option><option value="nl">Dutch</option><option value="eo">Esperanto</option><option value="et">Estonian</option><option value="tl">Filipino</option><option value="fi">Finnish</option><option value="fr">French</option><option value="gl">Galician</option><option value="ka">Georgian</option><option value="de">German</option><option value="el">Greek</option><option value="gu">Gujarati</option><option value="iw">Hebrew</option><option value="hi">Hindi</option><option value="hmn">Hmong</option><option value="hu">Hungarian</option><option value="is">Icelandic</option><option value="id">Indonesian</option><option value="ga">Irish</option><option value="it">Italian</option><option value="ja">Japanese</option><option value="jw">Javanese</option><option value="kn">Kannada</option><option value="km">Khmer</option><option value="lo">Lao</option><option value="la">Latin</option><option value="lv">Latvian</option><option value="lt">Lithuanian</option><option value="mk">Macedonian</option><option value="ms">Malay</option><option value="mt">Maltese</option><option value="mr">Marathi</option><option value="no">Norwegian</option><option value="fa">Persian</option><option value="pl">Polish</option><option value="pt">Portuguese</option><option value="ro">Romanian</option><option value="ru">Russian</option><option value="sr">Serbian</option><option value="sk">Slovak</option><option value="sl">Slovenian</option><option value="es">Spanish</option><option value="sw">Swahili</option><option value="sv">Swedish</option><option value="ta">Tamil</option><option value="te">Telugu</option><option value="th">Thai</option><option value="tr">Turkish</option><option value="uk">Ukrainian</option><option value="ur">Urdu</option><option value="vi">Vietnamese</option></select>' +
-                                        '</div>' +
-                                    '에서' +
-                                        '<div class="form-group">' +
-                                            '<label class="sr-only" for="targetLang">targetLang</label>' +
-                                            '<select id="targetLang" class="form-control">' +
-                                            '<option selected value="ko">한국어</option><option value="en">English</option><option value="af">Afrikaans</option><option value="sq">Albanian</option><option value="ar">Arabic</option><option value="hy">Armenian</option><option value="az">Azerbaijani</option><option value="eu">Basque</option><option value="be">Belarusian</option><option value="bn">Bengali</option><option value="bs">Bosnian</option><option value="bg">Bulgarian</option><option value="ca">Catalan</option><option value="ceb">Cebuano</option><option value="hr">Croatian</option><option value="cs">Czech</option><option value="da">Danish</option><option value="nl">Dutch</option><option value="eo">Esperanto</option><option value="et">Estonian</option><option value="tl">Filipino</option><option value="fi">Finnish</option><option value="fr">French</option><option value="gl">Galician</option><option value="ka">Georgian</option><option value="de">German</option><option value="el">Greek</option><option value="gu">Gujarati</option><option value="iw">Hebrew</option><option value="hi">Hindi</option><option value="hmn">Hmong</option><option value="hu">Hungarian</option><option value="is">Icelandic</option><option value="id">Indonesian</option><option value="ga">Irish</option><option value="it">Italian</option><option value="ja">Japanese</option><option value="jw">Javanese</option><option value="kn">Kannada</option><option value="km">Khmer</option><option value="lo">Lao</option><option value="la">Latin</option><option value="lv">Latvian</option><option value="lt">Lithuanian</option><option value="mk">Macedonian</option><option value="ms">Malay</option><option value="mt">Maltese</option><option value="mr">Marathi</option><option value="no">Norwegian</option><option value="fa">Persian</option><option value="pl">Polish</option><option value="pt">Portuguese</option><option value="ro">Romanian</option><option value="ru">Russian</option><option value="sr">Serbian</option><option value="sk">Slovak</option><option value="sl">Slovenian</option><option value="es">Spanish</option><option value="sw">Swahili</option><option value="sv">Swedish</option><option value="ta">Tamil</option><option value="te">Telugu</option><option value="th">Thai</option><option value="tr">Turkish</option><option value="uk">Ukrainian</option><option value="ur">Urdu</option><option value="vi">Vietnamese</option></select>' +
-                                            '</select>' +
-                                        '</div>' +
-                                    '로' +
-                                        '<div class="form-group">' +
-                                            '<button class="btn btn-primary" id="translate-btn">번역</button>' +
-                                        '</div>' +
-                                    '</div>' +
-                                '</form>' +
-
-                                '<div class="translateResultWrapper">' +
-                                    '<h3>번역 결과</h3>' +
-                                    '<pre class="translateResult" ></pre>' +
-                                '</div>' +
-                            '</div>'
+                      '<div class="translateResultWrapper">' +
+                          '<h3>번역 결과</h3>' +
+                          '<pre class="translateResult" ></pre>' +
+                      '</div>'
 		},
 		treeData : {
 			pageDir : [],
@@ -86,7 +82,7 @@ var EditorAppMainContentView = Class.extend({
 	},
 
 	pageData : {
-		snaptextData : [],
+		previewData : [],
 		flagCount : 0,
 		ajaxURL : {
 			snaptext : "/snaptext/{{hashURL}}"
@@ -108,7 +104,12 @@ var EditorAppMainContentView = Class.extend({
 		previewTabHeader 			: $('#previewTab-header')[0],
 		previewTabContent 			: $('#previewTab-content')[0],
 		previewTabHeight 			: '550px',
-		jstree 						: $('#jstree')
+		jstree 						: $('#jstree'),
+		preview_header			: $('#preview-header'),
+		preview_content			: $('#preview-page-content')[0],
+		preview_title			: $('#preview-page-title'),
+		preview_left			: $('.preview-page-left'),
+		preview_right			: $('.preview-page-right')
 	},
 
 	init : function() {
@@ -135,6 +136,7 @@ var EditorAppMainContentView = Class.extend({
 		this.saveDocumentContent();
 		this.toggleReviewDivision();
 		this.addNewPreviewTab();
+		this.previewPage();
 	},
 
 	toggleModalForChangeDocumentTitle : function() {
@@ -158,7 +160,7 @@ var EditorAppMainContentView = Class.extend({
 	htmlToPdf : function() {
 		var self = this;
 		var postData = {
-			
+
 		};
 
 		$('#html_to_pdf').on('click', function() {
@@ -233,11 +235,15 @@ var EditorAppMainContentView = Class.extend({
 	getPreviewData : function(previewList, callback){
 		var self = this;
 		var hashURL = this.pageData.ajaxURL.snaptext;
-		this.pageData.snaptextData = [];
+		this.pageData.previewData = [];
 		this.pageData.flagCount = 0;
-
 		for ( i = 0; i < previewList.length; i++) {
 			var requestURL = hashURL.replace("{{hashURL}}", previewList[i].pageEntry.hashurl);
+			this.pageData.previewData.push({
+				title: null,
+				snaptextData: null
+			})
+			this.pageData.previewData[i].title = previewList[i].pageEntry.title;
 			this.getSnapText(requestURL, i, previewList.length, callback);
 		}
 	},
@@ -246,7 +252,7 @@ var EditorAppMainContentView = Class.extend({
 		var self = this;
 
 		$.get(requestURL, function(result){
-			self.pageData.snaptextData[index] = result;
+			self.pageData.previewData[index].snaptextData = result;
 			self.pageData.flagCount++;
 			if(length==1 || (self.pageData.flagCount = length-1)){
 				callback();
@@ -264,14 +270,14 @@ var EditorAppMainContentView = Class.extend({
 		var headerTemplete = this.bookmarkData.templete.previewHeader;
 		var contentTemplete = this.bookmarkData.templete.previewContent;
 
-		var pageContent = this.pageData.snaptextData;
+		var previewData = this.pageData.previewData;
 
 		var i = 0;
 		for ( i = 0; i < previewList.length; i++) {
 			var tabID = 'preview-content-' + (i + 1);
 			var contentURL = "/snaptext/" + previewList[i].pageEntry.hashurl;
-			contentDOM = contentTemplete.replace('{{tabID}}', tabID).replace('{{content}}', pageContent[i]);
-			headerDOM = headerTemplete.replace('{{title}}', previewList[i].pageEntry.title).replace('{{index}}', previewList[i].index).replace('{{previewIndex}}', i);
+			contentDOM = contentTemplete.replace('{{tabID}}', tabID).replace('{{content}}', previewData[i].snaptextData);
+			headerDOM = headerTemplete.replace('{{title}}', previewList[i].pageEntry.title).replace('{{previewIndex}}', i);
 			listDOM += ListTemplete.replace("{{content}}", contentDOM).replace('{{header}}', headerDOM);
 		}
 
@@ -279,16 +285,14 @@ var EditorAppMainContentView = Class.extend({
 
 		$('.preview-list').on('click', function(){
 			var target = $(this).find('.preview-content-header').find('.preview-content-title');
-			var index = target.data('index');
 			var previewIndex = target.data('previewindex');
-			self.setPreviewPage(index, previewIndex);
+			self.setPreviewPage(previewIndex);
 		});
 
 		$('.preview-content-title').on('click', function() {
 			var target = $(this);
-			var index = target.data('index');
 			var previewIndex = target.data('previewindex');
-			self.setPreviewPage(index, previewIndex);
+			self.setPreviewPage(previewIndex);
 		});
 
 		$('.preview-content textarea').on('click', function(e){
@@ -306,17 +310,39 @@ var EditorAppMainContentView = Class.extend({
 		});
 	},
 
-	setPreviewPage : function(index, previewIndex) {
+	previewPage : function(){
+		var self = this;
+		this._cacheElement.preview_left.on('click', function(){
+			var index = parseInt($('.preview-body').data('index'));
+			if(index==0){
+				index=self.pageData.previewData.length-1;
+			}else{
+				index-=1;
+			}
+			self.setPreviewPage(index);
+		});
 
-		var pageEntry = this.bookmarkData.treeData.pageEntry;
+		this._cacheElement.preview_right.on('click', function(){
+			var index = parseInt($('.preview-body').data('index'));
+			if(index==self.pageData.previewData.length-1){
+				index=0;
+			}else{
+				index+=1;
+			}
+			self.setPreviewPage(index);
+		});
+	},
+
+	setPreviewPage : function(previewIndex) {
+		var self = this;
+
+		var previewData = this.pageData.previewData;
 		var pageContent = this.pageData.snaptextData;
-
-		var contentURL = "/snaptext/" + pageEntry[index].hashurl;
 		var previewPageDOM = "";
 
-		previewPageDOM = this.bookmarkData.templete.previewPage.replace('{{title}}', pageEntry[index].title).replace('{{previewtext}}', pageContent[previewIndex]);
-
-		$('#previewPage')[0].innerHTML = previewPageDOM;
+		previewPageDOM = this.bookmarkData.templete.previewPage.replace('{{previewIndex}}', previewIndex).replace('{{previewtext}}', previewData[previewIndex].snaptextData);
+		this._cacheElement.preview_title.text(previewData[previewIndex].title);
+		this._cacheElement.preview_content.innerHTML = previewPageDOM;
 		$('#preview-container').css('display', 'block');
 
 		$('.preview-page-close').on('click', function() {
