@@ -101,7 +101,15 @@ var bookmarkModel = {
         })
     },*/
 
-    renameFolderData : function(){
+    renameFolderData : function(_data){
+        var data={};
+        data.dirInfo={};
+        var a_obj=$(this).parents('a');
+        data.dirInfo.path=a_obj.data('path');
+        data.dirInfo.name=a_obj.find('span').text().trim();
+        bookmarkModel.getName(function(data){
+            data.dirInfo.new_name = data;
+        })
         var params={
             dirInfo:data.dirInfo
         }
@@ -110,12 +118,12 @@ var bookmarkModel = {
             data:params,
             success : function(data) {
                 bookmarkController.update();
+                bookmarkModel.getBookmarkData();
             }
         })
     },
 
     renameFileData : function(_data){
-        console.log("clicked")
         var contents_data={};
         contents_data.pageInfo={};
         var a_obj=$(this).parent().find('.link_btn');
@@ -140,7 +148,13 @@ var bookmarkModel = {
         })
     },
 
-    deleteFolderData : function(){
+    deleteFolderData : function(_data){
+        var data={};
+        data.dirInfo={};
+        var a_obj=$(this).parents('a');
+        data.dirInfo.path=a_obj.data('path');
+        data.dirInfo.name=a_obj.find('span').text().trim();
+
         var params={
             dirInfo:data.dirInfo
         }
@@ -149,6 +163,7 @@ var bookmarkModel = {
             data:params,
             success : function(){
                 bookmarkController.update();
+                bookmarkModel.getBookmarkData();
             }
         })
     },
@@ -223,9 +238,14 @@ var bookmarkUIManager = {
         $('.dir_only_elem').remove();
         var result=this.data.data.pageDir;
         var innerhtml_str=""
-        innerhtml_str+="<button type='button' class='btn btn-theme folder_make_btn' style=''>"+
+        innerhtml_str+="<button type='button' class='btn btn-theme folder_make_btn' style='margin-left:60px'>"+
             "새 폴더"+
-            "</button>";
+            "</button>"+
+        "<li class='mt droppable_binding'>"+
+        "<a data-path='/'>"+
+        "<span>"+
+        "/"+
+        "</span>";
 
         result.forEach(function(indata){
             innerhtml_str+="<li class='mt droppable_binding'>"+
@@ -233,9 +253,12 @@ var bookmarkUIManager = {
                 "<span>"+
                 "&&dirname&&"+
                 "</span>"+
-                "<div class='btn-group' style='float:right'>"+
-                "<button type='button' class='btn btn-theme dropdown-toggle dropdown_btn' data-toggle='dropdown'>"+
-                "관리"+ "<span class='caret'>"+"</span>"+
+                "<div class='btn-group' style='float:right; margin-bottom:5px'>"+
+                "<button type='button' class='btn btn-theme btn-xs rename_folder_btn' style='float:right; margin-bottom:7px'>"+
+                "새 이름"+
+                "</button>"+
+                "<button type='button' class='btn btn-theme btn-xs delete_folder_btn' style='float:right; margin-bottom:7px'>"+
+                "지우기"+
                 "</button>"+
                 "</div>"+
                 "</a>"+
@@ -259,13 +282,13 @@ var bookmarkUIManager = {
                 "<a class='list-group-item file_a_tag_title' data-path='&&entrypath&&'>"+
                 "<h3 class='list-group-item-heading'>"+
                 "&&title&&"+
-                "<button type='button' class='btn btn-theme delete_btn' style='float:right'>"+
+                "<button type='button' class='btn btn-theme delete_btn' style='float:right; margin-top:7px'>"+
                 "지우기"+
                 "</button>"+
-                "<button type='button' class='btn btn-theme rename_btn' style='float:right'>"+
+                "<button type='button' class='btn btn-theme rename_btn' style='float:right; margin-top:7px'>"+
                 "새 이름"+
                 "</button>"+
-                "<button type='button' class='btn btn-theme link_btn' style='float:right' link='&&entryurl&&'>"+
+                "<button type='button' class='btn btn-theme link_btn' style='float:right; margin-top:7px' link='&&entryurl&&'>"+
                 "링크"+
                 "</button>"+
                 "</h3>"+
@@ -314,10 +337,16 @@ var bookmarkUIManager = {
         this._DeleteBtnClickEvent();
         this._LinkBtnOffClickEvent();
         this._LinkBtnClickEvent();
-        this._DropdownBindingOffEvent();
-        this._DropdownBindingEvent();
+//        this._DropdownBindingOffEvent();
+//        this._DropdownBindingEvent();
         this._DraggableBindingEvent();
         this._DroppableBindingEvent();
+//        this._DropdownMenuOffClickEvent();
+//        this._DropdownMenuClickEvent();
+        this._FolderRenameBtnOffClickEvent();
+        this._FolderRenameBtnClickEvent();
+        this._FolderDeleteBtnOffClickEvent();
+        this._FolderDeleteBtnClickEvent();
     },
 
     _NavbarClickEvent : function(){
@@ -372,16 +401,45 @@ var bookmarkUIManager = {
         });
     },
 
-    _DropdownBindingOffEvent : function(){
+    _FolderRenameBtnClickEvent : function(){
+        $('.rename_folder_btn').on('click',bookmarkModel.renameFolderData)
+    },
+
+    _FolderRenameBtnOffClickEvent : function(){
+        $('.rename_folder_btn').off('click')
+    },
+
+    _FolderDeleteBtnClickEvent : function(){
+        $('.delete_folder_btn').on('click',bookmarkModel.deleteFolderData)
+    },
+
+    _FolderDeleteBtnOffClickEvent : function(){
+        $('.delete_folder_btn').off('click')
+    },
+
+/*    _DropdownBindingOffEvent : function(){
+        var oDropdown = $('.dropdown-menu')[1];
+        $('.dropdown_btn').off('click',function(){
+            $(this).parent().remove(oDropdown);
+        })
     },
 
     _DropdownBindingEvent : function(){
-         var oDropdown = $("#fragment.dropdown-menu");
-         $('.dropdown_btn').on('click', function(){
+        var oDropdown = $('.dropdown-menu')[1];
+        $('.dropdown_btn').on('click', function(){
             $(this).parent().append(oDropdown);
-            oDropdown.show();
-         })
+        })
     },
+
+    _DropdownMenuOffClickEvent : function(){
+        $('.rename_folder').off('click')
+        $('.delete_folder').off('click')
+    },
+
+    _DropdownMenuClickEvent : function(){
+        $('.rename_folder').on('click', bookmarkModel.renameFolderData)
+        $('.delete_folder').on('click', bookmarkModel.deleteFolderData)
+    },*/
 
     _DraggableBindingEvent : function(){
         $('.draggable_file').draggable({
