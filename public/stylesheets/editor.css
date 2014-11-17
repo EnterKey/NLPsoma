@@ -353,7 +353,7 @@ body.menu-active div#content .menu-trigger {
 }
 
 .preview-content-title {
-    width : calc(100% - 25px);
+    width : calc(100% - 50px);
     padding: 3px;
     color: #c6c6c6;
     float: left;
@@ -362,6 +362,7 @@ body.menu-active div#content .menu-trigger {
 }
 
 .editor_paste{
+    margin-right : 10px;
     position: relative;
     background-size: contain;
     height: 20px;
@@ -372,6 +373,22 @@ body.menu-active div#content .menu-trigger {
 }
 
 .editor_paste i{
+    font-size: 20px;
+    margin-top : 7px;
+    z-index: 2500
+}
+
+.editor_expand{
+    position: relative;
+    background-size: contain;
+    height: 20px;
+    width: 20px;
+    display: inline-block;
+    float: right;
+    color: #c6c6c6;
+}
+
+.editor_expand i{
     font-size: 20px;
     margin-top : 7px;
     z-index: 2500
