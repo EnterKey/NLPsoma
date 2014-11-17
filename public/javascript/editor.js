@@ -45,7 +45,7 @@ var EditorAppMainContentView = Class.extend({
 		},
 		templete : {
 			previewList : '<li><a href="#"><div class="preview-list">{{header}}{{content}}</div></a></li>',
-			previewHeader : '<div class="preview-content-header"><div class="preview-content-title ellipsis" data-index="{{index}}" data-previewindex="{{previewIndex}}">{{title}}</div><div class="editor_paste"><i class="fa fa-files-o"></i></div></div>',
+			previewHeader : '<div class="preview-content-header"><div class="preview-content-title ellipsis" data-index="{{index}}" data-previewindex="{{previewIndex}}">{{title}}</div><div class="editor_expand"><i class="fa fa-expand"></i></div><div class="editor_paste"><i class="fa fa-files-o"></i></div></div>',
 			previewContent : '<div class="preview-content" id="{{tabID}}"><textarea>{{content}}</textarea></div>',
 			previewPage : 	'<pre class="preview-body" data-index="{{previewIndex}}">{{previewtext}}</pre>' +
                       '<form class="form-inline translate-btn-group-wrapper" role="form">' +
@@ -283,13 +283,13 @@ var EditorAppMainContentView = Class.extend({
 
 		$('.slidebar-previewList')[0].innerHTML = listDOM;
 
-		$('.preview-list').on('click', function(){
+		$('.preview-list').on('dblclick', function(){
 			var target = $(this).find('.preview-content-header').find('.preview-content-title');
 			var previewIndex = target.data('previewindex');
 			self.setPreviewPage(previewIndex);
 		});
 
-		$('.preview-content-title').on('click', function() {
+		$('.preview-content-title').on('dblclick', function() {
 			var target = $(this);
 			var previewIndex = target.data('previewindex');
 			self.setPreviewPage(previewIndex);
@@ -307,6 +307,15 @@ var EditorAppMainContentView = Class.extend({
 			var index = parseInt($(this).siblings().data('previewindex')) + 1;
 			var textObj = $('#preview-content-'+index+' textarea');
 			self.addEditorData(textObj.text());
+		});
+
+		$(".editor_expand").on('click', function(e) {
+			e.preventDefault();
+			e.stopPropagation();
+
+			var target = $(this).siblings(0);
+			var previewIndex = target.data('previewindex');
+			self.setPreviewPage(previewIndex);
 		});
 	},
 
@@ -628,7 +637,7 @@ var Translate = Class.extend({
     },
 
     _cachedElement : {
-        translateViewHeight : '225',
+        translateViewHeight : '150',
         bookmarkPreviewHeight : '520'
     },
 
