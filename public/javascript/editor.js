@@ -628,7 +628,7 @@ var Translate = Class.extend({
     },
 
     _cachedElement : {
-        translateViewHeight : '225',
+        translateViewHeight : '150',
         bookmarkPreviewHeight : '520'
     },
 
