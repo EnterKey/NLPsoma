@@ -357,6 +357,10 @@ var EditorAppMainContentView = Class.extend({
 		$('.preview-page-close').on('click', function() {
 			$('#preview-container').css('display', 'none');
 		})
+
+		$('.preview-page-paste').on('click', function() {
+			self.addEditorData(previewData[previewIndex].snaptextData);
+		})
 	},
 
 	initModal : function() {
