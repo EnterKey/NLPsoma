@@ -363,7 +363,7 @@ ul.sidebar-menu li a{
     transition: all 0.3s ease;
 }
 
-ul.sidebar-menu li a.active, ul.sidebar-menu li a:hover, ul.sidebar-menu li a:focus {
+ul.sidebar-menu li a.active, ul.sidebar-menu li a:hover, ul.sidebar-menu li a:focus, .ui-drop-hover {
     background: #68dff0;
     color: #fff;
     display: block;
@@ -2240,4 +2240,14 @@ label {
     min-height: 900px;
 }
 
+.ui-drop-hover a {
+    background: #68dff0;
+    color: #fff !important;
+    display: block;
 
+    -webkit-transition: all 0.3s ease;
+    -moz-transition: all 0.3s ease;
+    -o-transition: all 0.3s ease;
+    -ms-transition: all 0.3s ease;
+    transition: all 0.3s ease;
+}

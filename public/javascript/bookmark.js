@@ -41,7 +41,7 @@ var bookmarkModel = {
         if(typeof(pathdata)!="string") {
             jquery_obj = $(pathdata).find('span');
             name = jquery_obj.text().trim();
-            if(name=="미분류") path="/";
+            if(name=="정리하지 않은 북마크") path="/";
             else {
                 path = jquery_obj.data('path');
                 if (path == null) path = "/";
@@ -50,7 +50,7 @@ var bookmarkModel = {
             }
         }
         else {
-            if(pathdata=="미분류") path="/";
+            if(pathdata=="정리하지 않은 북마크") path="/";
             else path = pathdata;
         }
 
@@ -112,9 +112,8 @@ var bookmarkModel = {
         var a_obj=$(this).parents('a');
         data.dirInfo.path=a_obj.data('path');
         data.dirInfo.name=a_obj.find('span').text().trim();
-        bookmarkModel.getName(function(new_name){
-            data.dirInfo.new_name = new_name;
-        })
+        data.dirInfo.new_name=bookmarkModel.getName();
+        if(data.dirInfo.new_name==null) return;
         var params={
             dirInfo:data.dirInfo
         }
@@ -136,9 +135,8 @@ var bookmarkModel = {
         a_obj=$(this).parent();
         contents_data.pageInfo.path=a_obj.data('path')
 
-        bookmarkModel.getName(function(data){
-            contents_data.pageInfo.new_title = data;
-        })
+        contents_data.pageInfo.new_title=bookmarkModel.getName();
+        if(contents_data.pageInfo.new_title==null) return;
 
         var params={
             pageInfo:contents_data.pageInfo
@@ -194,15 +192,18 @@ var bookmarkModel = {
         })
     },
 
-    getName : function(callback){
+    getName : function(/*callback*/){
         var result = prompt("새 이름 입력","");
 
-        var alphaExp = /^[a-zA-Z0-9_-]+$/;
-        if(result.match(alphaExp)) {
-            callback(result);
+        // 특수문자만 제외하는 정규표현식
+        var regExp = /[^(가-힣ㄱ-ㅎㅏ-ㅣa-zA-Z0-9)]/gi;
+        if(!regExp.test(result)) {
+            //callback(result);
+            return result;
         }
         else{
-            alert("File name contains bad character");
+            alert("특수문자를 사용하셨습니다.");
+            return null;
         }
     }
 
@@ -251,7 +252,7 @@ var bookmarkUIManager = {
         "<li class='mt droppable_binding'>"+
         "<a data-path='/'>"+
         "<span>"+
-        "미분류"+
+        "정리하지 않은 북마크"+
         "</span>";
 
         result.forEach(function(indata){
@@ -261,11 +262,11 @@ var bookmarkUIManager = {
                 "&&dirname&&"+
                 "</span>"+
                 "<div class='btn-group' style='float:right; margin-bottom:5px'>"+
-                "<button type='button' class='btn btn-theme btn-xs rename_folder_btn' style='float:right; margin-bottom:7px'>"+
-                "새 이름"+
-                "</button>"+
-                "<button type='button' class='btn btn-theme btn-xs delete_folder_btn' style='float:right; margin-bottom:7px'>"+
+                "<button type='button' class='btn btn-theme btn-xs delete_folder_btn' style='float:right; margin-bottom:7px; margin-left:3px'>"+
                 "지우기"+
+                "</button>"+
+                "<button type='button' class='btn btn-theme btn-xs rename_folder_btn' style='float:right; margin-bottom:7px'>"+
+                "새이름"+
                 "</button>"+
                 "</div>"+
                 "</a>"+
@@ -292,7 +293,7 @@ var bookmarkUIManager = {
                 "지우기"+
                 "</button>"+
                 "<button type='button' class='btn btn-theme rename_btn' style='float:right; margin-top:7px'>"+
-                "새 이름"+
+                "새이름"+
                 "</button>"+
                 "<button type='button' class='btn btn-theme link_btn' style='float:right; margin-top:7px' link='&&entryurl&&'>"+
                 "링크"+
@@ -374,10 +375,15 @@ var bookmarkUIManager = {
     _AddNewFolderClickEvent : function(){
         $('.folder_make_btn').on('click',function(){
             var name;
-            bookmarkModel.getName(function(data){
-                name=data;
-            })
-            bookmarkModel.addNewFolderData(name,global_current_path);
+
+            name = bookmarkModel.getName();
+
+            if (name == null) {
+                alert ("Error");
+                return;
+            } else {
+                bookmarkModel.addNewFolderData(name,global_current_path);
+            }
         });
     },
 
@@ -450,7 +456,7 @@ var bookmarkUIManager = {
     _DraggableBindingEvent : function(){
         $('.draggable_file').draggable({
             revert: true,
-            opacity:"0.3",
+            opacity:"0.7",
             helper : function( event ){
                 return $( "<div class='ui-widget-header'> <img src='/images/dropping.png'> </img> </div>");
             },
@@ -471,7 +477,7 @@ var bookmarkUIManager = {
                     }
                 };
 
-                if(jquery_obj.find('span').text().trim()=="미분류") params.pageInfo.newPath="/";
+                if(jquery_obj.find('span').text().trim()=="정리하지 않은 북마크") params.pageInfo.newPath="/";
 
                 $.ajax({
                     url: "/ajax/move_entryPath",
@@ -481,7 +487,14 @@ var bookmarkUIManager = {
                         bookmarkModel.getContentData(global_current_path);
                     }
                 })
-            }
+            },
+
+            over : function (evt, ui) {
+
+            },
+
+            hoverClass: "ui-drop-hover"
+
         })
     }
 
