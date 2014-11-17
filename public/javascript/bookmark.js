@@ -112,8 +112,8 @@ var bookmarkModel = {
         var a_obj=$(this).parents('a');
         data.dirInfo.path=a_obj.data('path');
         data.dirInfo.name=a_obj.find('span').text().trim();
-        bookmarkModel.getName(function(data){
-            data.dirInfo.new_name = data;
+        bookmarkModel.getName(function(new_name){
+            data.dirInfo.new_name = new_name;
         })
         var params={
             dirInfo:data.dirInfo
