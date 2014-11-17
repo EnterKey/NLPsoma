@@ -310,11 +310,9 @@ var bookmarkUIManager = {
 
         this.init();
 
-       // this.addSubFolderViewerUI(path);
-
     },
 
-/*    addSubFolderViewerUI : function(path){
+    addSubFolderViewerUI : function(path){
         var resultDir = bookmarkUIManager.contents_data.data.pageDir;
         var innerhtml_str="";
 
@@ -330,7 +328,7 @@ var bookmarkUIManager = {
         })
 
         $(path).append(innerhtml_str);
-    },*/
+    },
 
     attachEvent : function () {
         this._NavbarOffClickEvent();
@@ -358,12 +356,15 @@ var bookmarkUIManager = {
     _NavbarClickEvent : function(){
         $('li.mt').on('click', function(){
             bookmarkModel.getContentData(this);
+            // Sub Folder 표현
         });
 
     },
 
     _NavbarOffClickEvent : function(){
-        $('li.mt').off('click');
+        $('li.mt').off('click',function(){
+            // Sub Folder 지우기
+        });
     },
 
     _AddNewFolderOffClickEvent : function(){
@@ -451,7 +452,7 @@ var bookmarkUIManager = {
             revert: true,
             opacity:"0.3",
             helper : function( event ){
-                return $( "<div class='ui-widget-header'> <img src='/images/glyphicons/png/glyphicons_071_book.png'> </img> </div>");
+                return $( "<div class='ui-widget-header'> <img src='/images/glyphicons_071_book.png'> </img> </div>");
             },
             cursorAt : {top: 10, left: 10}
         });
