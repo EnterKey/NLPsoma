@@ -452,7 +452,7 @@ var bookmarkUIManager = {
             revert: true,
             opacity:"0.3",
             helper : function( event ){
-                return $( "<div class='ui-widget-header'> <img src='/images/glyphicons_071_book.png'> </img> </div>");
+                return $( "<div class='ui-widget-header'> <img src='/images/dropping.png'> </img> </div>");
             },
             cursorAt : {top: 10, left: 10}
         });
