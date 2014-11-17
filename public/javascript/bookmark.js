@@ -41,13 +41,18 @@ var bookmarkModel = {
         if(typeof(pathdata)!="string") {
             jquery_obj = $(pathdata).find('span');
             name = jquery_obj.text().trim();
-            path = jquery_obj.data('path');
-            if (path == null) path = "/";
-            path = path + (name == "/" ? "" : name);
-            path = path && path.trim() != "undefined" ? path : "/"
+            if(name=="미분류") path="/";
+            else {
+                path = jquery_obj.data('path');
+                if (path == null) path = "/";
+                path = path + (name == "/" ? "" : name);
+                path = path && path.trim() != "undefined" ? path : "/"
+            }
         }
-        else
-            path=pathdata
+        else {
+            if(pathdata=="미분류") path="/";
+            else path = pathdata;
+        }
 
         global_current_path=path;
 
@@ -238,13 +243,15 @@ var bookmarkUIManager = {
         $('.dir_only_elem').remove();
         var result=this.data.data.pageDir;
         var innerhtml_str=""
-        innerhtml_str+="<button type='button' class='btn btn-theme folder_make_btn' style='margin-left:60px'>"+
+        innerhtml_str+="<div style='text-align: center; background: #FF865C; color:#fff; height: 50px; width:100%; line-height: 40px;border-radius:0px' class='btn folder_make_btn'>"+
+            "<span class='glyphicon glyphicon-plus'>"+
+            "</span>"+
             "새 폴더"+
-            "</button>"+
+            "</div>"+
         "<li class='mt droppable_binding'>"+
         "<a data-path='/'>"+
         "<span>"+
-        "/"+
+        "미분류"+
         "</span>";
 
         result.forEach(function(indata){
@@ -272,7 +279,6 @@ var bookmarkUIManager = {
     },
 
     addContentBookmarkUI : function(path){
-        console.log(this.contents_data)
         var resultEntry = this.contents_data.data.pageEntry;
 
         var innerhtml_str="";
@@ -297,7 +303,7 @@ var bookmarkUIManager = {
                 "</p>"+
                 "</a>"+
                 "</div>";
-            innerhtml_str=innerhtml_str.replace(/&&entryurl&&/g,indata.url).replace(/&&entrypath&&/g,indata.path).replace(/&&title&&/g,indata.title).replace(/&&content&&/g,indata.content.substring(0,200));
+            innerhtml_str=innerhtml_str.replace(/&&entryurl&&/g,indata.url).replace(/&&entrypath&&/g,indata.path).replace(/&&title&&/g,indata.title).replace(/&&content&&/g,indata.content.substring(0,65));
         })
 
         document.getElementById("bookmark_menu").innerHTML=innerhtml_str;
@@ -396,7 +402,6 @@ var bookmarkUIManager = {
 
     _LinkBtnClickEvent : function(){
         $('.link_btn').on('click',function(){
-            console.log($(this).attr('link'))
             window.open($(this).attr('link'),"새 창");
         });
     },
@@ -443,20 +448,12 @@ var bookmarkUIManager = {
 
     _DraggableBindingEvent : function(){
         $('.draggable_file').draggable({
-            start:function(e,u){
-                //save dragged item
-            },
-            drag:function(e,u){
-            },
-            stop:function(e,u){
-                //check on the folder or not
-
-                //if on the folder
-                    //remove dragged item
-                    //change path of item
-            },
             revert: true,
-            opacity:"0.3"
+            opacity:"0.3",
+            helper : function( event ){
+                return $( "<div class='ui-widget-header'> <img src='/images/glyphicons/png/glyphicons_071_book.png'> </img> </div>");
+            },
+            cursorAt : {top: 10, left: 10}
         });
     },
 
@@ -472,6 +469,8 @@ var bookmarkUIManager = {
                         url: dragobj.find('.link_btn').attr('link')
                     }
                 };
+
+                if(jquery_obj.find('span').text().trim()=="미분류") params.pageInfo.newPath="/";
 
                 $.ajax({
                     url: "/ajax/move_entryPath",
