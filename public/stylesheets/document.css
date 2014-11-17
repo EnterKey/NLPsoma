@@ -17,6 +17,26 @@ body {
 	background-color:#f2f2f2;
 }
 
+.list-dropdown{
+	left: -130px;
+	padding : 0px;
+}
+
+.category-li-menu-show {
+	background-color: #68DFF0 !important;
+}
+
+.category-item-rename {
+	border-bottom : 1px solid #293447;
+}
+.list-dropdown li{
+	background-color: #394457;
+}
+
+.list-dropdown li a{
+	color : white;
+}
+
 .document-container {
     /*margin-top : 60px;*/
     margin-left:20%;
@@ -269,7 +289,7 @@ a, a:hover, a:visited, .btn-link:hover { text-decoration: none; }
 
 .category-item-config a {
 	color : black;
-	background-color: #68DFF0 !important;
+	/*background-color: #68DFF0 !important;*/
 }
 
 .docs-show-more {

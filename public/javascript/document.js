@@ -168,7 +168,7 @@ var DocumentAppCategoryView = Class.extend({
 				'<a class="right category-li-menu-hide dropdown-toggle" data-toggle="dropdown" href="#">' +
 			    '<span class="glyphicon glyphicon-cog"></span>' +
 				'</a>' +
-	      '<ul class="dropdown-menu" role="menu">' +
+	      '<ul class="dropdown-menu list-dropdown" role="menu">' +
 	        '<li data-name={{category}}><a href="#" class="category-item-rename">Rename</a></li>' +
 	        '<li data-name={{category}}><a href="#" class="category-item-delete">Delete</a></li>' +
 	      '</ul>' +
