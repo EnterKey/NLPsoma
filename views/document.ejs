@@ -22,42 +22,43 @@
 
 		<% include ./header.ejs %>
 
+		<div class="" id="document-left-side-bar" role="navigation" >
+
+              <div style="text-align: center; background: #FF865C; color:#fff; height: 50px; width:100%; line-height: 40px;border-radius:0px" class="btn" id="add-category">
+                  <!--<a href="#" class="btn btn-info" id="add-category">Add Category</a>-->
+                  <span class="glyphicon glyphicon-plus"></span> &nbsp; Add Category
+              </div>
+
+			<ul id="notice-nav" class="nav nav-pills nav-stacked document-sidebar-category" style="margin-bottom: 10px;">
+
+			</ul>
+		</div><!--/span-->
 		<div class="document-container" >
-			<div class="" id="document-left-side-bar" role="navigation" >
-
-                <div style="text-align: center; background: #FF865C; color:#fff; height: 50px; width:100%; line-height: 40px;border-radius:0px" class="btn" id="add-category">
-                    <!--<a href="#" class="btn btn-info" id="add-category">Add Category</a>-->
-                    <span class="glyphicon glyphicon-plus"></span> &nbsp; Add Category
-                </div>
-
-				<ul id="notice-nav" class="nav nav-pills nav-stacked document-sidebar-category" style="margin-bottom: 10px;">
-
-				</ul>
-			</div><!--/span-->
-
-			<div class="document-container-tableWrapper" id="document-wapper">
-				<ul class="list-thum list clear">
-					<li class="list-item col-xs-12 no-margin">
-						<a href="/editor">
-							<div class="thum-div left"  data-toggle="tooltip" title data-original-title="tooltip" data-placement="top">
-								<img class="thum" src="/images/document/new-file.png" style="vertical-align: middle;"/>
-							</div>
-							<div class="info-div left">
-								<div class="title" data-toggle="tooltip" title data-original-title="타이틀" data-placement="top">
-									새 문서
+			<div id="document-wapper">
+				<div class="container-fluid">
+					<ul class="list-thum list clear">
+						<li class="list-item col-xs-12 no-margin">
+							<a href="/editor">
+								<div class="thum-div left"  data-toggle="tooltip" title data-original-title="tooltip" data-placement="top">
+									<img class="thum" src="/images/document/new-file.png" style="vertical-align: middle;"/>
 								</div>
-								<div class="info" >
-									<span class="date left">새 문서 작성</span>
+								<div class="info-div left">
+									<div class="title" data-toggle="tooltip" title data-original-title="타이틀" data-placement="top">
+										새 문서
+									</div>
+									<div class="info" >
+										<span class="date left">새 문서 작성</span>
+									</div>
 								</div>
-							</div>
-						</a>
-					</li>
-					<li class="list-item col-xs-12 no-padding no-margin"><hr class="divider"></li>
-					<ul class="document-container-tableWrapper-ul"></ul>
-				</ul>
-				<div class="row" id="show-more-group" style="display:none">
-					<div class="col-sm-12">
-						<button type="button" class="btn btn-info docs-show-more">Show More</button>
+							</a>
+						</li>
+						<li class="list-item col-xs-12 no-padding no-margin"><hr class="divider"></li>
+						<ul class="document-container-tableWrapper-ul"></ul>
+					</ul>
+					<div class="row" id="show-more-group" style="display:none">
+						<div class="col-sm-12">
+							<button type="button" class="btn btn-info docs-show-more">Show More</button>
+						</div>
 					</div>
 				</div>
 			</div><!--/span-->

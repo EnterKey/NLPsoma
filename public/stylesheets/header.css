@@ -248,7 +248,7 @@ body {
 .navbar-nav > .user-menu > .dropdown-menu > li.user-header {
   height: 175px;
   padding: 10px;
-  background: #367FA9;
+  background: #FDD835;
   text-align: center;
 }
 .navbar-nav > .user-menu > .dropdown-menu > li.user-header > img {
@@ -956,8 +956,8 @@ body {
   color: #ffffff;
 }
 .navbar-inverse {
-  background-color: #FFD777;
-  border-color: #FFD777;
+  background-color: #FDD835;
+  border-color: #FDD835;
 }
 .navbar-inverse .navbar-brand {
   color: #000;
@@ -1055,5 +1055,5 @@ body {
 }
 
 .navbar-inverse .navbar-nav>li>a:hover, .navbar-inverse .navbar-nav>li>a:focus {
-    background-color: #FFD777;
+    background-color: #FDD835;
 }
