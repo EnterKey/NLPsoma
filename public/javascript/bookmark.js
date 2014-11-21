@@ -113,7 +113,10 @@ var bookmarkModel = {
         data.dirInfo.path=a_obj.data('path');
         data.dirInfo.name=a_obj.find('span').text().trim();
         data.dirInfo.new_name=bookmarkModel.getName();
-        if(data.dirInfo.new_name==null) return;
+        if(data.dirInfo.new_name==null){
+            data=null;
+            return;
+        }
         var params={
             dirInfo:data.dirInfo
         }
@@ -136,7 +139,10 @@ var bookmarkModel = {
         contents_data.pageInfo.path=a_obj.data('path')
 
         contents_data.pageInfo.new_title=bookmarkModel.getName();
-        if(contents_data.pageInfo.new_title==null) return;
+        if(contents_data.pageInfo.new_title==null){
+            contents_data=null;
+            return;
+        }
 
         var params={
             pageInfo:contents_data.pageInfo
@@ -161,6 +167,7 @@ var bookmarkModel = {
         var params={
             dirInfo:data.dirInfo
         }
+        console.log(params)
         $.ajax({
             url:"/ajax/remove_pageDir", //only dir
             data:params,
@@ -198,11 +205,10 @@ var bookmarkModel = {
         // 특수문자만 제외하는 정규표현식
         var regExp = /[^(가-힣ㄱ-ㅎㅏ-ㅣa-zA-Z0-9)]/gi;
         if(!regExp.test(result)) {
-            //callback(result);
             return result;
         }
         else{
-            alert("특수문자를 사용하셨습니다.");
+            alert("올바르지 않은 이름입니다.");
             return null;
         }
     }
@@ -287,7 +293,7 @@ var bookmarkUIManager = {
         resultEntry.forEach(function(indata){
             innerhtml_str+="<div class='list-group draggable_file'>"+
                 "<a class='list-group-item file_a_tag_title' data-path='&&entrypath&&'>"+
-                "<h3 class='list-group-item-heading'>"+
+                "<h3 class='list-group-item-heading long_name_overflow'>"+
                 "&&title&&"+
                 "<button type='button' class='btn btn-theme delete_btn' style='float:right; margin-top:7px'>"+
                 "지우기"+
@@ -304,7 +310,7 @@ var bookmarkUIManager = {
                 "</p>"+
                 "</a>"+
                 "</div>";
-            innerhtml_str=innerhtml_str.replace(/&&entryurl&&/g,indata.url).replace(/&&entrypath&&/g,indata.path).replace(/&&title&&/g,indata.title).replace(/&&content&&/g,indata.content.substring(0,65));
+            innerhtml_str=innerhtml_str.replace(/&&entryurl&&/g,indata.url).replace(/&&entrypath&&/g,indata.path).replace(/&&title&&/g,indata.title.substring(0,50)).replace(/&&content&&/g,indata.content.substring(0,65));
         })
 
         document.getElementById("bookmark_menu").innerHTML=innerhtml_str;
@@ -342,16 +348,26 @@ var bookmarkUIManager = {
         this._DeleteBtnClickEvent();
         this._LinkBtnOffClickEvent();
         this._LinkBtnClickEvent();
-//        this._DropdownBindingOffEvent();
-//        this._DropdownBindingEvent();
         this._DraggableBindingEvent();
         this._DroppableBindingEvent();
-//        this._DropdownMenuOffClickEvent();
-//        this._DropdownMenuClickEvent();
         this._FolderRenameBtnOffClickEvent();
         this._FolderRenameBtnClickEvent();
         this._FolderDeleteBtnOffClickEvent();
         this._FolderDeleteBtnClickEvent();
+        this._LongNameAnimation();
+    },
+
+    _LongNameAnimation : function(){
+        var long_name_animateright=function(){
+            $(this).animate({scrollLeft:this.scrollWidth-$(this).width()}, (this.scrollWidth-$(this).width())*15);
+            $(this).one('mouseleave',long_name_animateleft)
+        }
+        var long_name_animateleft=function(){
+            $(this).animate({scrollLeft:0}, (this.scrollWidth-$(this).width())*15);
+            $(this).one('mouseover',long_name_animateright)
+        }
+        $('.long_name_overflow').one('mouseover',long_name_animateright)
+        $('.long_name_overflow').one('mouseleave',long_name_animateleft)
     },
 
     _NavbarClickEvent : function(){
@@ -379,7 +395,6 @@ var bookmarkUIManager = {
             name = bookmarkModel.getName();
 
             if (name == null) {
-                alert ("Error");
                 return;
             } else {
                 bookmarkModel.addNewFolderData(name,global_current_path);
@@ -428,30 +443,6 @@ var bookmarkUIManager = {
     _FolderDeleteBtnOffClickEvent : function(){
         $('.delete_folder_btn').off('click')
     },
-
-/*    _DropdownBindingOffEvent : function(){
-        var oDropdown = $('.dropdown-menu')[1];
-        $('.dropdown_btn').off('click',function(){
-            $(this).parent().remove(oDropdown);
-        })
-    },
-
-    _DropdownBindingEvent : function(){
-        var oDropdown = $('.dropdown-menu')[1];
-        $('.dropdown_btn').on('click', function(){
-            $(this).parent().append(oDropdown);
-        })
-    },
-
-    _DropdownMenuOffClickEvent : function(){
-        $('.rename_folder').off('click')
-        $('.delete_folder').off('click')
-    },
-
-    _DropdownMenuClickEvent : function(){
-        $('.rename_folder').on('click', bookmarkModel.renameFolderData)
-        $('.delete_folder').on('click', bookmarkModel.deleteFolderData)
-    },*/
 
     _DraggableBindingEvent : function(){
         $('.draggable_file').draggable({
